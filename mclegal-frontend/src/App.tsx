@@ -3,12 +3,14 @@ import Sidebar from "./components/Sidebar";
 import Discovery from "./pages/Discovery";
 import RedlineDiffs from "./pages/RedlineDiffs";
 import ClauseFindings from "./pages/ClauseFindings";
+import Analytics from "./pages/Analytics";
 import Placeholder from "./pages/Placeholder";
 
 const CRUMB_BY_PATH: Record<string, string> = {
   "/": "Redline Discovery",
   "/diffs": "Redline Diffs",
   "/clause-findings": "Clause Findings",
+  "/analytics": "Reporting & Analytics",
   "/golden-rules": "Golden Rules",
   "/suggested-rules": "Suggested Rules",
 };
@@ -31,6 +33,7 @@ export default function App() {
             <Route path="/" element={<Discovery />} />
             <Route path="/diffs" element={<RedlineDiffs />} />
             <Route path="/clause-findings" element={<ClauseFindings />} />
+            <Route path="/analytics" element={<Analytics />} />
             <Route
               path="/golden-rules"
               element={<Placeholder title="Golden Rules" note="Known negotiation positions per clause — not seeded yet." />}

@@ -76,6 +76,22 @@ def main():
     word = sum(1 for r in rows if r["is_likely_redline"] and r["file_type"] in (".docx", ".doc"))
     pdf = sum(1 for r in rows if r["is_likely_redline"] and r["file_type"] == ".pdf")
 
+    category_counts = {}
+    for r in rows:
+        category_counts[r["category"]] = category_counts.get(r["category"], 0) + 1
+
+    summary = {
+        "requests_scanned": len(requests_),
+        "attachments_found": attachments,
+        "potential_redlines": redlines,
+        "high_confidence_redlines": high_conf,
+        "word_redlines": word,
+        "pdf_redlines": pdf,
+        "category_counts": category_counts,
+    }
+    summary_path = config.OUTPUT_DIR / "discovery_summary.json"
+    summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
     print("\n" + "=" * 50)
     print(f"Requests Scanned:       {len(requests_)}")
     print(f"Attachments Found:      {attachments}")
@@ -86,6 +102,7 @@ def main():
     print("=" * 50)
     print(f"Wrote {json_path}")
     print(f"Wrote {csv_path}")
+    print(f"Wrote {summary_path}")
 
 
 if __name__ == "__main__":

@@ -64,7 +64,8 @@ def pair_files(request: dict, files: list[dict]) -> dict:
     if len(candidates) < 2:
         return {"original": None, "redline": None, "method": "insufficient_files",
                 "file_count": len(usable), "total_file_count": len(files),
-                "final_executed_file": final_executed.get("FileName") if final_executed else None}
+                "final_executed_file": final_executed.get("FileName") if final_executed else None,
+                "similarity": None, "low_similarity_warning": False}
 
     attorney_id = request.get("u_HandlingAttorney")
     entered_by = request.get("EnteredBy") or request.get("EmployeeContactID")

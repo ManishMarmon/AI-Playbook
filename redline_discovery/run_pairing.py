@@ -90,6 +90,21 @@ def main():
     for r in results:
         tag_counts[r["process_status_tag"]] = tag_counts.get(r["process_status_tag"], 0) + 1
 
+    method_counts = {}
+    for r in results:
+        method_counts[r["pairing_method"]] = method_counts.get(r["pairing_method"], 0) + 1
+
+    summary = {
+        "requests_scanned": len(requests_),
+        "confirmed_redlines": paired_count,
+        "extraction_failures": method_counts.get("insufficient_files", 0),
+        "total_edits_found": edit_count,
+        "process_status_breakdown": tag_counts,
+        "pairing_method_breakdown": method_counts,
+    }
+    summary_path = config.OUTPUT_DIR / "pairing_summary.json"
+    summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
     print("\n" + "=" * 50)
     print(f"Requests Scanned:          {len(requests_)}")
     print(f"Requests with a pair diffed: {paired_count}")
@@ -99,6 +114,7 @@ def main():
         print(f"  {tag}: {n}")
     print("=" * 50)
     print(f"Wrote {out_path}")
+    print(f"Wrote {summary_path}")
 
 
 if __name__ == "__main__":

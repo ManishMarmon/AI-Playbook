@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
-import { Search, FileSearch, GitCompare, ScanSearch, BookOpen, Lightbulb } from "lucide-react";
+import { Search, FileSearch, GitCompare, ScanSearch, BarChart3, BookOpen, Lightbulb } from "lucide-react";
 
 const NAV = [
   { to: "/", label: "Redline Discovery", icon: FileSearch },
   { to: "/diffs", label: "Redline Diffs", icon: GitCompare },
   { to: "/clause-findings", label: "Clause Findings", icon: ScanSearch },
+  { to: "/analytics", label: "Reporting & Analytics", icon: BarChart3 },
   { to: "/golden-rules", label: "Golden Rules", icon: BookOpen },
   { to: "/suggested-rules", label: "Suggested Rules", icon: Lightbulb },
 ];
