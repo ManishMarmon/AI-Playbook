@@ -1,6 +1,10 @@
 # Local tooling state (not source)
 .claude/
 
+# Session/handoff notes and audit reports — local only, not for git
+CONTEXT.md
+docs/
+
 # Generated pipeline output (regenerate by running redline_discovery scripts)
 redline_discovery/output/
 mclegal-frontend/public/data/*.json
