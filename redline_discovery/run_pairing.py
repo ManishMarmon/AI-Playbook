@@ -13,6 +13,7 @@ Usage:
 
 import argparse
 import json
+import shutil
 from collections import Counter
 
 import config
@@ -87,6 +88,21 @@ def main():
     out_path = config.OUTPUT_DIR / "redline_diffs.json"
     out_path.write_text(json.dumps(results, indent=2, default=str), encoding="utf-8")
 
+    # Per-request chunk files for the Phase 5 clause-tagging workflow (one JSON
+    # file per request with a non-empty diff, named "<request_id>.json") — this
+    # is the "chunkDir" the workflow's README usage note already documents.
+    # Rebuilt from scratch each run so a request that no longer pairs doesn't
+    # leave a stale chunk behind.
+    chunk_dir = config.OUTPUT_DIR / "diff_chunks"
+    if chunk_dir.exists():
+        shutil.rmtree(chunk_dir)
+    chunk_dir.mkdir(parents=True)
+    for r in results:
+        if r["edits"]:
+            (chunk_dir / f"{r['request_id']}.json").write_text(
+                json.dumps(r, indent=2, default=str), encoding="utf-8"
+            )
+
     tag_counts = dict(Counter(r["process_status_tag"] for r in results))
     method_counts = dict(Counter(r["pairing_method"] for r in results))
 
@@ -111,6 +127,7 @@ def main():
     print("=" * 50)
     print(f"Wrote {out_path}")
     print(f"Wrote {summary_path}")
+    print(f"Wrote {paired_count} diff chunks to {chunk_dir}")
 
 
 if __name__ == "__main__":
