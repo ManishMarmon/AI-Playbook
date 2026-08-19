@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Discovery from "./pages/Discovery";
@@ -18,10 +19,11 @@ const CRUMB_BY_PATH: Record<string, string> = {
 export default function App() {
   const location = useLocation();
   const crumb = CRUMB_BY_PATH[location.pathname] ?? "";
+  const [search, setSearch] = useState("");
 
   return (
     <div className="app">
-      <Sidebar />
+      <Sidebar search={search} onSearchChange={setSearch} />
       <div className="main">
         <div className="topbar">
           <div className="crumbs">
@@ -30,9 +32,9 @@ export default function App() {
         </div>
         <div className="page page-wide">
           <Routes>
-            <Route path="/" element={<Discovery />} />
-            <Route path="/diffs" element={<RedlineDiffs />} />
-            <Route path="/clause-findings" element={<ClauseFindings />} />
+            <Route path="/" element={<Discovery search={search} />} />
+            <Route path="/diffs" element={<RedlineDiffs search={search} />} />
+            <Route path="/clause-findings" element={<ClauseFindings search={search} />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route
               path="/golden-rules"

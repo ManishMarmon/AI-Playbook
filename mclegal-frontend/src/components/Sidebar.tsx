@@ -10,7 +10,7 @@ const NAV = [
   { to: "/suggested-rules", label: "Suggested Rules", icon: Lightbulb },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ search, onSearchChange }: { search: string; onSearchChange: (value: string) => void }) {
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -25,7 +25,12 @@ export default function Sidebar() {
 
       <div className="nav-search">
         <Search size={14} />
-        <input placeholder="Search requests, clauses..." />
+        <input
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder="Search requests, clauses..."
+          aria-label="Search requests, clauses, and vendors"
+        />
       </div>
 
       <nav className="nav-section">

@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useJsonResource } from "../hooks/useJsonResource";
+import { ResourceStatus } from "../components/ResourceStatus";
+import { StatTile } from "../components/StatTile";
 
 type Operational = {
   requests_scanned: number;
@@ -22,15 +24,15 @@ type BusinessInsights = {
 
 type AnalyticsData = { operational: Operational; business_insights: BusinessInsights };
 
-export default function Analytics() {
-  const [data, setData] = useState<AnalyticsData | null>(null);
+function isAnalyticsData(data: unknown): data is AnalyticsData {
+  if (!data || typeof data !== "object") return false;
+  const d = data as Record<string, unknown>;
+  return typeof d.operational === "object" && d.operational !== null && typeof d.business_insights === "object" && d.business_insights !== null;
+}
 
-  useEffect(() => {
-    fetch("/data/analytics.json")
-      .then((r) => (r.ok ? r.json() : null))
-      .then(setData)
-      .catch(() => setData(null));
-  }, []);
+export default function Analytics() {
+  const resource = useJsonResource<AnalyticsData>("/data/analytics.json", isAnalyticsData);
+  const data = resource.status === "ready" ? resource.data : null;
 
   return (
     <div>
@@ -41,10 +43,14 @@ export default function Analytics() {
         clause-tagging phases.
       </p>
 
-      {!data && (
-        <div className="placeholder" style={{ padding: 40, marginTop: 24 }}>
-          No analytics export yet — run <code className="mono">run_analytics.py</code>.
-        </div>
+      {resource.status !== "ready" && (
+        <ResourceStatus
+          status={resource.status}
+          error={resource.error}
+          onRetry={resource.refetch}
+          loadingLabel="Loading analytics..."
+          errorLabel="Couldn't load analytics. If this is a fresh checkout, run run_analytics.py first."
+        />
       )}
 
       {data && (
@@ -88,52 +94,48 @@ export default function Analytics() {
 
           <h3 style={{ marginTop: 32, marginBottom: 12 }}>High-risk negotiations</h3>
           <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Request</th>
-                  <th>Vendor</th>
-                  <th style={{ textAlign: "right" }}>High-significance findings</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.business_insights.high_risk_negotiations.map((r) => (
-                  <tr key={r.request_id}>
-                    <td>
-                      #{r.request_id} {r.request_title ? `· ${r.request_title}` : ""}
-                    </td>
-                    <td>{r.vendor || "—"}</td>
-                    <td style={{ textAlign: "right" }} className="mono">
-                      {r.count}
-                    </td>
-                  </tr>
-                ))}
-                {data.business_insights.high_risk_negotiations.length === 0 && (
+            <div style={{ overflowX: "auto" }}>
+              <table className="data-table">
+                <thead>
                   <tr>
-                    <td colSpan={3} className="muted" style={{ textAlign: "center", padding: 24 }}>
-                      No high-significance confirmed findings yet.
-                    </td>
+                    <th>Request</th>
+                    <th>Vendor</th>
+                    <th style={{ textAlign: "right" }}>High-significance findings</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {data.business_insights.high_risk_negotiations.map((r) => (
+                    <tr key={r.request_id}>
+                      <td
+                        style={{ maxWidth: 320, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                        title={r.request_title ?? undefined}
+                      >
+                        #{r.request_id} {r.request_title ? `· ${r.request_title}` : ""}
+                      </td>
+                      <td
+                        style={{ maxWidth: 240, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                        title={r.vendor ?? undefined}
+                      >
+                        {r.vendor || "—"}
+                      </td>
+                      <td style={{ textAlign: "right" }} className="mono">
+                        {r.count}
+                      </td>
+                    </tr>
+                  ))}
+                  {data.business_insights.high_risk_negotiations.length === 0 && (
+                    <tr>
+                      <td colSpan={3} className="muted" style={{ textAlign: "center", padding: 24 }}>
+                        No high-significance confirmed findings yet.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </>
       )}
-    </div>
-  );
-}
-
-function StatTile({ label, value, tone }: { label: string; value: number; tone?: "good" | "bad" }) {
-  return (
-    <div className="card" style={{ padding: 18 }}>
-      <div className="text-label muted">{label}</div>
-      <div
-        className="text-title-md"
-        style={{ marginTop: 4, color: tone === "good" ? "oklch(0.45 0.12 150)" : tone === "bad" ? "var(--bad)" : undefined }}
-      >
-        {value.toLocaleString()}
-      </div>
     </div>
   );
 }

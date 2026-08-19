@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { ShieldCheck, ShieldAlert } from "lucide-react";
+import { useJsonResource } from "../hooks/useJsonResource";
+import { ResourceStatus } from "../components/ResourceStatus";
+import { StatTile } from "../components/StatTile";
+import { Chip, type ChipTone } from "../components/Chip";
 
 type Verification = { accurate: boolean; issue: string; corrected_clause_name?: string };
 
@@ -28,27 +32,49 @@ type ClauseFindingsData = {
   generatedAt?: string;
 };
 
-const SIG_CHIP: Record<Finding["significance"], string> = {
-  high: "chip bad",
-  medium: "chip warn",
-  low: "chip",
-  noise: "chip",
+const SIG_TONE: Record<Finding["significance"], ChipTone | undefined> = {
+  high: "bad",
+  medium: "warn",
+  low: undefined,
+  noise: undefined,
 };
+
+const PAGE_SIZE = 20;
+
+function isClauseFindingsData(data: unknown): data is ClauseFindingsData {
+  if (!data || typeof data !== "object") return false;
+  const d = data as Record<string, unknown>;
+  return Array.isArray(d.confirmed) && Array.isArray(d.flagged) && typeof d.lowOrNoiseCount === "number";
+}
 
 type Tab = "confirmed" | "flagged";
 
-export default function ClauseFindings() {
-  const [data, setData] = useState<ClauseFindingsData | null>(null);
+export default function ClauseFindings({ search }: { search: string }) {
+  const resource = useJsonResource<ClauseFindingsData>("/data/clause_findings.json", isClauseFindingsData);
   const [tab, setTab] = useState<Tab>("confirmed");
+  const [page, setPage] = useState(0);
+
+  const data = resource.status === "ready" ? resource.data : null;
+
+  const visible = useMemo(() => {
+    if (!data) return [];
+    const base = tab === "confirmed" ? data.confirmed : data.flagged;
+    const term = search.trim().toLowerCase();
+    if (!term) return base;
+    return base.filter(
+      (f) =>
+        f.clause_name?.toLowerCase().includes(term) ||
+        f.vendor?.toLowerCase().includes(term) ||
+        f.request_title?.toLowerCase().includes(term)
+    );
+  }, [data, tab, search]);
 
   useEffect(() => {
-    fetch("/data/clause_findings.json")
-      .then((r) => (r.ok ? r.json() : null))
-      .then(setData)
-      .catch(() => setData(null));
-  }, []);
+    setPage(0);
+  }, [tab, search]);
 
-  const visible = useMemo(() => (data ? (tab === "confirmed" ? data.confirmed : data.flagged) : []), [data, tab]);
+  const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
+  const pageItems = visible.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
 
   return (
     <div>
@@ -61,11 +87,14 @@ export default function ClauseFindings() {
         fabrication/mischaracterization in testing, so they're shown, not hidden.
       </p>
 
-      {!data && (
-        <div className="placeholder" style={{ padding: 40, marginTop: 24 }}>
-          No clause-findings export yet — waiting on the tagging + verification workflow to
-          produce output.
-        </div>
+      {resource.status !== "ready" && (
+        <ResourceStatus
+          status={resource.status}
+          error={resource.error}
+          onRetry={resource.refetch}
+          loadingLabel="Waiting on the tagging + verification workflow to produce output..."
+          errorLabel="Couldn't load clause findings."
+        />
       )}
 
       {data && (
@@ -79,18 +108,28 @@ export default function ClauseFindings() {
 
           <div className="between" style={{ marginTop: 28, marginBottom: 12 }}>
             <h3>Findings</h3>
-            <div className="toggle-group">
-              <button className={tab === "confirmed" ? "active" : ""} onClick={() => setTab("confirmed")}>
+            <div className="toggle-group" role="tablist" aria-label="Finding filter">
+              <button
+                role="tab"
+                aria-selected={tab === "confirmed"}
+                className={tab === "confirmed" ? "active" : ""}
+                onClick={() => setTab("confirmed")}
+              >
                 Confirmed ({data.confirmed.length})
               </button>
-              <button className={tab === "flagged" ? "active" : ""} onClick={() => setTab("flagged")}>
+              <button
+                role="tab"
+                aria-selected={tab === "flagged"}
+                className={tab === "flagged" ? "active" : ""}
+                onClick={() => setTab("flagged")}
+              >
                 Flagged ({data.flagged.length})
               </button>
             </div>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {visible.map((f, i) => (
+            {pageItems.map((f, i) => (
               <FindingCard key={i} f={f} />
             ))}
             {visible.length === 0 && (
@@ -99,6 +138,22 @@ export default function ClauseFindings() {
               </div>
             )}
           </div>
+
+          {visible.length > PAGE_SIZE && (
+            <div className="between" style={{ marginTop: 12 }}>
+              <div className="text-body-xs muted">
+                Page {page + 1} of {pageCount} ({visible.length.toLocaleString()} findings)
+              </div>
+              <div className="row">
+                <button className="btn sm" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
+                  Previous
+                </button>
+                <button className="btn sm" disabled={page >= pageCount - 1} onClick={() => setPage((p) => p + 1)}>
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
@@ -111,8 +166,8 @@ function FindingCard({ f }: { f: Finding }) {
     <div className="card" style={{ padding: 16, borderColor: isFlagged ? "var(--bad)" : undefined }}>
       <div className="between">
         <div className="row">
-          <span className={SIG_CHIP[f.significance]}>{f.significance}</span>
-          <span className="chip info">{f.clause_name}</span>
+          <Chip tone={SIG_TONE[f.significance]}>{f.significance}</Chip>
+          <Chip tone="info">{f.clause_name}</Chip>
         </div>
         <div className="row">
           {isFlagged ? (
@@ -120,7 +175,7 @@ function FindingCard({ f }: { f: Finding }) {
               <ShieldAlert size={14} /> flagged
             </span>
           ) : (
-            <span className="row text-body-xs" style={{ color: "oklch(0.45 0.12 150)" }}>
+            <span className="row text-body-xs" style={{ color: "var(--good)" }}>
               <ShieldCheck size={14} /> verified
             </span>
           )}
@@ -140,7 +195,7 @@ function FindingCard({ f }: { f: Finding }) {
         </div>
       )}
       {f.after_text && (
-        <div className="text-body-sm" style={{ color: "oklch(0.45 0.12 150)" }}>
+        <div className="text-body-sm" style={{ color: "var(--good)" }}>
           + {f.after_text}
         </div>
       )}
@@ -174,20 +229,6 @@ function FindingCard({ f }: { f: Finding }) {
           )}
         </div>
       )}
-    </div>
-  );
-}
-
-function StatTile({ label, value, tone }: { label: string; value: number | string; tone?: "good" | "bad" }) {
-  return (
-    <div className="card" style={{ padding: 18 }}>
-      <div className="text-label muted">{label}</div>
-      <div
-        className="text-title-md"
-        style={{ marginTop: 4, color: tone === "good" ? "oklch(0.45 0.12 150)" : tone === "bad" ? "var(--bad)" : undefined }}
-      >
-        {value}
-      </div>
     </div>
   );
 }

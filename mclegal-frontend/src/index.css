@@ -232,10 +232,10 @@ h4 { font-size: 15px; font-weight: 600; }
   white-space: nowrap;
 }
 .chip.accent { background: var(--accent-soft); color: var(--ink-deep); }
-.chip.good { background: oklch(0.92 0.05 150); color: oklch(0.35 0.1 150); }
-.chip.warn { background: oklch(0.94 0.05 80); color: oklch(0.4 0.12 80); }
-.chip.bad { background: oklch(0.93 0.05 25); color: oklch(0.4 0.12 25); }
-.chip.info { background: oklch(0.92 0.04 230); color: oklch(0.35 0.08 230); }
+.chip.good { background: oklch(0.92 0.05 150); color: var(--good); }
+.chip.warn { background: oklch(0.94 0.05 80); color: var(--warn); }
+.chip.bad { background: oklch(0.93 0.05 25); color: var(--bad); }
+.chip.info { background: oklch(0.92 0.04 230); color: var(--info); }
 .chip.dot::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: currentColor; margin-right: 4px; }
 
 /* Form controls */
