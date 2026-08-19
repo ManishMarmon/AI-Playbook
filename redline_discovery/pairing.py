@@ -102,6 +102,13 @@ def pair_files(request: dict, files: list[dict]) -> dict:
 
     if original is redline:
         redline = None
+        # attorney_match and requestor_match resolved to the same file — try the
+        # fallback against the untouched candidate pool before giving up, same as
+        # the chronology fallback above.
+        collision_candidates = [f for f in candidates if f is not original]
+        if collision_candidates:
+            redline = collision_candidates[-1]
+            method_parts.append("collision_fallback_redline")
 
     similarity = None
     if original and redline:

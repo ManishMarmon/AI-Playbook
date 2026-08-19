@@ -13,6 +13,7 @@ Usage:
 
 import argparse
 import json
+from collections import Counter
 
 import config
 from request_api import get_bearer_token, fetch_all_requests, fetch_request_file_list
@@ -86,13 +87,8 @@ def main():
     out_path = config.OUTPUT_DIR / "redline_diffs.json"
     out_path.write_text(json.dumps(results, indent=2, default=str), encoding="utf-8")
 
-    tag_counts = {}
-    for r in results:
-        tag_counts[r["process_status_tag"]] = tag_counts.get(r["process_status_tag"], 0) + 1
-
-    method_counts = {}
-    for r in results:
-        method_counts[r["pairing_method"]] = method_counts.get(r["pairing_method"], 0) + 1
+    tag_counts = dict(Counter(r["process_status_tag"] for r in results))
+    method_counts = dict(Counter(r["pairing_method"] for r in results))
 
     summary = {
         "requests_scanned": len(requests_),

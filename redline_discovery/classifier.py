@@ -7,6 +7,8 @@ No download, no Word-XML track-changes parsing, no AI classification yet
 possible first pass to validate signal quality before building those.
 """
 
+import re
+
 FILENAME_HIGH = ["redline", "redlined", "markup", "mark-up", "mark up",
                  "track change", "tracked change"]
 FILENAME_MEDIUM = ["draft", "revised", "comment", "review", "negotiat"]
@@ -22,6 +24,16 @@ EDITABLE_EXTENSIONS = {".docx", ".doc"}
 _TEXT_SCAN_CHARS = 5000  # keyword scan only needs the first chunk, not the full doc
 
 
+def _filename_has_keyword(name: str, keyword: str) -> bool:
+    # Same normalization as pairing.py's _is_final_executed: underscores/hyphens
+    # become spaces so a keyword joined by them (e.g. "SIGNED_Repsol") still gets
+    # a real word boundary, and plain substring matches (e.g. "draft" inside
+    # "draftsman") no longer false-positive.
+    normalized_name = re.sub(r"[_\-]+", " ", name)
+    normalized_kw = re.sub(r"[_\-]+", " ", keyword)
+    return re.search(rf"\b{re.escape(normalized_kw)}\b", normalized_name) is not None
+
+
 def classify_file(file_record: dict) -> dict:
     name = (file_record.get("FileName") or "").lower()
     ext = (file_record.get("FileType") or "").lower()
@@ -31,15 +43,15 @@ def classify_file(file_record: dict) -> dict:
     signals = []
 
     for kw in FILENAME_HIGH:
-        if kw in name:
+        if _filename_has_keyword(name, kw):
             score += 3
             signals.append(f"filename:{kw}")
     for kw in FILENAME_MEDIUM:
-        if kw in name:
+        if _filename_has_keyword(name, kw):
             score += 2
             signals.append(f"filename:{kw}")
     for kw in FILENAME_EXECUTED:
-        if kw in name:
+        if _filename_has_keyword(name, kw):
             score -= 3
             signals.append(f"filename-negative:{kw}")
     for kw in TEXT_SIGNALS:

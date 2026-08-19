@@ -32,11 +32,31 @@ def _load_keyvault_secrets(vault_url: str) -> None:
 
 
 _KV_URL = os.getenv("AZURE_KEY_VAULT_URL", "https://legaldataproducts-kvault.vault.azure.net/")
-_load_keyvault_secrets(_KV_URL)
 
-MPACT_OAUTH_URL     = os.environ["MPACT_OAUTH_URL"]
-MPACT_CLIENT_ID     = os.environ["MPACT_CLIENT_ID"]
-MPACT_CLIENT_SECRET = os.environ["MPACT_CLIENT_SECRET"]
+_MPACT_ATTRS = ("MPACT_OAUTH_URL", "MPACT_CLIENT_ID", "MPACT_CLIENT_SECRET")
+_mpact_loaded = False
+
+
+def _ensure_mpact_credentials() -> None:
+    # Loaded lazily, on first actual use, so scripts that never touch the
+    # CobbleStone API (e.g. run_analytics.py, which only reads local JSON) don't
+    # pay for a Key Vault round-trip — or fail if Key Vault/identity is down —
+    # just because they happened to `import config`.
+    global _mpact_loaded
+    if _mpact_loaded:
+        return
+    _load_keyvault_secrets(_KV_URL)
+    for attr in _MPACT_ATTRS:
+        globals()[attr] = os.environ[attr]
+    _mpact_loaded = True
+
+
+def __getattr__(name: str):
+    if name in _MPACT_ATTRS:
+        _ensure_mpact_credentials()
+        return globals()[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 
 COBBLESTONE_BASE_URL = "https://marmon.cobblestone.software/api2/CSSAPI/V2"
 REQUEST_GET_URL      = f"{COBBLESTONE_BASE_URL}/ContractExternalRequest/Get"

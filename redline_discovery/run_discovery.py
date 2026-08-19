@@ -14,6 +14,7 @@ Usage:
 import argparse
 import csv
 import json
+from collections import Counter
 
 import config
 from request_api import get_bearer_token, fetch_all_requests, fetch_request_file_list
@@ -48,7 +49,7 @@ def main():
                 "vendor_id": req.get("VendorID"),
                 "file_id": f.get("ID"),
                 "file_name": f.get("FileName"),
-                "file_type": f.get("FileType"),
+                "file_type": (f.get("FileType") or "").lower(),
                 "file_entry_date": f.get("EntryDate"),
                 "file_size_bytes": f.get("FileSizeBytes"),
                 "category": result["category"],
@@ -76,9 +77,7 @@ def main():
     word = sum(1 for r in rows if r["is_likely_redline"] and r["file_type"] in (".docx", ".doc"))
     pdf = sum(1 for r in rows if r["is_likely_redline"] and r["file_type"] == ".pdf")
 
-    category_counts = {}
-    for r in rows:
-        category_counts[r["category"]] = category_counts.get(r["category"], 0) + 1
+    category_counts = dict(Counter(r["category"] for r in rows))
 
     summary = {
         "requests_scanned": len(requests_),

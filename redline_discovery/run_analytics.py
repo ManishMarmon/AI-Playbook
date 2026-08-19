@@ -59,9 +59,10 @@ def main():
     vendor_finding_counts = Counter()
     for f in confirmed:
         vendor = (f.get("vendor") or "").strip()
-        if not vendor:
+        request_id = f.get("request_id")
+        if not vendor or request_id is None:
             continue
-        vendor_requests[vendor].add(f["request_id"])
+        vendor_requests[vendor].add(request_id)
         vendor_finding_counts[vendor] += 1
     top_customers = [
         {"vendor": vendor, "requests_negotiated": len(vendor_requests[vendor]), "findings": vendor_finding_counts[vendor]}
@@ -72,7 +73,9 @@ def main():
     for f in confirmed:
         if f.get("significance") != "high":
             continue
-        rid = f["request_id"]
+        rid = f.get("request_id")
+        if rid is None:
+            continue
         entry = high_risk_by_request[rid]
         entry["count"] += 1
         entry["request_title"] = f.get("request_title")

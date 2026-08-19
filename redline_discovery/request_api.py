@@ -106,7 +106,7 @@ def fetch_all_requests(token: str, batch_size: int = 100, limit: int | None = No
         after_id = max(r.get("RequestID", after_id) for r in batch)
         if limit and len(all_requests) >= limit:
             return all_requests[:limit]
-        if len(batch) < batch_size:
+        if len(batch) < min(batch_size, 100):
             break
     return all_requests
 
