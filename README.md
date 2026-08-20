@@ -29,6 +29,9 @@ redline_discovery/          Phases 1-5 pipeline (Python)
   workflows/
     clause_tagging_workflow.js   Phase 5 — tag + adversarially verify clause-level findings
                                   (runs via Claude Code's Workflow tool, not standalone Node)
+    ai_classification_workflow.js  Phase 3 fallback — LLM judgment on attachments the
+                                  filename/text heuristic left Unclassified (same Workflow-tool
+                                  pattern as clause_tagging_workflow.js)
 
 mclegal-frontend/           Dashboard (React + Vite)
   src/pages/                Redline Discovery, Redline Diffs, Clause Findings
@@ -47,6 +50,8 @@ python run_pairing.py --limit 200        # Phase 4: pair + diff
 ```
 
 Phase 5 (`workflows/clause_tagging_workflow.js`) is invoked through Claude Code's Workflow tool with `args: { chunkDir, requestIds }`, where `chunkDir` points at the per-request diff JSON files produced by `run_pairing.py`.
+
+`run_discovery.py` also writes `output/ai_classification_candidates.json` — every attachment the filename/text heuristic left "Unclassified/Supporting" with enough extracted text to be worth a second look. To run the AI-classification fallback: read that file, invoke `workflows/ai_classification_workflow.js` through Claude Code's Workflow tool with `args: { candidates: <its contents> }`, then save the workflow's return value to `output/ai_classification_results.json` yourself (this workflow, like Phase 5's, doesn't write its own output — see `clause_findings.json`'s handling for why). Smoke-test on a handful of candidates before running the full batch; each candidate costs one LLM call.
 
 ## Running the dashboard
 

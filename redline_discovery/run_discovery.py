@@ -20,6 +20,11 @@ import config
 from request_api import get_bearer_token, fetch_all_requests, fetch_request_file_list
 from classifier import classify_file
 
+# Mirrors pairing.py's MIN_TEXT_CHARS convention — no point spending an LLM
+# call on a near-empty extract during the AI-classification fallback pass.
+MIN_TEXT_CHARS_FOR_AI_FALLBACK = 200
+_AI_CANDIDATE_TEXT_CHARS = 5000  # matches classifier.py's own _TEXT_SCAN_CHARS window
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -36,6 +41,7 @@ def main():
     print(f"Requests scanned: {len(requests_)}")
 
     rows = []
+    ai_candidates = []
     for i, req in enumerate(requests_, 1):
         request_id = req.get("RequestID")
         files = fetch_request_file_list(request_id, token)
@@ -57,7 +63,20 @@ def main():
                 "confidence": result["confidence"],
                 "is_likely_redline": result["is_likely_redline"],
                 "signals": ";".join(result["signals"]),
+                "detection_methods": ";".join(result["detection_methods"]),
             })
+
+            text_extract = f.get("TextExtract") or ""
+            if (result["category"] == "Unclassified/Supporting"
+                    and len(text_extract) >= MIN_TEXT_CHARS_FOR_AI_FALLBACK):
+                ai_candidates.append({
+                    "request_id": request_id,
+                    "file_id": f.get("ID"),
+                    "file_name": f.get("FileName"),
+                    "file_type": (f.get("FileType") or "").lower(),
+                    "heuristic_score": result["score"],
+                    "text_extract": text_extract[:_AI_CANDIDATE_TEXT_CHARS],
+                })
         if i % 25 == 0 or i == len(requests_):
             print(f"  ...{i}/{len(requests_)} requests processed, {len(rows)} files so far")
 
@@ -91,6 +110,9 @@ def main():
     summary_path = config.OUTPUT_DIR / "discovery_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
+    ai_candidates_path = config.OUTPUT_DIR / "ai_classification_candidates.json"
+    ai_candidates_path.write_text(json.dumps(ai_candidates, indent=2, default=str), encoding="utf-8")
+
     print("\n" + "=" * 50)
     print(f"Requests Scanned:       {len(requests_)}")
     print(f"Attachments Found:      {attachments}")
@@ -98,10 +120,12 @@ def main():
     print(f"High Confidence (>=50): {high_conf}")
     print(f"  Word (.docx/.doc):    {word}")
     print(f"  PDF:                  {pdf}")
+    print(f"AI-classification candidates (Unclassified + usable text): {len(ai_candidates)}")
     print("=" * 50)
     print(f"Wrote {json_path}")
     print(f"Wrote {csv_path}")
     print(f"Wrote {summary_path}")
+    print(f"Wrote {ai_candidates_path}")
 
 
 if __name__ == "__main__":

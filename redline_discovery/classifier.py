@@ -1,10 +1,12 @@
 """
 v1 redline classifier — filename heuristics + keyword scan over the
-`TextExtract` text CobbleStone already provides on every file record.
+`TextExtract` text CobbleStone already provides on every file record, plus
+an email-specific keyword scan for .msg/.eml attachments (playbook Phase 3
+technique 4).
 
-No download, no Word-XML track-changes parsing, no AI classification yet
-(playbook Phase 3 techniques 2, 3, 5) — this is deliberately the cheapest
-possible first pass to validate signal quality before building those.
+No download, no Word-XML track-changes parsing, no PDF-annotation parsing yet
+(playbook Phase 3 techniques 2, 3) — those need the actual file bytes, which
+this pipeline has never fetched.
 """
 
 import re
@@ -20,6 +22,17 @@ TEXT_SIGNALS = ["track changes", "for discussion purposes", "subject to change",
                 "inserted:", "redline"]
 
 EDITABLE_EXTENSIONS = {".docx", ".doc"}
+
+EMAIL_EXTENSIONS = {".msg", ".eml"}
+
+# Only scanned for files in EMAIL_EXTENSIONS — an email body reads differently
+# from a contract draft, and gating these to email attachments only means this
+# list can't affect classification of any .docx/.pdf row.
+EMAIL_TEXT_SIGNALS = ["please see the attached redline", "attached are our comments",
+                      "please find our proposed changes", "mark-up attached",
+                      "markup attached", "counsel's comments attached",
+                      "revised draft attached", "our proposed revisions",
+                      "tracked changes attached"]
 
 _TEXT_SCAN_CHARS = 5000  # keyword scan only needs the first chunk, not the full doc
 
@@ -41,26 +54,38 @@ def classify_file(file_record: dict) -> dict:
 
     score = 0
     signals = []
+    methods = set()
 
     for kw in FILENAME_HIGH:
         if _filename_has_keyword(name, kw):
             score += 3
             signals.append(f"filename:{kw}")
+            methods.add("filename_heuristic")
     for kw in FILENAME_MEDIUM:
         if _filename_has_keyword(name, kw):
             score += 2
             signals.append(f"filename:{kw}")
+            methods.add("filename_heuristic")
     for kw in FILENAME_EXECUTED:
         if _filename_has_keyword(name, kw):
             score -= 3
             signals.append(f"filename-negative:{kw}")
+            methods.add("filename_heuristic")
     for kw in TEXT_SIGNALS:
         if kw in text:
             score += 2
             signals.append(f"text:{kw}")
+            methods.add("text_heuristic")
+    if ext in EMAIL_EXTENSIONS:
+        for kw in EMAIL_TEXT_SIGNALS:
+            if kw in text:
+                score += 2
+                signals.append(f"email:{kw}")
+                methods.add("email_heuristic")
     if ext in EDITABLE_EXTENSIONS:
         score += 1
         signals.append("ext:editable")
+        methods.add("extension_heuristic")
 
     if score >= 5:
         category = "Redline"
@@ -77,4 +102,5 @@ def classify_file(file_record: dict) -> dict:
         "confidence": min(100, abs(score) * 10),
         "is_likely_redline": category in ("Redline", "Draft/Negotiation Copy"),
         "signals": signals,
+        "detection_methods": sorted(methods),
     }
