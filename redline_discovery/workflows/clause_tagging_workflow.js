@@ -131,17 +131,20 @@ const results = await pipeline(
     const toVerify = findings.filter(f => f.significance === 'high' || f.significance === 'medium')
     const lowOrNoise = findings.filter(f => f.significance !== 'high' && f.significance !== 'medium')
 
-    const verified = await parallel(toVerify.map(f => () =>
+    const verified = (await parallel(toVerify.map(f => () =>
       agent(verifyPrompt(rid, f), { schema: VERIFY_SCHEMA, phase: 'Verify', label: `verify:${rid}` })
         .then(v => ({ ...stamp(f), verification: v }))
-    ))
+    ))).filter(Boolean)
+    const verificationFailedCount = verified.filter(f => !f.verification).length
 
-    log(`Request ${rid}: ${findings.length} findings tagged, ${toVerify.length} verified`)
+    log(`Request ${rid}: ${findings.length} findings tagged, ${toVerify.length} verified` +
+      (verificationFailedCount ? ` (${verificationFailedCount} verify calls failed — excluded from confirmed/flagged)` : ''))
     return {
       request_id: rid,
       tagging_failed: false,
-      verified_findings: verified.filter(Boolean),
+      verified_findings: verified,
       low_or_noise_findings: lowOrNoise.map(stamp),
+      verification_failed_count: verificationFailedCount,
     }
   }
 )
@@ -152,8 +155,9 @@ const failed = clean.filter(r => r.tagging_failed)
 const confirmed = succeeded.flatMap(r => r.verified_findings.filter(f => f.verification && f.verification.accurate))
 const flagged = succeeded.flatMap(r => r.verified_findings.filter(f => f.verification && !f.verification.accurate))
 const lowOrNoise = succeeded.flatMap(r => r.low_or_noise_findings)
+const verificationFailedTotal = succeeded.reduce((sum, r) => sum + r.verification_failed_count, 0)
 
-log(`Done: ${succeeded.length}/${requestIds.length} requests tagged (${failed.length} tagging failures: ${failed.map(r => r.request_id).join(', ')}), ${confirmed.length} confirmed findings, ${flagged.length} flagged inaccurate, ${lowOrNoise.length} low/noise (not verified)`)
+log(`Done: ${succeeded.length}/${requestIds.length} requests tagged (${failed.length} tagging failures: ${failed.map(r => r.request_id).join(', ')}), ${confirmed.length} confirmed findings, ${flagged.length} flagged inaccurate, ${lowOrNoise.length} low/noise (not verified), ${verificationFailedTotal} verify calls failed (excluded from confirmed/flagged, not silently counted as either)`)
 
 return {
   confirmed,
@@ -163,4 +167,5 @@ return {
   requestsTotal: requestIds.length,
   requestsFailed: failed.length,
   failedRequestIds: failed.map(r => r.request_id),
+  verificationFailedCount: verificationFailedTotal,
 }
