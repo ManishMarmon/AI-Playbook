@@ -1,11 +1,16 @@
 """
 Redline Discovery Engine — v1 PoC.
 
-Iterates CobbleStone requests, lists each request's files, classifies each
-file with the v1 heuristic classifier, and writes a searchable catalog
-(JSON + CSV) — the Phase 1-3 deliverable from the playbook, minus the
-Word-XML / PDF-annotation / email / AI classification steps (Phase 3
-techniques 2, 3, 4, 5), which are deliberately out of scope for v1.
+Iterates CobbleStone requests, lists each request's files, and classifies
+each with all five playbook Phase 3 techniques in escalating cost order:
+the filename/text/email/Keywords heuristic (classifier.py, free) first;
+for whatever it leaves "Unclassified/Supporting", a structural check on the
+actual downloaded file bytes (structure_check.py — Word track-changes XML /
+PDF annotations, a cheap API call plus a deterministic parse, but only
+useful as a positive signal); and for what's still unresolved, an LLM
+fallback (workflows/ai_classification_workflow.js, run separately — this
+script only emits its candidate list). Writes a searchable catalog
+(JSON + CSV) — the Phase 1-3 deliverable from the playbook.
 
 Usage:
     python run_discovery.py --limit 200
@@ -17,13 +22,25 @@ import json
 from collections import Counter
 
 import config
-from request_api import get_bearer_token, fetch_all_requests, fetch_request_file_list
+from request_api import get_bearer_token, fetch_all_requests, fetch_request_file_list, download_file
 from classifier import classify_file
+from structure_check import check_file_structure
 
 # Mirrors pairing.py's MIN_TEXT_CHARS convention — no point spending an LLM
 # call on a near-empty extract during the AI-classification fallback pass.
 MIN_TEXT_CHARS_FOR_AI_FALLBACK = 200
+# Keywords is a short free-text note, not a document body — a much lower bar
+# still filters out bare tags (e.g. "LEG-100") while letting through a real
+# sentence. This is what makes .msg files (routinely null TextExtract) usable
+# candidates at all when CobbleStone happens to have a human-written note.
+MIN_KEYWORDS_CHARS_FOR_AI_FALLBACK = 20
 _AI_CANDIDATE_TEXT_CHARS = 5000  # matches classifier.py's own _TEXT_SCAN_CHARS window
+
+# Only download+structurally-check file types we actually know how to parse.
+STRUCTURE_CHECKABLE_TYPES = (".docx", ".pdf")
+# Guard against a pathological outlier hanging the run — generously above the
+# ~6.3MB max already seen across the current sample.
+MAX_DOWNLOAD_BYTES = 20_000_000
 
 
 def main():
@@ -42,11 +59,40 @@ def main():
 
     rows = []
     ai_candidates = []
+    confirmed_via_track_changes = 0
+    confirmed_via_pdf_annotation = 0
     for i, req in enumerate(requests_, 1):
         request_id = req.get("RequestID")
         files = fetch_request_file_list(request_id, token)
         for f in files:
             result = classify_file(f)
+            file_type = (f.get("FileType") or "").lower()
+            file_size = f.get("FileSizeBytes") or 0
+
+            # A confirmed structural finding (real track-changes markup or PDF
+            # annotations) is stronger evidence than the keyword heuristic —
+            # only attempted for files the heuristic couldn't already resolve,
+            # to keep this to the same population already validated for the
+            # AI-classification fallback below.
+            if (result["category"] == "Unclassified/Supporting"
+                    and file_type in STRUCTURE_CHECKABLE_TYPES
+                    and 0 < file_size <= MAX_DOWNLOAD_BYTES):
+                file_bytes = download_file(f.get("ID"), token)
+                structure_hit = check_file_structure(file_type, file_bytes) if file_bytes else None
+                if structure_hit:
+                    result = {
+                        **result,
+                        "category": "Redline",
+                        "confidence": 100,
+                        "is_likely_redline": True,
+                        "signals": result["signals"] + [structure_hit["signal"]],
+                        "detection_methods": sorted(set(result["detection_methods"]) | {structure_hit["detection_method"]}),
+                    }
+                    if structure_hit["detection_method"] == "track_changes_xml":
+                        confirmed_via_track_changes += 1
+                    else:
+                        confirmed_via_pdf_annotation += 1
+
             rows.append({
                 "request_id": request_id,
                 "request_title": req.get("RequestTitle"),
@@ -55,7 +101,7 @@ def main():
                 "vendor_id": req.get("VendorID"),
                 "file_id": f.get("ID"),
                 "file_name": f.get("FileName"),
-                "file_type": (f.get("FileType") or "").lower(),
+                "file_type": file_type,
                 "file_entry_date": f.get("EntryDate"),
                 "file_size_bytes": f.get("FileSizeBytes"),
                 "category": result["category"],
@@ -67,15 +113,18 @@ def main():
             })
 
             text_extract = f.get("TextExtract") or ""
-            if (result["category"] == "Unclassified/Supporting"
-                    and len(text_extract) >= MIN_TEXT_CHARS_FOR_AI_FALLBACK):
+            keywords_raw = f.get("Keywords") or ""
+            usable_text = len(text_extract) >= MIN_TEXT_CHARS_FOR_AI_FALLBACK
+            usable_keywords = len(keywords_raw) >= MIN_KEYWORDS_CHARS_FOR_AI_FALLBACK
+            if result["category"] == "Unclassified/Supporting" and (usable_text or usable_keywords):
                 ai_candidates.append({
                     "request_id": request_id,
                     "file_id": f.get("ID"),
                     "file_name": f.get("FileName"),
-                    "file_type": (f.get("FileType") or "").lower(),
+                    "file_type": file_type,
                     "heuristic_score": result["score"],
                     "text_extract": text_extract[:_AI_CANDIDATE_TEXT_CHARS],
+                    "keywords": keywords_raw[:_AI_CANDIDATE_TEXT_CHARS],
                 })
         if i % 25 == 0 or i == len(requests_):
             print(f"  ...{i}/{len(requests_)} requests processed, {len(rows)} files so far")
@@ -106,6 +155,8 @@ def main():
         "word_redlines": word,
         "pdf_redlines": pdf,
         "category_counts": category_counts,
+        "confirmed_via_track_changes": confirmed_via_track_changes,
+        "confirmed_via_pdf_annotation": confirmed_via_pdf_annotation,
     }
     summary_path = config.OUTPUT_DIR / "discovery_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
@@ -120,6 +171,8 @@ def main():
     print(f"High Confidence (>=50): {high_conf}")
     print(f"  Word (.docx/.doc):    {word}")
     print(f"  PDF:                  {pdf}")
+    print(f"Confirmed via track changes (docx):  {confirmed_via_track_changes}")
+    print(f"Confirmed via PDF annotations:       {confirmed_via_pdf_annotation}")
     print(f"AI-classification candidates (Unclassified + usable text): {len(ai_candidates)}")
     print("=" * 50)
     print(f"Wrote {json_path}")

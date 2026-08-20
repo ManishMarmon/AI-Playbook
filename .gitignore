@@ -23,6 +23,7 @@ mclegal-frontend/dist/
 _extract/
 *.docx
 *.zip
+downloadAPI.txt
 
 # OS junk
 .DS_Store

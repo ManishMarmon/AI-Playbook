@@ -2,11 +2,17 @@
 v1 redline classifier — filename heuristics + keyword scan over the
 `TextExtract` text CobbleStone already provides on every file record, plus
 an email-specific keyword scan for .msg/.eml attachments (playbook Phase 3
-technique 4).
+technique 4). Also scans CobbleStone's own `Keywords` field (an inconsistently
+populated free-text note — sometimes a genuine human summary of the
+negotiation, sometimes boilerplate, sometimes blank) with the same signal
+lists, since it's the only text CobbleStone provides at all for some
+attachments (.msg files routinely have a null TextExtract — OCR/extraction
+never completes for them upstream — but occasionally do have Keywords).
 
-No download, no Word-XML track-changes parsing, no PDF-annotation parsing yet
-(playbook Phase 3 techniques 2, 3) — those need the actual file bytes, which
-this pipeline has never fetched.
+Word-XML track-changes and PDF-annotation detection (playbook Phase 3
+techniques 2, 3) are handled separately, in structure_check.py — they need
+actual file bytes (via request_api.download_file()), which this classifier
+deliberately doesn't fetch, staying a pure, network-free function.
 """
 
 import re
@@ -47,10 +53,15 @@ def _filename_has_keyword(name: str, keyword: str) -> bool:
     return re.search(rf"\b{re.escape(normalized_kw)}\b", normalized_name) is not None
 
 
+def _matched_signals(text: str, keyword_list: list) -> list:
+    return [kw for kw in keyword_list if kw in text]
+
+
 def classify_file(file_record: dict) -> dict:
     name = (file_record.get("FileName") or "").lower()
     ext = (file_record.get("FileType") or "").lower()
     text = (file_record.get("TextExtract") or "")[:_TEXT_SCAN_CHARS].lower()
+    keywords_field = (file_record.get("Keywords") or "")[:_TEXT_SCAN_CHARS].lower()
 
     score = 0
     signals = []
@@ -71,17 +82,23 @@ def classify_file(file_record: dict) -> dict:
             score -= 3
             signals.append(f"filename-negative:{kw}")
             methods.add("filename_heuristic")
-    for kw in TEXT_SIGNALS:
-        if kw in text:
-            score += 2
-            signals.append(f"text:{kw}")
-            methods.add("text_heuristic")
+    for kw in _matched_signals(text, TEXT_SIGNALS):
+        score += 2
+        signals.append(f"text:{kw}")
+        methods.add("text_heuristic")
+    for kw in _matched_signals(keywords_field, TEXT_SIGNALS):
+        score += 2
+        signals.append(f"keywords:{kw}")
+        methods.add("keywords_heuristic")
     if ext in EMAIL_EXTENSIONS:
-        for kw in EMAIL_TEXT_SIGNALS:
-            if kw in text:
-                score += 2
-                signals.append(f"email:{kw}")
-                methods.add("email_heuristic")
+        for kw in _matched_signals(text, EMAIL_TEXT_SIGNALS):
+            score += 2
+            signals.append(f"email:{kw}")
+            methods.add("email_heuristic")
+        for kw in _matched_signals(keywords_field, EMAIL_TEXT_SIGNALS):
+            score += 2
+            signals.append(f"email-keywords:{kw}")
+            methods.add("keywords_heuristic")
     if ext in EDITABLE_EXTENSIONS:
         score += 1
         signals.append("ext:editable")

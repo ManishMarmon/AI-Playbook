@@ -15,6 +15,7 @@ type CatalogRow = {
   confidence: number;
   is_likely_redline: boolean;
   signals: string;
+  detection_methods?: string;
 };
 
 const CHIP_TONE: Record<CatalogRow["category"], ChipTone | undefined> = {
@@ -23,6 +24,20 @@ const CHIP_TONE: Record<CatalogRow["category"], ChipTone | undefined> = {
   "Likely Executed/Signed": "good",
   "Unclassified/Supporting": undefined,
 };
+
+const DETECTION_METHOD_LABELS: Record<string, string> = {
+  filename_heuristic: "Filename",
+  text_heuristic: "Text",
+  email_heuristic: "Email",
+  keywords_heuristic: "Keywords",
+  extension_heuristic: "Extension",
+  track_changes_xml: "Track Changes",
+  pdf_annotation: "PDF Annotation",
+};
+
+function detectionMethodLabel(method: string): string {
+  return DETECTION_METHOD_LABELS[method] ?? method;
+}
 
 const PAGE_SIZE = 25;
 
@@ -68,8 +83,8 @@ export default function Discovery({ search }: { search: string }) {
       <div className="eyebrow">McLegal · Phase 1-3 PoC</div>
       <h1>Redline Discovery</h1>
       <p className="muted" style={{ marginTop: 6 }}>
-        Filename + text-signal classification over CobbleStone requests. No download, no OCR —
-        runs directly off CobbleStone's own extracted text.
+        Filename + text-signal classification over CobbleStone requests, escalating to a real
+        Word track-changes / PDF-annotation check on the downloaded file when the heuristic can't decide.
       </p>
 
       {resource.status !== "ready" && (
@@ -122,6 +137,7 @@ export default function Discovery({ search }: { search: string }) {
                     <th>File</th>
                     <th>Category</th>
                     <th>Confidence</th>
+                    <th>Detected Via</th>
                     <th>Signals</th>
                   </tr>
                 </thead>
@@ -139,6 +155,17 @@ export default function Discovery({ search }: { search: string }) {
                         <Chip tone={CHIP_TONE[r.category]}>{r.category}</Chip>
                       </td>
                       <td className="text-body-sm">{r.confidence}</td>
+                      <td className="text-body-xs" style={{ maxWidth: 200 }}>
+                        {r.detection_methods ? (
+                          <div className="row" style={{ gap: 4, flexWrap: "wrap" }}>
+                            {r.detection_methods.split(";").filter(Boolean).map((m) => (
+                              <Chip key={m}>{detectionMethodLabel(m)}</Chip>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="muted">—</span>
+                        )}
+                      </td>
                       <td
                         className="text-body-xs muted"
                         style={{ maxWidth: 320, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}

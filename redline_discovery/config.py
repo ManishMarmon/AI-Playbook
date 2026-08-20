@@ -61,6 +61,7 @@ def __getattr__(name: str):
 COBBLESTONE_BASE_URL = "https://marmon.cobblestone.software/api2/CSSAPI/V2"
 REQUEST_GET_URL      = f"{COBBLESTONE_BASE_URL}/ContractExternalRequest/Get"
 REQUEST_FILE_GET_URL = f"{COBBLESTONE_BASE_URL}/ContractFilesExt/Get"
+FILE_DOWNLOAD_URL    = f"{COBBLESTONE_BASE_URL}/Files/ContractFilesEXt/Download"
 
 OUTPUT_DIR = Path(__file__).parent / "output"
 

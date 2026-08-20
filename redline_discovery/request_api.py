@@ -2,14 +2,15 @@
 CobbleStone (MPact) Requests API — ported from contractAbstraction's
 app_utils.py (retry/token logic) and the original utils/request_api.py
 (pagination pattern), trimmed to only what the Redline Discovery Engine
-needs: list requests, list files per request. No file download — the
-`TextExtract` field already returned by ContractFilesExt/Get is enough
-for the v1 heuristic classifier.
+needs: list requests, list files per request, and (for files the text
+heuristic can't classify) download the actual file bytes for structural
+inspection — see structure_check.py.
 
 Field names below are verified against a live sample (100 requests / 75
 files), not assumed from older code — see AIPlaybook session notes.
 """
 
+import email
 import json
 import time
 import logging
@@ -131,3 +132,51 @@ def fetch_request_file_list(request_id: int, token: str) -> list[dict]:
                                 headers=_headers(token), data=payload, timeout=30)
     resp.raise_for_status()
     return resp.json() or []
+
+
+def download_file(file_id: int, token: str) -> bytes | None:
+    """
+    Raw bytes of one file's current version, via the Files/ContractFilesEXt/
+    Download endpoint. The response is multipart/mixed: one part is the file
+    itself (application/octet-stream), the other is a redundant metadata JSON
+    blob we already have from fetch_request_file_list — we only want the
+    former. Returns None (never raises) on any download/parse problem; a
+    missing file body just means "no structural signal available", not a
+    fatal error for the caller.
+    """
+    payload = json.dumps({
+        "Fields": [],
+        "Clause": {
+            "condition": "AND",
+            "rules": [{"id": "ID", "field": "ID", "type": "int",
+                       "input": "null", "operator": "equal", "value": str(file_id)}],
+            "valid": True,
+        }
+    })
+    try:
+        resp = _request_with_retry("POST", config.FILE_DOWNLOAD_URL,
+                                    headers=_headers(token), data=payload, timeout=60)
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        logger.warning(f"download_file({file_id}) failed: {e}")
+        return None
+
+    content_type = resp.headers.get("Content-Type", "")
+    if "multipart" not in content_type.lower():
+        logger.warning(f"download_file({file_id}): expected multipart response, got {content_type!r}")
+        return None
+
+    try:
+        # requests doesn't parse multipart responses for us — reuse the stdlib
+        # email parser by synthesizing the header block it expects.
+        raw_message = f"Content-Type: {content_type}\r\nMIME-Version: 1.0\r\n\r\n".encode() + resp.content
+        msg = email.message_from_bytes(raw_message)
+        for part in msg.walk():
+            if part.get_content_type() == "application/octet-stream":
+                return part.get_payload(decode=True)
+    except Exception as e:
+        logger.warning(f"download_file({file_id}): failed to parse multipart response: {e}")
+        return None
+
+    logger.warning(f"download_file({file_id}): no application/octet-stream part found in response")
+    return None
