@@ -3,3 +3,5 @@ azure-identity
 azure-keyvault-secrets
 truststore
 pypdf
+python-dotenv
+psycopg[binary]

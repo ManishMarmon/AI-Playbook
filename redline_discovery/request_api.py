@@ -74,15 +74,27 @@ def _headers(token: str) -> dict:
     return {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
 
 
-def fetch_all_requests(token: str, batch_size: int = 100, limit: int | None = None) -> list[dict]:
+def iter_request_pages(token: str, batch_size: int = 100, limit: int | None = None,
+                        start_after_id: int = 0):
     """
-    Cursor-paginate every CobbleStone request by RequestID. `Length` in the
-    payload is a hint only — live testing showed CobbleStone caps a page at
-    100 regardless of what's requested, so we advance the cursor to the max
-    RequestID seen and keep going until a short/empty page comes back.
+    Cursor-paginate every CobbleStone request by RequestID, yielding ONE PAGE
+    AT A TIME. `Length` in the payload is a hint only — live testing showed
+    CobbleStone caps a page at 100 regardless of what's requested, so we
+    advance the cursor to the max RequestID seen and keep going until a
+    short/empty page comes back.
+
+    `start_after_id` lets a resumable backfill/sync continue from the last
+    RequestID already persisted instead of always starting from 0.
+
+    Yielding per page (rather than accumulating everything and returning once)
+    matters at full-population scale: 19,701 requests is ~197 pages, and
+    listing them all up front took ~25min before a single row could be
+    persisted — so an interrupted run threw away all of that work. A consumer
+    that upserts each page as it arrives makes progress durable from the first
+    page on.
     """
-    all_requests: list[dict] = []
-    after_id = 0
+    yielded = 0
+    after_id = start_after_id
     while True:
         payload = json.dumps({
             # A non-empty Fields list — even with an unrelated field name — makes
@@ -103,11 +115,64 @@ def fetch_all_requests(token: str, batch_size: int = 100, limit: int | None = No
         resp.raise_for_status()
         batch = resp.json() or []
         if not batch:
+            return
+        after_id = max(r.get("RequestID", after_id) for r in batch)
+        if limit is not None and yielded + len(batch) >= limit:
+            yield batch[:limit - yielded]
+            return
+        yielded += len(batch)
+        yield batch
+        if len(batch) < min(batch_size, 100):
+            return
+
+
+def fetch_all_requests(token: str, batch_size: int = 100, limit: int | None = None,
+                        start_after_id: int = 0) -> list[dict]:
+    """Eager wrapper around iter_request_pages — returns every request in one
+    list. Fine for bounded fetches; prefer iter_request_pages when persisting
+    incrementally at full-population scale."""
+    all_requests: list[dict] = []
+    for page in iter_request_pages(token, batch_size=batch_size, limit=limit,
+                                    start_after_id=start_after_id):
+        all_requests.extend(page)
+    return all_requests
+
+
+def fetch_requests_updated_since(token: str, since, batch_size: int = 100) -> list[dict]:
+    """
+    Requests whose DateUpdated is after `since` (a datetime) — the
+    incremental-sync path for catching metadata changes on requests that
+    already exist locally, as opposed to fetch_all_requests's RequestID
+    cursor, which only ever finds brand-new requests.
+
+    Uses the same generic Clause/rules query shape as fetch_all_requests,
+    just filtering on DateUpdated instead of RequestID — unverified against
+    the live API until the incremental sync's first real run; if CobbleStone
+    doesn't support a "greater" comparison on this field the same way, this
+    will need to fall back to re-checking all currently-active requests
+    instead (see sync_updates.py).
+    """
+    since_str = since.strftime("%Y-%m-%dT%H:%M:%S")
+    all_requests: list[dict] = []
+    start_index = 0
+    while True:
+        payload = json.dumps({
+            "Fields": ["RequestID"],
+            "Clause": {
+                "condition": "AND",
+                "rules": [{"id": "DateUpdated", "field": "DateUpdated", "type": "date",
+                           "input": "null", "operator": "greater", "value": since_str}],
+                "GroupByTag": [], "StartIndex": start_index, "Length": batch_size,
+            }
+        })
+        resp = _request_with_retry("POST", config.REQUEST_GET_URL,
+                                    headers=_headers(token), data=payload, timeout=60)
+        resp.raise_for_status()
+        batch = resp.json() or []
+        if not batch:
             break
         all_requests.extend(batch)
-        after_id = max(r.get("RequestID", after_id) for r in batch)
-        if limit and len(all_requests) >= limit:
-            return all_requests[:limit]
+        start_index += len(batch)
         if len(batch) < min(batch_size, 100):
             break
     return all_requests

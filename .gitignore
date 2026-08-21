@@ -15,9 +15,13 @@ __pycache__/
 .venv/
 venv/
 
+# Local secrets (Postgres connection, etc.) — see .env.example for the shape
+.env
+
 # Frontend
 mclegal-frontend/node_modules/
 mclegal-frontend/dist/
+mclegal-frontend/dev-server*.log
 
 # Reference/investigation material, not part of this project's source
 _extract/

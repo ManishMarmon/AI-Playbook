@@ -7,6 +7,7 @@
       "Mining master supply agreement",
       "Wind / renewables subcontract"
     ],
+    "businessSectors": ["Crane"],
     "file": "freo-group-au.json"
   }
 ]

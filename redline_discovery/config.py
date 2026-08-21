@@ -51,9 +51,37 @@ def _ensure_mpact_credentials() -> None:
     _mpact_loaded = True
 
 
+_PG_ATTRS = ("PG_HOST", "PG_PORT", "PG_DB", "PG_USER", "PG_PASSWORD")
+_pg_loaded = False
+
+
+def _ensure_pg_credentials() -> None:
+    # Postgres is a local, dedicated dev instance (see redline_discovery/db/),
+    # so its credentials live in a gitignored .env at the repo root rather
+    # than Key Vault — same lazy-load-on-first-use shape as MPact above, just
+    # a different source.
+    global _pg_loaded
+    if _pg_loaded:
+        return
+    from dotenv import load_dotenv
+
+    load_dotenv(Path(__file__).parent.parent / ".env")
+    for attr in _PG_ATTRS:
+        if not os.getenv(attr):
+            raise RuntimeError(
+                f"{attr} not set — copy .env.example to .env and fill in your "
+                f"Postgres connection details (see redline_discovery/db/setup.sql)."
+            )
+        globals()[attr] = os.environ[attr]
+    _pg_loaded = True
+
+
 def __getattr__(name: str):
     if name in _MPACT_ATTRS:
         _ensure_mpact_credentials()
+        return globals()[name]
+    if name in _PG_ATTRS:
+        _ensure_pg_credentials()
         return globals()[name]
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 

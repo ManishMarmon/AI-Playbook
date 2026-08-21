@@ -25,8 +25,8 @@ import json
 from collections import Counter
 
 import config
-from request_api import (get_bearer_token, fetch_all_requests, fetch_request_file_list,
-                          download_file, load_pipeline_snapshot)
+import db
+from request_api import get_bearer_token, download_file, load_pipeline_snapshot
 from classifier import classify_file
 from structure_check import check_file_structure
 
@@ -53,14 +53,17 @@ def main():
                          help="Max number of requests to scan (default 200)")
     parser.add_argument("--snapshot", default=None,
                          help="Path to a pipeline snapshot (see fetch_snapshot.py) to reuse "
-                              "instead of re-fetching requests/files from the API")
+                              "instead of reading from Postgres — for one-off testing against a "
+                              "fixed export")
     args = parser.parse_args()
 
     config.OUTPUT_DIR.mkdir(exist_ok=True)
 
-    # Structure-check still needs a live token even when reading from a
-    # snapshot (download_file() below hits the real API for file bytes).
+    # Structure-check still needs a live token regardless of where request/file
+    # metadata comes from (download_file() below hits the real API for file
+    # bytes — those aren't persisted to Postgres, only TextExtract is).
     token = get_bearer_token()
+    conn = db.get_connection()
 
     if args.snapshot:
         print(f"Loading requests + files from snapshot: {args.snapshot}")
@@ -68,8 +71,8 @@ def main():
         requests_ = snapshot["requests"][:args.limit] if args.limit else snapshot["requests"]
         files_by_request = snapshot["files_by_request"]
     else:
-        print(f"Fetching up to {args.limit} requests...")
-        requests_ = fetch_all_requests(token, limit=args.limit)
+        print(f"Loading up to {args.limit} requests from Postgres...")
+        requests_ = db.get_requests(conn, limit=args.limit)
         files_by_request = None
     print(f"Requests scanned: {len(requests_)}")
 
@@ -81,7 +84,7 @@ def main():
     for i, req in enumerate(requests_, 1):
         request_id = req.get("RequestID")
         files = (files_by_request[request_id] if files_by_request is not None
-                 else fetch_request_file_list(request_id, token))
+                 else db.get_files_for_request(conn, request_id))
 
         # These are all already present on `req` (fetched for free — see
         # request_api.fetch_all_requests's "Fields": ["RequestID"] quirk,
@@ -182,6 +185,8 @@ def main():
                 })
         if i % 25 == 0 or i == len(requests_):
             print(f"  ...{i}/{len(requests_)} requests processed, {len(rows)} files so far")
+
+    conn.close()
 
     json_path = config.OUTPUT_DIR / "redline_catalog.json"
     json_path.write_text(json.dumps(rows, indent=2, default=str), encoding="utf-8")

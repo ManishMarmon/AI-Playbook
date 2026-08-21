@@ -7,6 +7,7 @@ import ClauseFindings from "./pages/ClauseFindings";
 import Analytics from "./pages/Analytics";
 import DraftContract from "./pages/DraftContract";
 import Requests from "./pages/Requests";
+import GoldenRules from "./pages/GoldenRules";
 import Placeholder from "./pages/Placeholder";
 
 const CRUMB_BY_PATH: Record<string, string> = {
@@ -40,10 +41,7 @@ export default function App() {
             <Route path="/diffs" element={<RedlineDiffs search={search} />} />
             <Route path="/clause-findings" element={<ClauseFindings search={search} />} />
             <Route path="/analytics" element={<Analytics />} />
-            <Route
-              path="/golden-rules"
-              element={<Placeholder title="Golden Rules" note="Known negotiation positions per clause — not seeded yet." />}
-            />
+            <Route path="/golden-rules" element={<GoldenRules search={search} />} />
             <Route
               path="/suggested-rules"
               element={<Placeholder title="Suggested Rules" note="AI-suggested rules mined from redline history — future work." />}
