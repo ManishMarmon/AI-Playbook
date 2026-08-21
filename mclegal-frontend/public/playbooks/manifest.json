@@ -1,0 +1,12 @@
+[
+  {
+    "id": "freo-group-au",
+    "label": "Freo Group AU - Crane Hire",
+    "contractTypes": [
+      "Equipment hire",
+      "Mining master supply agreement",
+      "Wind / renewables subcontract"
+    ],
+    "file": "freo-group-au.json"
+  }
+]

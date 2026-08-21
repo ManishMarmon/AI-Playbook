@@ -1,0 +1,1651 @@
+[
+  {
+    "rule_id": "LIA-01",
+    "title": "Aggregate liability cap - quantum",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Liability & Indemnity",
+    "where_to_look": "Limitation of liability clause. Any aggregate or per-claim cap on the supplier's liability. Also check any particulars, key terms, master details or schedule table that restates the cap.",
+    "required": "Cap at the lesser of (a) 100% of the contract/PO sum and (b) amounts actually paid to Freo to the date the liability arises.",
+    "fallback": "100% of the Contract Sum / PO value, in the aggregate (not per claim, not per event).",
+    "escalate_if": "Never accept an uncapped liability, a cap above 100% of contract value, or a cap expressed as a fixed dollar figure that exceeds contract value.",
+    "flag_if": [
+      "There is no cap on Freo's liability at all.",
+      "The cap exceeds 100% of the contract sum, PO value or contract price.",
+      "The cap is expressed per claim, per event or per occurrence rather than in the aggregate.",
+      "The cap is a fixed dollar amount greater than the contract value.",
+      "The cap in the body clause and the cap in the particulars table do not match."
+    ],
+    "preferred_language": "The maximum aggregate liability of the Subcontractor arising out of or in connection with this Contract is limited to 100% of the Contract Sum. This limit applies in the aggregate to all claims arising out of or in connection with this Contract and is not to be applied on a per-claim or per-event basis.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "LIA-02",
+    "title": "Carve-outs FROM the liability cap",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Liability & Indemnity",
+    "where_to_look": "The list of exceptions or carve-outs to the limitation of liability clause \u2014 usually the subclause beginning 'the limitation in clause X does not apply to'.",
+    "required": "Cap carve-outs limited to: personal injury/death, third-party property damage, IP infringement, confidentiality breach, fraud/criminal conduct, wilful misconduct/gross negligence, and liability that cannot be capped at law.",
+    "fallback": "As opened, plus insurance-proceeds carve-out capped at proceeds actually received.",
+    "escalate_if": "Delete any carve-out for (a) indemnity obligations generally, (b) failure to perform the works or rectify defects, (c) breach of any provision of the contract, (d) liquidated damages. Each of these makes the cap meaningless.",
+    "flag_if": [
+      "A carve-out for the supplier's indemnity obligations generally.",
+      "A carve-out for failure to perform the works, or for rectification of defects.",
+      "A carve-out for breach of any provision of the contract.",
+      "A carve-out for liquidated damages (LDs must sit inside the cap).",
+      "A carve-out for simple negligence, or for 'any negligent, reckless or intentional act or negligent omission'.",
+      "An insurance-proceeds carve-out that is not limited to proceeds actually received.",
+      "A property-damage carve-out not limited to third-party property."
+    ],
+    "preferred_language": "in respect of any Excluded Loss to the extent covered and reimbursed by insurance proceeds available under insurances required by this Contract in relation to that event or circumstance, and only to the amount of such proceeds actually received by the Subcontractor;",
+    "source_tag": "Freo register"
+  },
+  {
+    "rule_id": "LIA-03",
+    "title": "Consequential loss - breadth of the exclusion",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Liability & Indemnity",
+    "where_to_look": "Consequential loss, indirect loss or Excluded Loss definition and the operative exclusion clause.",
+    "required": "Mutual exclusion covering: loss of business or production; loss of actual or anticipated profit or revenue; loss of business reputation; loss of opportunity or contract; loss of use; loss of goodwill; loss of anticipated savings; loss of financing, overhead recovery and business interruption costs.",
+    "fallback": "Mutual exclusion covering at least loss of profit, revenue, production, use, opportunity and anticipated savings, expressed to apply whether the loss is direct or indirect.",
+    "escalate_if": "The exclusion must be mutual and must expressly apply to claims made under the indemnities. An exclusion that does not reach the indemnities is worthless.",
+    "flag_if": [
+      "There is no exclusion of consequential or indirect loss.",
+      "The exclusion is one-way (binds Freo only).",
+      "The definition omits any of: loss of profit, revenue, production, use, opportunity, contract, goodwill, anticipated savings, business reputation, financing or overhead recovery.",
+      "The exclusion does not state that it applies whether the loss is direct or indirect.",
+      "The exclusion does not reach claims made under the indemnity clauses."
+    ],
+    "preferred_language": "Neither party is liable to the other for any Excluded Loss suffered or incurred by the other party arising out of or in connection with this Contract. 'Excluded Loss' means any loss of business or production; loss of actual or anticipated profit or revenue; loss of business reputation; loss of opportunity or loss of contract; loss of use; loss of goodwill; loss of anticipated savings; and loss of financing, overhead recovery or business interruption costs, in each case whether direct or indirect and whether or not foreseeable. For the avoidance of doubt, this exclusion applies to claims under the indemnities in clause [X]. Nothing in this clause reinstates liability for Excluded Loss unless expressly stated.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "LIA-04",
+    "title": "Carve-outs FROM the consequential loss exclusion",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Liability & Indemnity",
+    "where_to_look": "The exceptions to the consequential loss exclusion \u2014 the subclause listing what the exclusion does not apply to.",
+    "required": "Resist all carve-outs other than liability that cannot be excluded at law.",
+    "fallback": "Carve-outs limited to: personal injury/death and third-party property damage (each proportionately reduced for the other party's contribution), wilful misconduct / gross negligence / fraud / criminal acts, and liability that cannot be excluded at law.",
+    "escalate_if": "Do not accept a carve-out for 'any negligent, reckless or intentional act or negligent omission' - simple negligence as a carve-out destroys the exclusion. Do not accept a carve-out for breach of the contract generally.",
+    "flag_if": [
+      "A carve-out for negligence, or for any negligent act or omission.",
+      "A carve-out for breach of the contract generally.",
+      "An insurance carve-out not limited to proceeds actually received.",
+      "Injury or property-damage carve-outs with no proportionate reduction for the other party's contribution."
+    ],
+    "preferred_language": "The exclusion in clause [X] does not apply to liability for: (a) loss of or damage to property or injury to, illness or death of any person, but only to the extent caused by the breach, negligence or other wrongful act or omission of that party, and reduced proportionately to the extent caused or contributed to by the other party or any person for whom it is responsible; (b) liability caused by the Wilful Misconduct, Wilful Neglect, Gross Negligence, fraud or criminal acts or omissions of that party; and (c) liability that cannot be excluded at law.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "LIA-05",
+    "title": "Indemnities - mutuality and fault basis",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Liability & Indemnity",
+    "where_to_look": "Indemnity clauses. Any obligation to indemnify, defend, release or hold harmless.",
+    "required": "No indemnities in either direction; each party bears its own losses and sues for breach. Failing that, indemnities must be mutual, limited to direct loss, and triggered only by that party's negligence or breach.",
+    "fallback": "Mutual indemnities, limited to direct losses arising from the indemnifying party's negligent act, omission or breach, and proportionately reduced to the extent caused or contributed to by the other party.",
+    "escalate_if": "Never give a one-way indemnity for breach of contract generally. Never give an indemnity that operates irrespective of the beneficiary's own negligence.",
+    "flag_if": [
+      "The indemnity is one-way (Freo indemnifies, the counterparty does not).",
+      "There is an indemnity limb for breach of the contract generally.",
+      "The indemnity is not limited to direct loss.",
+      "There is no proportionate reduction for the beneficiary's own negligence or contribution.",
+      "The indemnity applies 'irrespective of cause' or notwithstanding the negligence of the indemnified party.",
+      "The indemnity covers penalties or fines not tied to a breach by Freo."
+    ],
+    "preferred_language": "Each party indemnifies the other party only for direct losses arising from that party's negligence or breach of this Contract, excluding any indirect, consequential or punitive damages. Liability for loss under this Contract will be apportioned between the parties in accordance with the reasonable percentage proportionate to the contribution by each party.",
+    "source_tag": "Freo register"
+  },
+  {
+    "rule_id": "LIA-06",
+    "title": "Indemnity beneficiaries - who is covered",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Liability & Indemnity",
+    "where_to_look": "The definition of who benefits from an indemnity \u2014 'Company Group', 'Contractor Associates', 'Personnel', 'Affiliates', 'Related Bodies Corporate', 'Invitees'. Also the Affiliate definition itself.",
+    "required": "Indemnity runs to the counterparty entity only.",
+    "fallback": "Counterparty entity only, not 'Personnel', 'Associates', 'Related Bodies Corporate', other contractors or the Principal.",
+    "escalate_if": "Escalate if the indemnity extends to the counterparty's other contractors - that exposes Freo to claims from parties it has no contract with and cannot assess.",
+    "flag_if": [
+      "The indemnity runs to the counterparty's Personnel, Associates, Related Bodies Corporate or Affiliates as well as the contracting entity.",
+      "The indemnity extends to the counterparty's other contractors or consultants.",
+      "The indemnity extends to the Principal or Owner where Freo has no contract with them.",
+      "'Affiliate' is defined by control alone, with no requirement that the affiliate be party to a PO or a direct beneficiary of the scope."
+    ],
+    "preferred_language": "'Affiliate' means any person (i) which controls, is controlled by, or is controlled by a person which controls a party to this Contract, and (ii) which is either a party to a Purchase Order issued under this Contract or directly benefitting from the applicable Scope.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "LIA-07",
+    "title": "Care of the works / care of the facility",
+    "priority": "MUST PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Liability & Indemnity",
+    "where_to_look": "Care of the works, care of the facility, or risk in the works clause \u2014 particularly any obligation relating to components being lifted.",
+    "required": "Delete the indemnity for care of the works entirely - the counterparty can sue for loss and damage; an indemnity is not appropriate.",
+    "fallback": "Responsibility limited to the 'Works' (never the 'Facility' or the whole site), with liability reduced to the extent caused or contributed to by the counterparty.",
+    "escalate_if": "Responsibility must never extend beyond the components Freo is actually lifting, and must always carry a proportionate reduction for counterparty contribution.",
+    "flag_if": [
+      "Freo indemnifies the counterparty for loss or damage to the works.",
+      "The care obligation extends to the 'Facility', the 'Project' or the whole site rather than the 'Works'.",
+      "There is no reduction of Freo's liability for loss caused or contributed to by the counterparty.",
+      "Damage notification is required in 2 business days or less."
+    ],
+    "preferred_language": "The Subcontractor is responsible for the care of the Works when lifting the components. The Subcontractor's liability under this clause shall be reduced to the extent such cost, loss or damage is caused or contributed to by the Contractor.",
+    "source_tag": "Executed contract"
+  },
+  {
+    "rule_id": "LIA-08",
+    "title": "Proportionate liability legislation - do not contract out",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Liability & Indemnity",
+    "where_to_look": "Any clause excluding, restricting or modifying proportionate liability or apportionment legislation. Often headed 'Proportionate Liability' or buried in a miscellaneous clause.",
+    "required": "Delete any clause excluding the operation of proportionate liability / apportionment legislation.",
+    "fallback": "Express confirmation that the apportionment legislation of the relevant State is not excluded.",
+    "escalate_if": "This is a standing Marmon position. Do not concede without in-house counsel sign-off - contracting out converts a proportionate share into joint and several exposure.",
+    "flag_if": [
+      "The contract excludes the operation of proportionate liability or apportionment legislation.",
+      "The contract excludes it 'to the extent permitted by law' or 'unless prohibited by law' \u2014 this is still an exclusion.",
+      "The contract is silent and the governing law is an Australian State (add the confirming clause)."
+    ],
+    "preferred_language": "Nothing in this Contract excludes, restricts or modifies the operation of any proportionate liability legislation, including [Part 1F of the Civil Liability Act 2002 (WA) / Part 4 of the Civil Liability Act 2002 (NSW) / Chapter 2 Part 2 of the Civil Liability Act 2003 (Qld) / Part 3 of the Law Reform (Contributory Negligence and Apportionment of Liability) Act 2001 (SA)].",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "LIA-09",
+    "title": "Gross negligence / wilful misconduct - definitions",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Liability & Indemnity",
+    "where_to_look": "Uses of 'gross negligence', 'wilful misconduct' or 'wilful neglect', particularly where they carve out of a liability cap or a loss exclusion. Check whether each is defined.",
+    "required": "Where these terms carve out of a cap or exclusion, they must be defined narrowly and must expressly exclude errors of judgement.",
+    "fallback": "Definitions that exclude innocent acts, mistakes, errors of judgement and simple negligence.",
+    "escalate_if": "An undefined 'gross negligence' carve-out in a cap is an open door. Always define or delete.",
+    "flag_if": [
+      "'Gross negligence', 'wilful misconduct' or 'wilful neglect' is used as a carve-out but not defined.",
+      "The definition does not exclude errors of judgement, mistakes or innocent acts.",
+      "The definition could capture simple negligence."
+    ],
+    "preferred_language": "'Gross Negligence' means a negligent act or omission which, in addition to constituting negligence, results from a deliberate, wilful or reckless disregard of the consequences of such act or omission, but does not mean any innocent act or omission, mistake or error of judgement, whether negligent or not. 'Wilful Misconduct' means an intentional act or omission with knowledge that the act or omission was likely to have harmful consequences, but does not include any innocent or negligent act, omission, mistake or error of judgement. 'Wilful Neglect' means a conscious and deliberate failure to act in circumstances where the party is aware that the failure is likely to cause harm or loss.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "LIA-10",
+    "title": "Mitigation and third-party recoveries",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Liability & Indemnity",
+    "where_to_look": "Mitigation obligations, and any provision dealing with recoveries from third parties or subcontractors.",
+    "required": "Mutual express obligation to mitigate; amounts recovered from third parties credited against liability, net of recovery costs.",
+    "fallback": "As opened.",
+    "escalate_if": "Resist any obligation to commence proceedings against a third party unless the counterparty requests it in writing and indemnifies Freo for the external costs including adverse costs.",
+    "flag_if": [
+      "There is no express mutual obligation to mitigate loss.",
+      "Freo's liability is not reduced by amounts recovered from third parties for the same loss.",
+      "Freo is obliged to commence proceedings against a third party without the counterparty requesting it in writing and indemnifying costs.",
+      "There is a deemed recovery limb ('would have recovered had it diligently pursued')."
+    ],
+    "preferred_language": "Each party must take reasonable steps to mitigate its loss. Any amounts actually recovered by a party from a third party in respect of the same loss, net of reasonable recovery costs, shall be credited against that party's liability for that loss. Nothing in this clause obliges a party to commence proceedings against a third party unless the other party requests it in writing and indemnifies the first party for the reasonable external costs of pursuing that claim, including adverse costs, to the extent not recovered.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "LIA-11",
+    "title": "Direct and indirect losses - define both sides",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Liability & Indemnity",
+    "where_to_look": "The 'Direct Losses' and 'Indirect Losses' definitions, where the contract uses that pair rather than a consequential loss exclusion.",
+    "required": "Define 'Direct Losses' as narrowly as possible AND 'Indirect Losses' as broadly as possible, then exclude Indirect Losses from every indemnity and liability provision.",
+    "fallback": "A narrow Direct Losses definition with an express statement that it excludes Indirect Losses; a broad Indirect Losses definition covering consequential, indirect, incidental, exemplary, special and punitive damages, business interruption, loss of use, revenue, profit, cost of capital, business opportunity and goodwill, regardless of foreseeability.",
+    "escalate_if": "Do not leave 'Direct Losses' to carry third-party claims, fines and penalties without tying them to loss directly caused by the indemnifying party's breach.",
+    "flag_if": [
+      "'Direct Losses' is defined to include losses arising under statute, tort, warranty, equity, negligence, strict liability or intended conduct.",
+      "'Direct Losses' does not expressly exclude Indirect Losses.",
+      "'Indirect Losses' is undefined or narrowly defined.",
+      "Fines and penalties fall within Direct Losses without being tied to a breach by the indemnifying party."
+    ],
+    "preferred_language": "'Direct Losses' means, in respect of a condition, event or omission, without duplication, all damages, losses, obligations and other liabilities, penalties, fines, assessments, claims, actions, costs and expenses (including reasonable fees and disbursements of legal and professional services), proceedings, demands and charges, and, for clarity, shall not include any Indirect Losses. 'Indirect Losses' means any consequential, indirect, incidental, exemplary, special or punitive damages whatsoever, including any damages for business interruption, loss of use, revenue or profit, cost of capital, loss of business opportunity or loss of goodwill, whether arising out of breach of contract, tort (including negligence) or any other theory of liability, regardless of whether such damages were foreseeable.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "LD-01",
+    "title": "Liquidated damages - in principle",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Liquidated Damages & Delay",
+    "where_to_look": "Liquidated damages, delay damages, delay LDs, penalties or any pre-agreed sum payable for delay or non-performance.",
+    "required": "No liquidated damages. Insert an express exclusion.",
+    "fallback": "No LDs. Where the counterparty will not move (bankable wind projects and Goldwind-style paper), see LD-02.",
+    "escalate_if": "LDs must never be uncapped, must never sit outside the aggregate liability cap, and must always be the sole remedy for delay.",
+    "flag_if": [
+      "Any liquidated damages or delay damages regime applies to Freo."
+    ],
+    "preferred_language": "Notwithstanding any other provision of this Contract, the Subcontractor shall not be liable for liquidated damages, penalties or any pre-determined financial consequence for delay or non-performance.",
+    "source_tag": "Freo register"
+  },
+  {
+    "rule_id": "LD-02",
+    "title": "LD cap and sole remedy - the fallback when LDs are unavoidable",
+    "priority": "PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Liquidated Damages & Delay",
+    "where_to_look": "The LD rate, the LD cap, and whether LDs are the sole remedy for delay. Check the particulars or schedule for the rate and cap.",
+    "required": "Delay LD cap at 10% of the Contract Price (market standard), aggregated with general damages for delay.",
+    "fallback": "10% cap, plus an express sole-remedy clause, plus LDs sitting inside the overall liability cap.",
+    "escalate_if": "Do not accept a cap above 12.5%. Do not accept an LD regime with no sole-remedy clause - without it the counterparty can claim LDs and general damages for the same delay.",
+    "flag_if": [
+      "The LD cap exceeds 10% of the contract price (escalate above 12.5%).",
+      "There is no sole-remedy clause, so the counterparty may claim LDs and general damages for the same delay.",
+      "LDs sit outside the aggregate liability cap.",
+      "LDs apply to delay not within Freo's reasonable control.",
+      "There is a 'second bite' clause allowing general damages if LDs are unenforceable."
+    ],
+    "preferred_language": "If a delivery date or completion date is specified, the Subcontractor shall pay the Contractor, as liquidated damages and not as a penalty, one half percent (0.5%) of the PO value for each week of delay caused by the Subcontractor after that date, up to a maximum of two percent (2%) of the PO value. Delay liquidated damages apply only to delays within the reasonable control of the Subcontractor. The payment of liquidated damages is the Contractor's sole remedy for the Subcontractor's failure to achieve Completion by the Date for Completion, and is subject to the limit of liability in clause [X].",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "LD-03",
+    "title": "Delay costs - daily caps and exclusion of overheads/profit",
+    "priority": "PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Liquidated Damages & Delay",
+    "where_to_look": "Delay costs, standby costs or prolongation costs, and any daily cap or exclusion applying to them.",
+    "required": "Delete the daily cap on delay costs and the exclusion of overheads and profit.",
+    "fallback": "No daily cap; if a cap is unavoidable it must be validated against actual daily on-site cost. On-site overheads must be recoverable (off-site overheads are commonly excluded).",
+    "escalate_if": "Never accept a daily cap that has not been checked against actual standing cost for the specific crane fleet on that project.",
+    "flag_if": [
+      "Delay costs are subject to a daily cap.",
+      "Overheads or profit are excluded from recoverable delay costs.",
+      "On-site overheads are excluded (off-site exclusion is common and acceptable).",
+      "Costs of personnel or resources redeployed elsewhere are excluded.",
+      "A daily cap figure exists that has not been verified against actual fleet standing cost \u2014 route to Commercial."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "LD-04",
+    "title": "Extension of time - breadth of qualifying events",
+    "priority": "MUST PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Liquidated Damages & Delay",
+    "where_to_look": "Definitions of Extension Event, Compensation Event, Relief Event, Qualifying Cause of Delay, or the list of events entitling Freo to time and/or cost relief.",
+    "required": "EOT available for any event outside Freo's control, including change in law, industrial action, adverse site conditions, third-party interference, late delivery of components or cranes by the counterparty, and counterparty breach.",
+    "fallback": "Add change in law, widespread industrial action, adverse site conditions and counterparty breach as standalone qualifying events, in addition to force majeure.",
+    "escalate_if": "Freo must never bear both time and cost risk for an event outside its control. If an event cannot be a compensation event, it must at least be a time-relief event.",
+    "flag_if": [
+      "Change in law is not a qualifying event for both time and cost.",
+      "Adverse or unforeseen site conditions are not a qualifying event.",
+      "State-wide or nationwide industrial action is not a qualifying event.",
+      "Counterparty breach, or breach by the counterparty's other subcontractors, is not a qualifying event.",
+      "Late delivery of components or cranes by the counterparty is not a qualifying event.",
+      "Defects in access routes, hardstands or counterparty-supplied items are not qualifying events.",
+      "An event gives time relief but no cost relief where it is outside Freo's control.",
+      "A carve-out for acts done 'in accordance with' the head contract that could capture discretionary acts."
+    ],
+    "preferred_language": "If the Subcontractor is delayed by reason of any of the following: (a) any breach of this Contract by the Contractor; (b) failure of the Contractor to provide access to the Site as reasonably necessary; (c) suspension of the work by the Contractor; (d) the occurrence of any High Wind Event or Adverse Weather Conditions; (e) a Force Majeure Event; (f) a Change in Law; (g) industrial action on a state-wide or nationwide basis; (h) adverse Site Conditions; (i) late delivery of components or equipment by the Contractor; or (j) material interference with the carrying out of the work which was not caused by any fault on the part of the Subcontractor, then that event is a Relief Event and the Subcontractor is entitled to an extension of time and to payment of its Standby Costs at the rates in Schedule [X].",
+    "source_tag": "Executed contract"
+  },
+  {
+    "rule_id": "LD-05",
+    "title": "Concurrent delay",
+    "priority": "PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Liquidated Damages & Delay",
+    "where_to_look": "Concurrent delay provision.",
+    "required": "Proportional EOT where delays are concurrent.",
+    "fallback": "Proportional reduction rather than a blanket bar.",
+    "escalate_if": "Blanket exclusion is common market practice - accept only where the EOT regime is otherwise sound.",
+    "flag_if": [
+      "Concurrent delay results in a blanket denial of any extension of time."
+    ],
+    "preferred_language": "Where a delay is caused concurrently by a Relief Event and by an event for which the Subcontractor is responsible, the Subcontractor is entitled to an extension of time reduced proportionately to reflect the respective contributions to the delay.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "LD-06",
+    "title": "Acceleration without agreed cost",
+    "priority": "MUST PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Liquidated Damages & Delay",
+    "where_to_look": "Acceleration clause, or any right to direct the supplier to accelerate or increase resources.",
+    "required": "Delete any right to direct acceleration where the cost has not been agreed.",
+    "fallback": "Acceleration only on agreed cost, or with a mechanism that guarantees payment of actual cost plus margin.",
+    "escalate_if": "Do not accept an obligation to perform accelerated work at unagreed cost.",
+    "flag_if": [
+      "The counterparty may direct acceleration where it has not accepted Freo's cost estimate.",
+      "Freo must comply with an acceleration direction before cost is agreed."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "LD-07",
+    "title": "Notice periods and time bars as conditions precedent",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Liquidated Damages & Delay",
+    "where_to_look": "All notice periods for claims, delays, variations and extensions of time, and any provision making notice a condition precedent or an absolute bar.",
+    "required": "No time bar operating as a condition precedent. Notice within a reasonable time of becoming aware.",
+    "fallback": "Initial notice not less than 10 Business Days; delete duplicative second-notice requirements; detailed claim notice not less than 15 Business Days.",
+    "escalate_if": "An initial claim notice period of 5 Business Days or less, operating as an absolute bar, is not manageable in field conditions. Escalate.",
+    "flag_if": [
+      "An initial claim or delay notice period of 5 business days or less.",
+      "Notice is required 'immediately' or 'forthwith'.",
+      "Failure to notify is deemed to prejudice the counterparty, or constitutes a waiver or absolute bar to the claim.",
+      "There are duplicative notice requirements (for example a notice at 2 days and a further notice at 3 days).",
+      "The notice clause has qualitative or subjective content requirements combined with 'strict compliance'.",
+      "The bar extends to 'any payment under the contract' rather than being limited to price and completion date."
+    ],
+    "preferred_language": "The Subcontractor must give notice within a reasonable time, and in any event within ten (10) Business Days, of becoming aware of the event giving rise to the claim. A failure to comply with this clause does not bar the claim except to the extent the Contractor is materially prejudiced by the failure.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "LD-08",
+    "title": "Safety incident notification timeframes",
+    "priority": "PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Liquidated Damages & Delay",
+    "where_to_look": "Safety, incident, accident or environmental event notification timeframes.",
+    "required": "Notification within a reasonable time of becoming aware.",
+    "fallback": "At least 12 hours for initial notification; written report timeframe extended beyond 24 hours.",
+    "escalate_if": "Sub-4-hour notification obligations are not operationally achievable and create automatic breach.",
+    "flag_if": [
+      "Initial notification required in less than 12 hours.",
+      "A written incident report required in 24 hours or less.",
+      "Root cause analysis required regardless of whether a third party caused the event."
+    ],
+    "preferred_language": "The Subcontractor shall not be required to investigate or conduct a root cause assessment of the event if caused by a third party.",
+    "source_tag": "Executed contract"
+  },
+  {
+    "rule_id": "LD-09",
+    "title": "Time is of the essence",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Liquidated Damages & Delay",
+    "where_to_look": "'Time is of the essence' clause, and any associated liability for the counterparty's loss.",
+    "required": "Delete the time-is-of-the-essence clause and the associated liability limb.",
+    "fallback": "Delete the liability limb, or limit it to liquidated damages in full satisfaction. Delete obligations not to interfere with the customer's other subcontractors and site personnel.",
+    "escalate_if": "Never accept a time-is-of-the-essence clause coupled with open-ended liability for the customer's loss including third-party claims.",
+    "flag_if": [
+      "A time-is-of-the-essence clause is present.",
+      "It is coupled with liability for the counterparty's loss, costs, damages or third-party claims.",
+      "It includes an obligation not to interfere with or delay the counterparty's other subcontractors or site personnel."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "DEF-01",
+    "title": "Defects liability period",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Defects & Warranties",
+    "where_to_look": "Defects liability period, warranty period, remedial work and correction of defects clauses. Check the particulars table for the period.",
+    "required": "No defects liability period. Defects rectified during project execution only; no liability after completion.",
+    "fallback": "Wind/EPC: 6 months from completion. Mining/MSA: expect 12 months and price for it.",
+    "escalate_if": "Escalate anything beyond 12 months, or any DLP that runs from a date later than completion of Freo's own scope.",
+    "flag_if": [
+      "A defects liability or warranty period applies to services beyond completion of the relevant lift.",
+      "The period exceeds 6 months on wind/EPC paper, or 12 months on mining/MSA paper.",
+      "The period runs from project completion rather than completion of Freo's own scope.",
+      "Warranties are imported from the head contract rather than stated in the subcontract.",
+      "Freo is liable for damage to work outside its own scope in consequence of rectification.",
+      "The period can be extended or re-triggered by rectification work without an outer limit."
+    ],
+    "preferred_language": "The Subcontractor shall, at its cost, correct and make good any defective work, product or materials in the Subcontract Work within the Warranty Period. The 'Warranty Period' means, with respect to Services, seventy-two (72) hours from the completion of lifting a specific item, and with respect to Goods, twelve (12) months from delivery of the Goods. No defects liability period shall apply after Completion. The Subcontractor is not liable for defects in, or damage to, any work outside the Subcontract Work.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "DEF-02",
+    "title": "Standard of care and fitness for purpose",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Defects & Warranties",
+    "where_to_look": "Standard of care, standard of work, Good Industry Practice or Reasonable and Prudent Contractor definitions, and any fitness for purpose obligation.",
+    "required": "Reasonable skill, care and diligence. No fitness-for-purpose warranty.",
+    "fallback": "Delete 'high' wherever it qualifies the standard of skill and care. Limit any fitness-for-purpose obligation to the purposes expressly stated in the contract.",
+    "escalate_if": "A 'high standard' plus an open-ended fitness-for-purpose obligation is likely uninsurable. Escalate.",
+    "flag_if": [
+      "The standard of skill, care and diligence is qualified as 'high' or 'highest'.",
+      "The benchmark is an 'international contractor' rather than an experienced contractor operating in Australia.",
+      "A fitness for purpose obligation extends beyond purposes expressly stated in the contract.",
+      "A fitness for purpose obligation applies to purposes 'generally described' or reasonably inferred."
+    ],
+    "preferred_language": "The Subcontractor must perform the work using a reasonable standard of skill, care and diligence, being that of an experienced contractor undertaking work of a similar nature in the Australian market. Any obligation of fitness for purpose is limited to the purposes expressly stated in this Contract.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "DEF-03",
+    "title": "Applicable standards - Australian only",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Defects & Warranties",
+    "where_to_look": "Applicable Standards definition, and any obligation to comply with standards, codes or specifications.",
+    "required": "Compliance limited to relevant Australian Standards.",
+    "fallback": "Australian Standards only, or international standards specifically identified and reviewed.",
+    "escalate_if": "Do not accept an open-ended obligation to comply with unspecified 'International Standards'.",
+    "flag_if": [
+      "The definition includes unspecified 'International Standards'.",
+      "Compliance is required with standards not identified in a closed list.",
+      "The Change in Law definition does not extend to changes in Applicable Standards or mandatory codes."
+    ],
+    "preferred_language": "compliant with all applicable Australian Standards, and relevant international standards only to the extent required by Australian law and expressly identified in this Contract.",
+    "source_tag": "Freo register"
+  },
+  {
+    "rule_id": "DEF-04",
+    "title": "Warranty bond",
+    "priority": "PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Defects & Warranties",
+    "where_to_look": "Warranty bond, maintenance bond or defects-period security.",
+    "required": "No warranty bond - there is no defects liability concept appropriate to a crane hire scope.",
+    "fallback": "If unavoidable, reduce to 2.5-5% of the Contract Price with a maintenance period matched to the DLP.",
+    "escalate_if": "Do not accept a warranty bond above 5%, or one that runs beyond the DLP.",
+    "flag_if": [
+      "A warranty bond is required at all where the scope is crane hire.",
+      "A warranty bond exceeds 5% of the contract price.",
+      "The bond must be maintained beyond expiry of the defects liability period."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "DEF-05",
+    "title": "Latent defects",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Defects & Warranties",
+    "where_to_look": "Latent defects provisions, and any extension of the warranty period for latent or hidden defects.",
+    "required": "No extended liability for latent defects beyond the warranty period.",
+    "fallback": "Latent defect defined narrowly; notice within 15 days of discovery or the claim is waived; an outer limit of 6 months past expiry of the original warranty period; any extended warranty applying only to the specific work affected.",
+    "escalate_if": "Do not accept an open-ended latent defects exposure running for the full statutory limitation period with no definition and no notice obligation.",
+    "flag_if": [
+      "'Latent defect' is not defined.",
+      "The definition does not exclude misuse, negligence, improper maintenance, third-party modification and wear and tear.",
+      "There is no notice obligation on discovery of a latent defect.",
+      "There is no outer limit on latent defect claims beyond the statutory limitation period.",
+      "An extended warranty applies to the whole works rather than the specific work affected."
+    ],
+    "preferred_language": "'Latent defect' means a defect that the Contractor does not have actual or constructive knowledge of at the time of acceptance of the Subcontract Work, and expressly excludes defects arising from the misuse, negligence or improper maintenance of the work by the Contractor, the Principal or third parties, modifications or alterations made by parties other than the Subcontractor, and natural wear and tear or damage resulting from external factors. The Contractor must give written notice of any latent defect within fifteen (15) days of discovery, and failure to give such notice within that period waives any claim in respect of that latent defect. No claim for a latent defect may be brought more than six (6) months after expiry of the original Warranty Period. Any extended warranty applies only to the specific Subcontract Work affected.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "SEC-01",
+    "title": "Parent company guarantee",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Security & Guarantees",
+    "where_to_look": "Parent company guarantee, holding company guarantee, guarantor obligations, and any schedule containing a form of guarantee.",
+    "required": "Delete the parent company guarantee requirement entirely.",
+    "fallback": "Deletion. This is the single most winnable security ask in the corpus.",
+    "escalate_if": "A PCG requires Marmon Holdings sign-off. Never agree one at the business level, and never in combination with a bank guarantee and retention.",
+    "flag_if": [
+      "A parent company guarantee is required.",
+      "A guarantor, or a legal opinion in respect of a foreign guarantor, is required.",
+      "The guarantor's indemnity extends beyond breach of the guarantee itself.",
+      "The guarantor's liability cap carves out enforcement costs."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "SEC-02",
+    "title": "Total security package - no stacking",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Security & Guarantees",
+    "where_to_look": "All security instruments taken together: performance security, bank guarantee, performance bond, retention, cash retention and parent company guarantee. Check the particulars for amounts.",
+    "required": "One form of security only, or none.",
+    "fallback": "Total security held at any time not to exceed 5% of the contract price; at most 10% during construction reducing to 5% during the DLP.",
+    "escalate_if": "Never PCG + bank guarantee + retention together. Escalate.",
+    "flag_if": [
+      "More than one form of security is required (PCG plus bank guarantee plus retention).",
+      "Total security held at any time exceeds 10% of the contract price during construction.",
+      "Total security held during the defects liability period exceeds 5% of the contract price.",
+      "A performance bond exceeds 10% of the contract price."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "SEC-03",
+    "title": "Recourse to security - grounds",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Security & Guarantees",
+    "where_to_look": "Conversion of security, recourse to security, or demand on bank guarantee provisions, and any covenant not to restrain a call.",
+    "required": "Recourse only for amounts that are due and payable and undisputed.",
+    "fallback": "Recourse limited to amounts due and payable. Delete recourse on 'reasonable belief', on bona fide claim, and automatically on termination.",
+    "escalate_if": "An automatic right of recourse on termination regardless of default, plus an indemnity for restraining a wrongful call, is not acceptable. Escalate.",
+    "flag_if": [
+      "Recourse is available for amounts the counterparty 'reasonably believes' are owing.",
+      "Recourse is available for a bona fide claim rather than an amount due and payable.",
+      "Recourse arises automatically on termination, regardless of default.",
+      "Freo covenants not to restrain a call on the security.",
+      "Freo indemnifies the counterparty for loss if Freo restrains a wrongful call.",
+      "Freo's sole remedy for a wrongful demand is repayment of proceeds."
+    ],
+    "preferred_language": "The Contractor may have recourse to the Performance Security only in respect of amounts that are due and payable by the Subcontractor under this Contract and are not disputed by the Subcontractor.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "SEC-04",
+    "title": "Release of security - timing",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Security & Guarantees",
+    "where_to_look": "Release, reduction and expiry of security and retention.",
+    "required": "All security released at Completion.",
+    "fallback": "At least half released at Completion, the balance at expiry of the DLP. Never later than the DLP.",
+    "escalate_if": "Security held beyond the DLP expiry has no purpose. Escalate.",
+    "flag_if": [
+      "Security is released later than expiry of the defects liability period.",
+      "Release is tied to an 'Expiry Date' or 'Final Completion' beyond the DLP.",
+      "No portion of the security is released at completion.",
+      "Release of retention or holdback is contingent on the counterparty receiving payment or release from the owner upstream.",
+      "Release is tied to substantial completion of the project rather than completion of Freo's scope."
+    ],
+    "preferred_language": "Fifty percent (50%) of the Performance Security and retention shall be released upon Completion of the Subcontractor's scope, and the balance upon expiry of the Defects Liability Period. The Contractor's obligation to release security is not contingent upon the Contractor receiving any release, payment or determination from the Principal, and the Contractor shall in any event release the security within five (5) Business Days of receiving any corresponding release from the Principal.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "PAY-01",
+    "title": "Payment terms",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Payment & Money",
+    "where_to_look": "Payment terms, payment period and invoicing clause. Also check any particulars, key terms or master details table restating payment terms.",
+    "required": "30 days from the end of the month in which a valid invoice is received.",
+    "fallback": "30 days end of month. This is a standing Freo position across every file in the corpus.",
+    "escalate_if": "Escalate anything beyond 45 days EOM.",
+    "flag_if": [
+      "Payment terms exceed 30 days from end of month of receipt of a valid invoice (escalate beyond 45 days EOM).",
+      "The payment period runs from a date other than receipt of a valid invoice or a reference date.",
+      "The payment terms in the body clause and in the particulars table do not match.",
+      "There is no interest entitlement on late payment."
+    ],
+    "preferred_language": "Payment shall be made within thirty (30) days from the end of the month in which a valid invoice is received.",
+    "source_tag": "Freo register"
+  },
+  {
+    "rule_id": "PAY-02",
+    "title": "Set-off and deduction",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Payment & Money",
+    "where_to_look": "Set-off, deduction, withholding and retention-from-payment provisions.",
+    "required": "Set-off only against amounts finally determined and agreed, or certified and undisputed, under this contract.",
+    "fallback": "Set-off confined to amounts arising under THIS contract (no cross-contract set-off), reasonable, documented and directly related to Freo's performance.",
+    "escalate_if": "Cross-contract set-off is the critical issue where Freo holds multiple contracts with the same counterparty - it destroys the ability to ring-fence project liabilities. Escalate.",
+    "flag_if": [
+      "Set-off extends to amounts arising otherwise than under this contract ('or otherwise', 'whenever arising', 'under any other subcontract or agreement').",
+      "Set-off extends to claims against Freo's affiliates, subsidiaries or subcontractors.",
+      "Set-off is available for amounts not yet determined, certified or agreed.",
+      "Set-off covers contingent or anticipated future costs and damages.",
+      "Set-off includes claims assigned to the counterparty by a third party.",
+      "There is no notice or opportunity to cure before set-off."
+    ],
+    "preferred_language": "The Contractor may deduct or set off against monies payable to the Subcontractor only amounts that (a) have been finally determined and agreed by the parties, or (b) are certified under this Contract and are not disputed by the Subcontractor. Deductions for future costs, expenses or damages must be reasonable, documented and directly related to the Subcontractor's performance under this Contract. This clause applies only to costs, expenses or damages directly arising under this Contract. Before exercising any right of set-off the Contractor must give the Subcontractor written notice and a reasonable opportunity to cure, not exceeding five (5) Business Days.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "PAY-03",
+    "title": "Rate review, escalation and rise & fall",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Payment & Money",
+    "where_to_look": "Rate review, escalation, rise and fall, price adjustment and indexation provisions. Also any clause stating rates are fixed or not subject to adjustment.",
+    "required": "Rates fixed for the initial 12 months, then reviewed annually on the contract anniversary.",
+    "fallback": "An express review mechanism in the contract. On project-specific wind subcontracts with a short duration, a no-rise-and-fall clause may be acceptable - confirm with Commercial.",
+    "escalate_if": "Any contract with a term beyond 12 months must contain a rate review mechanism.",
+    "flag_if": [
+      "The contract states rates are not subject to escalation, rise and fall or adjustment, and the term exceeds 12 months.",
+      "There is no rate review mechanism and the term exceeds 12 months.",
+      "A review mechanism exists but names no index or calculation method.",
+      "Labour rates do not pass through changes to the applicable enterprise agreement or award."
+    ],
+    "preferred_language": "Fully operated and maintained crane rates and labour rates are subject to annual review and adjustment on 1 July of each year during the term. The review and adjustment will consider the annual average (not seasonally adjusted) rates of the Australian Bureau of Statistics Consumer Price Index for the relevant capital city, the relevant ABS producer price index for machinery and equipment, and other supply chain and inflationary impacts on the Subcontractor. Labour-only rates, together with all associated premiums and allowances, will change automatically with amendments to the applicable enterprise agreement or modern award. The Subcontractor shall notify the Contractor of these changes in writing as soon as reasonably practicable.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "PAY-04",
+    "title": "Variation margin",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Payment & Money",
+    "where_to_look": "Variation valuation, margin, overhead and profit provisions.",
+    "required": "Margin for overheads and profit on variations at Freo's standard rate.",
+    "fallback": "Not less than 10% for overheads and profit where contract rates do not cover the work.",
+    "escalate_if": "A 3% margin does not cover overhead, let alone profit. Escalate.",
+    "flag_if": [
+      "The margin for overheads and profit on variations is less than 10%.",
+      "No margin is allowed on variations where contract rates do not cover the work.",
+      "The counterparty determines the valuation unilaterally."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "PAY-05",
+    "title": "Variations - obligation to perform before price agreed",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Payment & Money",
+    "where_to_look": "Variation and change order clauses \u2014 particularly any obligation to proceed before price is agreed.",
+    "required": "No obligation to perform a variation until scope and price are agreed.",
+    "fallback": "A right to suspend the varied work if the parties cannot agree price within 10 Business Days; or an independent expert determines the valuation.",
+    "escalate_if": "Do not accept an obligation to perform unpriced variations of unlimited scope.",
+    "flag_if": [
+      "Freo must comply with a variation direction irrespective of whether additional payment has been determined.",
+      "Freo must proceed 'without delay' notwithstanding a dispute over valuation.",
+      "The counterparty determines the scope, price or programme impact unilaterally if the parties cannot agree.",
+      "There is no cap on the scope or value of variations that may be directed.",
+      "The time allowed to submit a variation proposal is 5 business days or less."
+    ],
+    "preferred_language": "If the parties cannot agree on payment for a variation within ten (10) Business Days, the Subcontractor may suspend performance of the variation until payment terms are agreed or determined. Where the parties cannot agree the valuation, the matter shall be referred to an independent technical expert rather than determined by the Contractor.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "PAY-06",
+    "title": "Disputed invoices",
+    "priority": "PRESS",
+    "applies_to": "Mining master supply agreement",
+    "category": "Payment & Money",
+    "where_to_look": "Disputed amounts, invoice rejection and reissue provisions.",
+    "required": "A negotiation mechanism before an invoice can be rejected and reissued.",
+    "fallback": "An express consultation step, with the undisputed portion payable on the original due date.",
+    "escalate_if": "Do not accept a mechanic that forces Freo to accept the counterparty's characterisation of a dispute with no recourse.",
+    "flag_if": [
+      "The counterparty may unilaterally determine that an amount is disputed and require reissue.",
+      "Freo must reissue an invoice for the undisputed amount, resetting the payment clock.",
+      "There is no consultation or escalation step before rejection."
+    ],
+    "preferred_language": "Where the Contractor disputes any part of an invoice, the undisputed portion remains payable on the original due date and the parties must consult in good faith to resolve the disputed portion.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "PAY-07",
+    "title": "Right to suspend for non-payment",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Payment & Money",
+    "where_to_look": "Suspension for non-payment, and any provision affecting rights under the applicable Security of Payment Act.",
+    "required": "Right to suspend on notice if certified amounts remain unpaid, with standby charges payable while plant and personnel remain on site.",
+    "fallback": "Suspension right after 10 Business Days' non-payment plus 3 Business Days' notice, with standby charges at the agreed standing rate until remobilisation.",
+    "escalate_if": "Preserve the statutory suspension right under the applicable Security of Payment Act in all cases.",
+    "flag_if": [
+      "Freo has no contractual right to suspend for non-payment.",
+      "Any clause limits or affects the right to make an adjudication application, or to suspend under the Security of Payment Act.",
+      "No standby or standing charges are payable while plant and personnel remain on site during a suspension for non-payment."
+    ],
+    "preferred_language": "If any certified or agreed amount remains unpaid ten (10) Business Days after its due date, the Subcontractor may, on a further three (3) Business Days' written notice, suspend performance of the Services. While plant and personnel remain on site during such a suspension, the Contractor must pay standby charges at the agreed Standing Rate until the Services are remobilised. Nothing in this Contract limits or affects the Subcontractor's right to make an adjudication application in relation to a payment dispute, or to suspend work, under the applicable Security of Payment legislation.",
+    "source_tag": "Freo register"
+  },
+  {
+    "rule_id": "PAY-08",
+    "title": "Fuel levy / surcharge",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Payment & Money",
+    "where_to_look": "Fuel, diesel or energy surcharge and levy provisions.",
+    "required": "A fuel levy or surcharge mechanism adjusting for movements in diesel price.",
+    "fallback": "An express surcharge mechanism tied to a published index.",
+    "escalate_if": "Commercial decision - route to Commercial to set the index and trigger.",
+    "flag_if": [
+      "There is no fuel levy or surcharge mechanism."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "PAY-09",
+    "title": "Most favoured customer / price benchmarking",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Payment & Money",
+    "where_to_look": "Most favoured customer, price benchmarking, price matching or 'no higher prices than other customers' provisions.",
+    "required": "Delete the most-favoured-customer clause entirely, and narrow the customer's audit rights to match.",
+    "fallback": "If it survives: comparability qualified by timelines, location, complexity and volume; special promotions and discounts excluded; any price adjustment supported by documented cost justification; application limited to periodic review.",
+    "escalate_if": "An unqualified obligation never to charge the customer more than any comparable customer is an audit and pricing exposure with no upside. Escalate before accepting.",
+    "flag_if": [
+      "Any obligation not to charge the counterparty more than other comparable customers.",
+      "The comparison is not qualified by timelines, location, complexity and volume.",
+      "Special promotions and discounts are not excluded from the comparison.",
+      "No documented cost justification is required before a price adjustment.",
+      "The clause operates continuously rather than on a defined periodic review."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "PAY-10",
+    "title": "Invoice disputes and deemed acceptance",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Payment & Money",
+    "where_to_look": "Invoice acceptance, invoice query windows and deemed acceptance provisions.",
+    "required": "Invoices deemed accepted if not questioned within 15 days of receipt; withholding limited to the disputed portion only.",
+    "fallback": "As opened. This closes the open question the AU team had on Rio Tinto.",
+    "escalate_if": "Do not accept a mechanic that lets the customer reject an invoice at will, force reissue, and reset the payment clock on the undisputed amount.",
+    "flag_if": [
+      "There is no time limit on the counterparty querying an invoice.",
+      "The counterparty may withhold the whole invoice rather than only the disputed portion.",
+      "There is no deemed acceptance after a defined period."
+    ],
+    "preferred_language": "All invoices delivered in proper form shall be paid within thirty (30) days, unless any item is questioned by the Contractor within fifteen (15) days of receipt, after which time the invoice is deemed accepted. The Contractor may withhold payment only on the portion of an invoice which is not in accordance with this Contract, until it is resolved.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "PAY-11",
+    "title": "Customer suspension of payment on default",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Payment & Money",
+    "where_to_look": "Suspension of payment on default, and any right to withhold payment pending completion by others.",
+    "required": "Delete the right to suspend payment. Amounts earned for work performed are payable regardless of a default.",
+    "fallback": "Suspension permitted, provided the value of services performed up to and including the effective date of suspension is paid in accordance with the normal payment terms.",
+    "escalate_if": "Never accept suspension of all payment until the works are finished and accepted, coupled with a right to deduct completion costs across other contracts. Where completion costs are disputed, Freo must hold the funds rather than chase them.",
+    "flag_if": [
+      "The counterparty may suspend all payment on an event of default.",
+      "Payment is suspended until the works are wholly finished and accepted by others.",
+      "The counterparty may deduct completion costs from payments due under other subcontracts or agreements.",
+      "The counterparty may demand immediate payment of completion cost overruns.",
+      "Amounts already earned for work performed are not payable."
+    ],
+    "preferred_language": "provided always that the value of the Services performed up to and including the effective date of the suspension shall be paid to the Subcontractor in accordance with the payment terms of this Contract.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "TRM-01",
+    "title": "Standby and standdown entitlement",
+    "priority": "MUST PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Standby, Suspension & Termination",
+    "where_to_look": "Standby, standdown, downtime and standing charge provisions, and the list of circumstances in which standby is NOT payable.",
+    "required": "Standby payable for all downtime not directly caused by Freo.",
+    "fallback": "Exclusions from standby entitlement qualified by 'directly contributed to or caused by the Subcontractor', so third-party and counterparty-caused downtime remains payable.",
+    "escalate_if": "Downtime caused by third parties or the counterparty must be payable. This is core crane-hire economics.",
+    "flag_if": [
+      "A standdown exclusion is not qualified by causation attributable to Freo.",
+      "Downtime caused by third parties or the counterparty falls within a standdown exclusion.",
+      "Plant being serviced or broken down is an unqualified standdown exclusion.",
+      "Stoppage relief is limited to counterparty-caused or weather events and does not extend to the counterparty's other contractors.",
+      "Standby relief requires 'best, possible and greatest efforts' or a similar elevated standard."
+    ],
+    "preferred_language": "The Subcontractor shall not be entitled to submit a payment claim for Constructional Plant and Equipment and Personnel placed on standby due to either: (a) damaged Constructional Plant and Equipment, directly contributed to or caused by the Subcontractor; (b) Operators deemed not fit for work; (c) a Standdown due to a safety matter, directly contributed to or caused by the Subcontractor; or (d) a breach of the Subcontract, directly contributed to or caused by the Subcontractor.",
+    "source_tag": "Executed contract"
+  },
+  {
+    "rule_id": "TRM-02",
+    "title": "Payment during suspension",
+    "priority": "MUST PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Standby, Suspension & Termination",
+    "where_to_look": "Suspension clause \u2014 specifically whether costs and expenses arising from a suspension are payable.",
+    "required": "All reasonable costs and expenses arising from a suspension are payable unless the suspension is due to Freo's fault.",
+    "fallback": "An express right to payment during suspension.",
+    "escalate_if": "Where a right to payment during suspension was present in an earlier draft and has been removed, do not accept the deletion.",
+    "flag_if": [
+      "There is no right to payment of costs and expenses during a suspension.",
+      "A payment right present in an earlier draft has been removed.",
+      "Payment during suspension is limited to 'make safe' costs only, other than for force majeure."
+    ],
+    "preferred_language": "The Contractor shall pay to the Subcontractor all reasonable and properly incurred expenses and costs arising from suspension of the work under the Subcontract, unless the suspension is due directly to some fault on the part of the Subcontractor or its Personnel.",
+    "source_tag": "Executed contract"
+  },
+  {
+    "rule_id": "TRM-03",
+    "title": "Counterparty use of Freo plant and personnel during suspension",
+    "priority": "PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Standby, Suspension & Termination",
+    "where_to_look": "Suspension clause \u2014 the counterparty's rights over Freo's plant, equipment and personnel during a suspension.",
+    "required": "Delete the right for the counterparty to use Freo's plant, equipment or personnel during a suspension.",
+    "fallback": "Deletion. Failing that, any such work to be performed by Freo personnel under Freo's direction, with removal consent not to be unreasonably withheld.",
+    "escalate_if": "Do not permit the counterparty to direct Freo's crews or operate Freo's cranes - it creates equipment damage risk and unsafe-work exposure with no contractual control.",
+    "flag_if": [
+      "Idle plant, equipment or personnel are 'at the disposal of' the counterparty during a suspension.",
+      "The counterparty may allocate work to Freo's personnel during a suspension.",
+      "Freo may not remove plant from site during a suspension without consent, and consent is not qualified by reasonableness.",
+      "There is no right to remove and redeploy equipment where a suspension becomes prolonged."
+    ],
+    "preferred_language": "Should the suspension period extend beyond thirty (30) days, the Subcontractor shall be entitled to remove its Constructional Plant and Equipment from the Site to meet other demands, and any reasonable remobilisation costs will be at the Contractor's expense. The Contractor is not entitled to use or direct the Subcontractor's Constructional Plant and Equipment or Personnel during a suspension.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "TRM-04",
+    "title": "Termination for convenience - notice and compensation",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Standby, Suspension & Termination",
+    "where_to_look": "Termination for convenience clause and the associated compensation provisions.",
+    "required": "Balanced termination rights for both parties with 30 days' notice, plus payment for work performed, demobilisation costs, subcontractor break costs and loss of earnings on plant that cannot be redeployed.",
+    "fallback": "30 days' notice; demobilisation costs expressly recoverable; loss of earnings on stranded plant recoverable.",
+    "escalate_if": "14 days' notice is too short for crane demobilisation. Demobilisation cost recovery is non-negotiable.",
+    "flag_if": [
+      "The notice period is less than 30 days.",
+      "Demobilisation costs are not expressly recoverable.",
+      "Loss of earnings on plant that cannot be redeployed is not recoverable.",
+      "Subcontract break costs are not recoverable.",
+      "Costs reasonably incurred in expectation of completing the work are not recoverable.",
+      "Recovery is limited to work performed only."
+    ],
+    "preferred_language": "Upon termination for convenience the Contractor shall pay the Subcontractor: (a) all amounts for work performed up to the date of termination; (b) the cost of demobilisation and return to their place of engagement of the Subcontractor's Constructional Plant and Equipment and Personnel; (c) costs reasonably incurred by the Subcontractor in expectation of completing the work and not included in any other payment; (d) reasonable subcontract termination costs; and (e) a reasonable amount for loss of earnings for the Plant and Equipment that cannot be re-allocated to other work prior to the Date for Completion.",
+    "source_tag": "Executed contract"
+  },
+  {
+    "rule_id": "TRM-05",
+    "title": "Termination for cause - triggers and cure period",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Standby, Suspension & Termination",
+    "where_to_look": "Default, event of default, and termination for cause provisions, including the cure period.",
+    "required": "Termination for cause only on material breach, with a minimum cure period.",
+    "fallback": "Materiality threshold plus a minimum 14-day (preferably 20 Business Day) cure period for remediable breaches.",
+    "escalate_if": "Do not accept termination on any breach of any obligation, or a default notice based on a forward-looking prediction of late completion.",
+    "flag_if": [
+      "Default is triggered by failure to comply with any obligation, without a materiality threshold.",
+      "Default is triggered by the counterparty's forward-looking determination that completion will not be achieved.",
+      "There is no minimum cure period, or the notice need only specify a 'reasonable time' to remedy.",
+      "The cure period is less than 14 days.",
+      "Termination is immediate on breach with no opportunity to remedy.",
+      "The counterparty's own default event has a materiality threshold that Freo's does not (asymmetry).",
+      "Default includes causing an event of default under the head contract."
+    ],
+    "preferred_language": "If the Subcontractor commits a material breach of any term of this Contract and fails to remedy such breach within twenty (20) Business Days of receiving written notice from the Contractor specifying the breach and requiring its remedy (or such breach is incapable of remedy), the Contractor may, by written notice, terminate this Contract.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "TRM-06",
+    "title": "Freo's own termination and suspension rights",
+    "priority": "PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Standby, Suspension & Termination",
+    "where_to_look": "Freo's own rights to suspend or terminate, including the period of suspension or non-payment that must elapse first.",
+    "required": "Right to terminate after 15 days' suspension.",
+    "fallback": "15-30 days. Do not accept 60 days.",
+    "escalate_if": "A 60-day suspension before any exit right strands the fleet without recourse.",
+    "flag_if": [
+      "The suspension period that must elapse before Freo may terminate exceeds 30 days.",
+      "Freo has no right to terminate for prolonged suspension.",
+      "Freo's cure period for the counterparty's default is longer than the counterparty's."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "TRM-07",
+    "title": "Cross-termination on upstream contract failure",
+    "priority": "PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Standby, Suspension & Termination",
+    "where_to_look": "Cross-termination provisions triggered by termination or expiry of the head contract, prime contract or upstream agreement.",
+    "required": "Delete any right to terminate immediately because the head contract or upstream contract has terminated.",
+    "fallback": "If retained, Freo must recover the same amounts as on termination for convenience, including subcontract break costs and stranded-plant loss of earnings.",
+    "escalate_if": "Do not accept cross-termination with no compensation - it transfers pure upstream risk with no control and no recourse.",
+    "flag_if": [
+      "The counterparty may terminate because the head contract has terminated.",
+      "Cross-termination carries no compensation, or less compensation than termination for convenience.",
+      "Subcontract break costs are recoverable on termination for convenience but not on cross-termination."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "TRM-08",
+    "title": "Survival of clauses after termination",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Standby, Suspension & Termination",
+    "where_to_look": "Survival clause listing provisions that continue after termination.",
+    "required": "Health and safety, environmental and insurance obligations should not survive termination.",
+    "fallback": "Rights and obligations accrued before termination continue; no ongoing forward obligations under those clauses.",
+    "escalate_if": "Low risk - manage if refused.",
+    "flag_if": [
+      "Health and safety obligations survive termination.",
+      "Environmental or site-cleaning obligations survive termination.",
+      "Insurance obligations, or evidence-of-insurance obligations, survive termination.",
+      "Modern slavery obligations survive termination."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "TRM-09",
+    "title": "Step-in rights",
+    "priority": "PRESS",
+    "applies_to": "Equipment hire",
+    "category": "Standby, Suspension & Termination",
+    "where_to_look": "Step-in rights, assumption of control, or the counterparty's right to take over and complete the work.",
+    "required": "Delete step-in rights - not appropriate to an equipment hire arrangement.",
+    "fallback": "Deletion, or confinement to circumstances of uncured material default with notice.",
+    "escalate_if": "Never permit step-in that involves the counterparty operating Freo cranes with its own personnel.",
+    "flag_if": [
+      "The counterparty may step in and complete the work using Freo's equipment.",
+      "Step-in is available on any event of default rather than uncured material default.",
+      "The counterparty may enter the site, expel Freo and take over its plant, equipment and tools.",
+      "The counterparty may engage a third party to operate Freo's equipment."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "OPS-01",
+    "title": "Site conditions and latent conditions risk",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Site conditions, latent conditions, ground conditions and site risk provisions, including any acknowledgement of inherent risk or acceptance of all site risk.",
+    "required": "Adverse site conditions, or conditions differing materially from those reasonably anticipated, entitle Freo to time and cost relief. The counterparty must warrant the site is suitable for the works.",
+    "fallback": "Adverse site conditions as a compensation event and extension event; additional work treated as a variation; express counterparty responsibility for site suitability with cost relief if it fails.",
+    "escalate_if": "Blanket acceptance of all site conditions risk on an operating mine site or unimproved wind farm site is not priceable. Escalate.",
+    "flag_if": [
+      "Freo accepts the risk of all site conditions with no claim.",
+      "Adverse or materially different site conditions are not a compensation or extension event.",
+      "The counterparty gives no warranty or representation as to site conditions.",
+      "There is no obligation on the counterparty to provide suitable site conditions, access, room or ground conditions.",
+      "Freo is responsible for damage to ground or underground services irrespective of fault.",
+      "Freo is deemed to have allowed for all site risk in the price.",
+      "Site permits are Freo's responsibility or are not provided free of charge."
+    ],
+    "preferred_language": "The Contractor shall provide suitable site conditions for the Subcontractor's crane operations, including but not limited to proper access, ample room, suitable ground conditions and required site permits, free of charge. The Subcontractor will not be held responsible for damage to the ground or any underground structures or utilities except to the extent caused by the negligence of the Subcontractor. Adverse Site Conditions, or Site Conditions which differ materially from those which could reasonably have been anticipated, are a Compensation Event entitling the Subcontractor to time and cost relief.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "OPS-02",
+    "title": "Right to refuse unsafe work",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Health and safety, site access and direction clauses \u2014 specifically whether Freo may refuse unsafe work.",
+    "required": "An express right to refuse to enter or work in an unsafe area, without breach and without loss of standby entitlement.",
+    "fallback": "'The Subcontractor may refuse to enter an unsafe area or an area that presents unacceptable risk until the risk is removed.'",
+    "escalate_if": "Non-negotiable for crane operations. Must not be capable of triggering default or forfeiting standby.",
+    "flag_if": [
+      "There is no express right to refuse to enter or work in an unsafe area.",
+      "Refusing work could trigger default or forfeit standby entitlement.",
+      "Freo must comply with directions even where compliance would breach law or create liability.",
+      "There is no right to seek reconsideration of a direction Freo reasonably believes is unjustified."
+    ],
+    "preferred_language": "Without limiting any other provision of this Contract, the Subcontractor may refuse to enter an unsafe area, or an area that presents unacceptable risk, until the risk is removed. Any resulting delay is a Relief Event and does not constitute a breach of this Contract or affect the Subcontractor's entitlement to standby payment.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "OPS-03",
+    "title": "Third-party interference on site",
+    "priority": "MUST PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Cooperation and coordination with other contractors clauses, and any waiver of recourse against the counterparty for delay caused by others.",
+    "required": "Cost relief and an indemnity where Freo is impacted or its equipment damaged by the counterparty, the principal or other contractors on site.",
+    "fallback": "Cost relief for third-party interference, plus an indemnity for damage to Freo plant caused by others.",
+    "escalate_if": "Freo cannot absorb downtime and equipment damage caused by parties it has no contract with.",
+    "flag_if": [
+      "There is no cost relief where Freo is delayed or disrupted by the counterparty, the principal or their other contractors.",
+      "There is no indemnity for damage to Freo's plant caused by those parties.",
+      "Freo's sole recourse for delay caused by another subcontractor is against that subcontractor.",
+      "Freo waives or releases the counterparty from claims arising from another subcontractor's delay."
+    ],
+    "preferred_language": "Where the Subcontractor is delayed, disrupted or incurs additional cost as a result of an act or omission of the Contractor, the Principal or any of their other contractors, the Subcontractor is entitled to time and cost relief from the Contractor. The Contractor indemnifies the Subcontractor against loss of or damage to the Subcontractor's Plant and Equipment caused by the Contractor, the Principal or their respective Personnel or other contractors.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "OPS-04",
+    "title": "Change in law relief",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Change in law, change of law, and statutory change provisions.",
+    "required": "Express time and cost relief for a change in law, independent of whether it changes the scope of work.",
+    "fallback": "Change in law as a standalone compensation event and extension event. Definition expanded to include changes to applicable standards and mandatory codes.",
+    "escalate_if": "Freo's recovery must not be contingent on the counterparty's recovery under the head contract - a failure to administer upstream would extinguish the entitlement.",
+    "flag_if": [
+      "There is no express entitlement to cost relief for a change in law.",
+      "Change in law is not an extension event.",
+      "Relief is available only via a variation the counterparty is not obliged to issue.",
+      "Freo's recovery is limited to what the counterparty recovers under the head contract.",
+      "The definition does not extend to changes in applicable standards or mandatory codes."
+    ],
+    "preferred_language": "A Change in Law is a Compensation Event and an Extension Event entitling the Subcontractor to time and cost relief, irrespective of whether the Change in Law results in a variation to the scope of work. The Subcontractor's entitlement is not limited to, or contingent upon, any recovery obtained by the Contractor under the Head Contract.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "OPS-05",
+    "title": "Errors and inconsistencies in counterparty documents",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Priority of documents, order of precedence, discrepancies, ambiguities, no-reliance and information-accuracy provisions.",
+    "required": "The counterparty retains risk for errors and defects in the documents it prepared. Inconsistencies give rise to a deemed variation with time and cost relief.",
+    "fallback": "Cost relief (at minimum, assessment as a variation) where there are inconsistencies, ambiguities, discrepancies or errors in the contract documents, specifications or drawings.",
+    "escalate_if": "Do not accept risk for errors in documents Freo did not prepare and had no opportunity to verify.",
+    "flag_if": [
+      "There is no cost relief for inconsistencies, ambiguities or discrepancies in the contract documents.",
+      "Freo bears the risk of errors or defects in documents the counterparty prepared.",
+      "Freo has a notification obligation for discrepancies with no corresponding entitlement.",
+      "The counterparty determines the correct interpretation unilaterally.",
+      "The counterparty disclaims all responsibility for information it provided, with no carve-out for information it knew to be false.",
+      "Freo has no cost relief where specifications or drawings change."
+    ],
+    "preferred_language": "Where an inconsistency, ambiguity, discrepancy or error exists in or between the Contract Documents, or where a change is required to the Specifications or Drawings, the resulting impact shall be treated as a Variation entitling the Subcontractor to time and cost relief. The Contractor retains responsibility for errors or defects in the documents which comprise this Contract, other than documents prepared by the Subcontractor. Where the parties cannot agree the interpretation within ten (10) Business Days, any direction given by the Contractor which results in additional cost or time shall be treated as a Variation.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "OPS-06",
+    "title": "Permits, consents and licences",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Permits, licences, consents, approvals and authorisations provisions.",
+    "required": "The counterparty obtains all site, project and access permits. Freo obtains only permits specific to its own plant, operators and vehicle movements.",
+    "fallback": "A closed, itemised list of the permits Freo must obtain.",
+    "escalate_if": "An open-ended obligation to obtain 'all permits required to perform the work' is unpriceable on a project Freo does not control. Escalate.",
+    "flag_if": [
+      "Freo must obtain all permits, consents and licences required to perform the work.",
+      "There is no itemised list of the permits allocated to Freo.",
+      "There is no time or cost relief where a counterparty permit is delayed or not obtained."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "OPS-07",
+    "title": "Scope creep beyond the crane hire model",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Recitals, the agreement and scope definitions, the scope of works clause, and the annexes or schedules list. Test whether the contract describes work Freo is actually performing.",
+    "required": "The contract must describe only the scope Freo is actually performing. Delete obligations relating to work outside that scope.",
+    "fallback": "Recitals, definitions, scope clauses and annexes amended so they do not impose installation, logistics, transportation, design, as-built or engineering obligations Freo is not performing.",
+    "escalate_if": "Where the counterparty's paper is a broad installation-services agreement and the scope is crane hire, propose a fit-for-purpose wet hire agreement instead of amending clause by clause. Escalate to in-house counsel.",
+    "flag_if": [
+      "The contract imposes obligations for inland transportation, logistics, assembly, electromechanical installation or design that Freo is not performing.",
+      "The contract contains provisional acceptance, as-built documents, work documents or warranty period provisions inappropriate to a hire or lifting scope.",
+      "The contract contains an extension of time regime where the arrangement is a term-based hire.",
+      "The contract contains environmental or waste management obligations where Freo performs no site works.",
+      "The scope in the schedules is materially broader than the contract title suggests.",
+      "The contract is a broad services or installation agreement being used for a crane hire scope \u2014 consider proposing a purpose-built wet hire agreement instead of amending clause by clause.",
+      "The scope has changed between dry hire and wet hire since the last review \u2014 re-run the review."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "OPS-08",
+    "title": "Operator qualification and key personnel",
+    "priority": "PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Operator, personnel and key personnel provisions, including experience requirements and replacement rights.",
+    "required": "Operator requirements limited to relevant tickets and demonstrable competence. Replacement of key personnel only for cause.",
+    "fallback": "Confirm operator experience thresholds are achievable before signing. Limit the counterparty's right to direct replacement of key personnel to negligence, illegal conduct or conduct creating a risk to persons, property or the environment.",
+    "escalate_if": "An unfettered right to direct replacement of key personnel is a resourcing and cost risk in a tight operator market.",
+    "flag_if": [
+      "Operator experience requirements have not been verified as achievable \u2014 route to Operations.",
+      "The counterparty may direct replacement of key personnel for any reason.",
+      "Replacement rights are not limited to negligence, illegal conduct or conduct creating risk."
+    ],
+    "preferred_language": "The Contractor may direct the replacement of Key Personnel only where that person has been negligent, has engaged in illegal conduct, or has caused a risk to any person, property or the environment.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "OPS-09",
+    "title": "Subcontracting consent and thresholds",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Assignment and subcontracting provisions applying to Freo, and any value threshold or pre-approved subcontractor list.",
+    "required": "Freo may subcontract with consent not to be unreasonably withheld, with a pre-approved list.",
+    "fallback": "Consent not to be unreasonably withheld; a workable value threshold; pre-approved sub-subcontractors listed.",
+    "escalate_if": "Manage if refused, unless the scope genuinely requires subcontracting.",
+    "flag_if": [
+      "Consent to subcontract may be withheld without a reasonableness qualifier.",
+      "The subcontracting value threshold is impractically low for the scope.",
+      "The pre-approved subcontractor schedule is blank or marked N/A."
+    ],
+    "preferred_language": "which consent must not be unreasonably withheld or delayed.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "OPS-10",
+    "title": "Force majeure - definition and relief",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Force majeure definition and relief provisions, and the mitigation obligation.",
+    "required": "A broad force majeure definition with both time and cost relief, and no obligation to spend money to mitigate.",
+    "fallback": "Definition to include cyber-attack, failure of essential utilities or infrastructure, fuel shortages and overseas events materially affecting performance. Carve out any obligation to incur expenditure to mitigate.",
+    "escalate_if": "A force majeure definition limited to events occurring in Australia does not cover supply-chain failure for specialist crane parts. Press to remove the geographic limit.",
+    "flag_if": [
+      "The definition is limited to events occurring in Australia.",
+      "The definition omits cyber-attack, failure of essential utilities or infrastructure, or fuel shortages.",
+      "The mitigation obligation requires the affected party to incur expense or cost.",
+      "Force majeure gives time relief but no cost relief, and the cost risk has not been priced.",
+      "Equipment breakdown is expressly excluded from force majeure \u2014 do not fight this here; ensure the delay and standby provisions cover it instead (see TRM-01).",
+      "On a pure hire arrangement, hire charges are suspended during force majeure."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "OPS-11",
+    "title": "Counterparty representative to act reasonably",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "The counterparty's representative, and any certification, valuation, assessment or determination function.",
+    "required": "The counterparty's representative must act honestly, reasonably and fairly when certifying or assessing.",
+    "fallback": "An express reasonableness obligation on certification and assessment functions.",
+    "escalate_if": "Manage if refused, but note the exposure - unfettered certification discretion drives payment and EOT outcomes.",
+    "flag_if": [
+      "There is no obligation on the counterparty's representative to act honestly and reasonably.",
+      "The counterparty has an unfettered, absolute or sole discretion in certification or valuation.",
+      "Directions may be given without a reasonableness qualifier.",
+      "Directions may materially increase cost or time with no corresponding adjustment to price or programme."
+    ],
+    "preferred_language": "The Contractor's Representative must act honestly and reasonably in performing any certification, valuation, assessment or determination function under this Contract. Any direction given by the Contractor must be reasonable, and must not materially increase the Subcontractor's costs or time for performance without a corresponding adjustment to the Contract Price or the Date for Completion.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "OPS-12",
+    "title": "Site condition on departure",
+    "priority": "MANAGE",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Scope, Site & Operations",
+    "where_to_look": "Site cleaning, keep clean and tidy, and removal of plant and materials provisions.",
+    "required": "Delete the obligation to leave the site in a condition fit for immediate use and occupation.",
+    "fallback": "Removal of Freo's own plant, materials and rubbish only.",
+    "escalate_if": "Low risk. Accept counterparty removal at Freo's cost, but not at Freo's risk.",
+    "flag_if": [
+      "Freo must leave the site in a condition fit for immediate use and occupation.",
+      "The counterparty may remove Freo's plant at Freo's risk as well as its cost.",
+      "The counterparty may remove plant without first requesting removal and allowing a period to comply."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "INS-01",
+    "title": "Insurance limits, currency and scope",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Insurance",
+    "where_to_look": "Insurance clause and any insurance schedule. Check limits, currency, basis of cover and named insureds.",
+    "required": "Limits set in AUD, consistent with Freo's actual programme; liability cover per occurrence rather than per claim.",
+    "fallback": "AUD-denominated limits matching the existing programme; broker sign-off before agreement.",
+    "escalate_if": "Never agree insurance obligations without broker confirmation that the programme responds. Watch for USD limits and foreign-jurisdiction artefacts in templates.",
+    "flag_if": [
+      "Limits are expressed in a currency other than AUD.",
+      "There are references to foreign statutes, foreign currency or foreign jurisdictions carried over from a template.",
+      "Public and products liability is expressed per claim rather than per occurrence.",
+      "Aggregate cover is required to be unlimited.",
+      "Limits exceed Freo's existing programme \u2014 refer to the broker before agreeing.",
+      "Subcontractor insurance requirements are not proportionate to the subcontracted scope.",
+      "A principal's indemnity extension is required as an absolute obligation rather than reasonable endeavours."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "INS-02",
+    "title": "Insurance deductibles",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Insurance",
+    "where_to_look": "Insurance deductible, excess and self-insured retention provisions.",
+    "required": "Each party bears the deductible in proportion to its share of responsibility, with a cap on Freo's contribution where its share is under 50%.",
+    "fallback": "Proportionate deductible sharing; a stated cap on any single deductible contribution.",
+    "escalate_if": "Do not accept an uncapped obligation to fund the counterparty's deductible for events Freo did not primarily cause.",
+    "flag_if": [
+      "Freo bears the whole deductible irrespective of fault.",
+      "There is no cap on Freo's contribution to any single deductible.",
+      "Freo bears the deductible on damage to hired items with no reasonableness qualifier."
+    ],
+    "preferred_language": "Each party is responsible for any insurance deductible in proportion to its share of responsibility for the event giving rise to the claim. Where the Subcontractor's share of responsibility is less than fifty per cent (50%), the Subcontractor's contribution toward any one deductible is capped at AUD 25,000.",
+    "source_tag": "Freo register"
+  },
+  {
+    "rule_id": "INS-03",
+    "title": "Counterparty approval of policy terms and insurer solvency risk",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Insurance",
+    "where_to_look": "Provisions permitting the counterparty to approve, review or object to Freo's insurance policies, and any consequence of insurer default or insolvency.",
+    "required": "Delete any right for the counterparty to approve the terms of Freo's insurance policies, and any obligation making Freo answerable for insurer insolvency.",
+    "fallback": "Deletion of both.",
+    "escalate_if": "Freo cannot underwrite the insolvency risk of its insurers. Non-negotiable.",
+    "flag_if": [
+      "The counterparty may approve or withhold approval of the terms of Freo's insurance policies.",
+      "Freo must provide certified copies of policies rather than certificates of currency.",
+      "Freo bears consequences if an insurer becomes insolvent or fails to pay.",
+      "Freo may not modify or cancel insurance without the counterparty's consent."
+    ],
+    "preferred_language": "The Subcontractor must provide the Contractor with a certificate of currency for each insurance policy required under this Contract.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "INS-04",
+    "title": "Insurance tail duration after completion",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Insurance",
+    "where_to_look": "The period for which insurance must be maintained, including any tail after completion and any professional liability requirement.",
+    "required": "Cover maintained for the period of Freo's own scope plus the warranty period only.",
+    "fallback": "Insurance duration matched to the duration of Freo's residual liability \u2014 warranty period plus any indemnity tail \u2014 and expressly not tied to the project or the head contract.",
+    "escalate_if": "Do not accept an obligation to maintain cover for three years after substantial performance of the PROJECT, or for as long as the head contract requires. On an industrial or mining project that can run for years after Freo demobilises. Confirm with the broker before agreeing any tail.",
+    "flag_if": [
+      "Cover must be maintained for a period running from project substantial performance rather than Freo's own completion.",
+      "The insurance period is tied to the head contract's requirements.",
+      "A tail of three years or more after project completion is required.",
+      "Professional liability insurance is required where Freo performs no design."
+    ],
+    "preferred_language": "The Subcontractor shall maintain the insurances required under this Contract until the later of completion of the Subcontractor's scope and expiry of the Warranty Period, and shall not be required to maintain insurance by reference to substantial performance of the Project or the requirements of the Head Contract.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "INS-05",
+    "title": "Waiver of subrogation - statutory limits",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Insurance",
+    "where_to_look": "Waiver of subrogation and cross-liability provisions.",
+    "required": "Waiver of subrogation given only where the policy permits it, with statutory schemes expressly carved out.",
+    "fallback": "Express carve-out for workers compensation and compulsory motor vehicle cover. Provide certificates of currency rather than certified copies of policies.",
+    "escalate_if": "Agreeing a blanket waiver of subrogation puts Freo in breach from day one where the scheme reserves subrogation rights by statute. This is a compliance trap, not a negotiating position.",
+    "flag_if": [
+      "A waiver of subrogation is required with no carve-out for workers compensation.",
+      "A waiver of subrogation is required with no carve-out for compulsory third party motor vehicle cover.",
+      "The waiver extends to parties the counterparty may nominate from time to time."
+    ],
+    "preferred_language": "except for compulsory third party motor vehicle insurance and workers compensation insurance, include a waiver of subrogation in favour of the Contractor.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "EQP-01",
+    "title": "Title, risk and PPSA registration",
+    "priority": "MUST PRESS",
+    "applies_to": "Equipment hire",
+    "category": "Equipment",
+    "where_to_look": "Transfer of risk and title, ownership of equipment, lien and security interest provisions.",
+    "required": "Freo retains title; the counterparty bears risk in the equipment while in its possession or under its direction; Freo may register its security interest under the PPSA.",
+    "fallback": "Title retained by Freo, risk with the counterparty, express PPSA registration right, and no counterparty lien over Freo equipment.",
+    "escalate_if": "Absence of a PPSA clause is a critical gap where any of the fleet is financed - financiers may require it. Escalate.",
+    "flag_if": [
+      "Title in the equipment passes to the counterparty.",
+      "Freo bears risk in the equipment while it is in the counterparty's possession or under its direction.",
+      "There is no PPSA clause permitting Freo to register its security interest.",
+      "The counterparty may claim a lien over Freo's equipment.",
+      "Freo is restricted from claiming a lien but the counterparty is not.",
+      "There is no counterparty liability for defective servicing or maintenance it performs."
+    ],
+    "preferred_language": "Title in the Equipment remains at all times with the Subcontractor. The Contractor bears the risk of loss of or damage to the Equipment from delivery until collection, except to the extent caused by the negligence of the Subcontractor. The Subcontractor may register its security interest in the Equipment under the Personal Property Securities Act 2009 (Cth), and the Contractor must promptly do all things reasonably required to enable that registration. The Contractor shall not claim or permit any lien or encumbrance over the Equipment.",
+    "source_tag": "Unvetted draft - counsel review needed"
+  },
+  {
+    "rule_id": "EQP-02",
+    "title": "Missing hire-agreement machinery",
+    "priority": "MUST PRESS",
+    "applies_to": "Equipment hire",
+    "category": "Equipment",
+    "where_to_look": "Run this as a completeness check against any hire arrangement. These are the provisions a hire agreement needs and a services agreement typically omits entirely.",
+    "required": "A hire arrangement must contain the standard equipment protections. Where the counterparty's paper is a services agreement, these are usually all absent.",
+    "fallback": "Insert: a responsibilities matrix (consumables, spares, maintenance); inspection reports on delivery and collection; obligations on the counterparty as to how it uses and maintains the equipment, including use only by authorised and qualified personnel; a restriction on modifying or altering the equipment; maintenance and repair obligations; and indemnities in Freo's favour for damage caused by the counterparty's use.",
+    "escalate_if": "Do not sign a hire arrangement without a delivery/collection condition report - it is the only evidence base for damage claims.",
+    "flag_if": [
+      "There is no responsibilities matrix allocating consumables, spares, servicing and maintenance.",
+      "There is no requirement for inspection or condition reports on delivery and collection of equipment.",
+      "There are no obligations on the counterparty as to how it uses and maintains the equipment.",
+      "There is no requirement that the equipment be operated only by authorised and qualified personnel.",
+      "There is no restriction on the counterparty modifying or altering the equipment.",
+      "There are no maintenance and repair obligations.",
+      "There is no indemnity in Freo's favour for damage caused by the counterparty's use of the equipment.",
+      "There are no corporate warranties as to power and authority, and the agreement is not being executed under s 127 of the Corporations Act 2001 (Cth)."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "EQP-03",
+    "title": "Plant breakdown and mobilisation thresholds",
+    "priority": "MANAGE",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Equipment",
+    "where_to_look": "Plant breakdown, availability, repair and mobilisation-delay provisions, including any thresholds or liquidated sums.",
+    "required": "Breakdown and mobilisation-delay thresholds must be validated against fleet reality before signature.",
+    "fallback": "Commercially verified thresholds; root-cause obligations excluded where the cause is a third party.",
+    "escalate_if": "These are commercial-verification items, not legal positions. They must not be signed off by Legal alone.",
+    "flag_if": [
+      "Breakdown, availability or mobilisation-delay thresholds have not been verified against fleet reality \u2014 route to Operations and Commercial.",
+      "Root cause analysis is required irrespective of cause.",
+      "Repair or replacement timeframes are not achievable."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "EQP-04",
+    "title": "Wind speed thresholds and adverse weather definitions",
+    "priority": "MANAGE",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Equipment",
+    "where_to_look": "Wind speed threshold, high wind event, adverse weather condition and weather relief definitions.",
+    "required": "Wind speed thresholds and adverse weather definitions must match the lift plans and the fleet's operating limits.",
+    "fallback": "Thresholds confirmed by the technical team against lift plans before signature.",
+    "escalate_if": "These definitions determine whether weather downtime is paid. They are commercial and technical, not legal.",
+    "flag_if": [
+      "Wind speed thresholds have not been confirmed against the lift plans and fleet operating limits \u2014 route to the technical team.",
+      "Weather relief requires weather events to persist for more than a stated number of hours in aggregate per day.",
+      "Hail or heavy rain qualifies only if it makes the work unsafe or non-compliant.",
+      "The weather definition depends on a corresponding definition in the head contract."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "IPC-01",
+    "title": "Intellectual property ownership and licence scope",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "IP, Confidentiality & Data",
+    "where_to_look": "Intellectual property ownership, assignment and licence provisions, and ownership of drawings, plans and lift plans.",
+    "required": "Freo retains all IP in its equipment, methods, lift plans and documents. Any licence to the counterparty is limited to the project.",
+    "fallback": "Licence limited to use for this project only - delete 'or any Project' and similar open-ended grants. Carve out Freo's proprietary information, techniques and documents from any assignment of drawings and plans.",
+    "escalate_if": "Do not grant a licence permitting use of Freo's engineering or lift-planning IP on other projects.",
+    "flag_if": [
+      "The licence granted to the counterparty extends beyond this project (for example 'or any Project').",
+      "Freo's pre-existing IP is not carved out of any assignment.",
+      "IP conceived outside the performance of the work is not carved out.",
+      "Plans and drawings prepared by Freo become the counterparty's property with no carve-out for proprietary methods.",
+      "The licence back is not limited to what is necessary to use the deliverable.",
+      "An IP indemnity extends beyond the contracting entity."
+    ],
+    "preferred_language": "Notwithstanding any other provision of this clause, pre-existing Intellectual Property of the Subcontractor, and any other Intellectual Property which the Subcontractor conceives or makes, alone or with others, outside the performance of the Subcontract Work, remains the sole and absolute property of the Subcontractor, and the Contractor obtains no right, title or interest in it. To the extent any such Intellectual Property is incorporated into the Subcontract Work, the Subcontractor grants the Contractor a perpetual, irrevocable, non-exclusive, royalty-free licence to use it, but only to the extent necessary to use the Subcontract Work into which it is incorporated.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "IPC-02",
+    "title": "Confidentiality - mutuality and permitted disclosure",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "IP, Confidentiality & Data",
+    "where_to_look": "Confidentiality provisions and the permitted disclosure exceptions.",
+    "required": "Mutual confidentiality obligations, with carve-outs for professional advisers, insurers, financiers and affiliates.",
+    "fallback": "Mutuality plus a professional-adviser carve-out.",
+    "escalate_if": "Low risk, but a one-way obligation with no adviser carve-out impedes ordinary business (including obtaining this very advice).",
+    "flag_if": [
+      "The confidentiality obligation binds Freo only.",
+      "Professional advisers are not a permitted disclosure exception.",
+      "Insurers and financiers are not permitted disclosure exceptions.",
+      "Documents must be returned or destroyed 'immediately'.",
+      "A confidentiality or privacy indemnity is one-way."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "IPC-03",
+    "title": "Data privacy and personal information",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "IP, Confidentiality & Data",
+    "where_to_look": "Data privacy, personal information and data protection provisions.",
+    "required": "Mutual, controller-to-controller obligations limited to compliance with applicable privacy law.",
+    "fallback": "Compliance obligations accepted, but expressly not tied to any broad indemnity, and any liability limited to direct losses actually incurred.",
+    "escalate_if": "Never accept privacy obligations backed by an uncapped or broad indemnity. Route to the Marmon risk team rather than negotiating the substance locally.",
+    "flag_if": [
+      "Privacy obligations are backed by a broad or uncapped indemnity.",
+      "Privacy liability is not limited to direct losses actually incurred.",
+      "The clause references a foreign privacy regime rather than the Privacy Act 1988 (Cth) and the Australian Privacy Principles.",
+      "Obligations exceed those required by applicable law \u2014 route to the Marmon risk team."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "CMR-01",
+    "title": "Term and extension options",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Commercial & Structural",
+    "where_to_look": "Term, duration, commencement and extension option provisions.",
+    "required": "A defined term with clearly stated extension options exercisable by agreement.",
+    "fallback": "Express term, express extension mechanic, and rate review on extension (see PAY-03).",
+    "escalate_if": "An open-ended term with no rate review is a pricing risk.",
+    "flag_if": [
+      "There is no defined term.",
+      "Extension options are exercisable unilaterally by the counterparty.",
+      "An extension does not trigger the rate review mechanism (see PAY-03)."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "CMR-02",
+    "title": "Rebate schemes",
+    "priority": "MANAGE",
+    "applies_to": "Mining master supply agreement",
+    "category": "Commercial & Structural",
+    "where_to_look": "Rebate, volume discount and price-reduction-for-volume provisions.",
+    "required": "No volume rebate. Any rebate must be tied to committed volume.",
+    "fallback": "Commercial decision.",
+    "escalate_if": "Route to Commercial - this is a pricing term, not a legal one.",
+    "flag_if": [
+      "Any rebate, volume discount or volume commitment applies \u2014 route to Commercial."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "CMR-03",
+    "title": "First right of refusal",
+    "priority": "PRESS",
+    "applies_to": "Mining master supply agreement",
+    "category": "Commercial & Structural",
+    "where_to_look": "Exclusivity, first right of refusal and additional-scope provisions.",
+    "required": "A first right of refusal on additional crane work at the site.",
+    "fallback": "Commercial decision.",
+    "escalate_if": "Upside term rather than a risk term - pursue where the relationship supports it.",
+    "flag_if": [
+      "There is no first right of refusal on additional lifting scope at the site during the term."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "CMR-04",
+    "title": "Assignment and novation by the counterparty",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Commercial & Structural",
+    "where_to_look": "Assignment, novation and transfer provisions applying to the counterparty.",
+    "required": "No assignment or novation by the counterparty without Freo's consent.",
+    "fallback": "Transfer only to an entity of equivalent or better financial standing and technical capability.",
+    "escalate_if": "Manage where the transfer is to a related body corporate or the project principal, which is common and usually bankability-driven.",
+    "flag_if": [
+      "The counterparty may assign or novate without Freo's consent.",
+      "There is no requirement that the transferee be of equivalent or better financial standing and technical capability.",
+      "Freo must execute transfer documents within 5 business days or less.",
+      "Freo's own assignment rights are more restricted than the counterparty's, with no reasonableness qualifier."
+    ],
+    "preferred_language": "A party is not permitted to assign or novate any of its rights and liabilities under this Contract without the other party's written consent, which is not to be unreasonably withheld, and any transferee must be of equivalent or better financial standing and technical capability.",
+    "source_tag": "Executed contract"
+  },
+  {
+    "rule_id": "CMR-05",
+    "title": "Conditional deed of novation - claims status report",
+    "priority": "MANAGE",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Commercial & Structural",
+    "where_to_look": "Conditional deed of novation, and any claims status report, prior claims or release obligation on novation. Also any tripartite deed obligation.",
+    "required": "Manage rather than depart, but build the operational capability to comply.",
+    "fallback": "Accept the mechanic, but ensure the business can itemise and quantify prior claims within the notice window.",
+    "escalate_if": "Failure to deliver a claims status report extinguishes the ability to pursue the principal for pre-novation claims, and caps the principal's liability at the stated maximum. This is an operational control, not a drafting issue.",
+    "flag_if": [
+      "Freo must deliver a claims status report on novation, and failure extinguishes claims against the principal \u2014 this is an operational control, add it to the contract administration checklist rather than departing.",
+      "The principal's liability is capped at the maximum amount stated in Freo's own report.",
+      "Freo must enter a tripartite deed on terms required by a security trustee, with no reasonableness qualifier.",
+      "The principal entities' liability is several rather than joint and several."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "CMR-06",
+    "title": "Dispute resolution and expert determination",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Commercial & Structural",
+    "where_to_look": "Dispute resolution, expert determination and arbitration provisions, including the nominating authority.",
+    "required": "Escalation to senior representatives, then expert determination or arbitration with a named nominating body.",
+    "fallback": "Resolution Institute as the nominating authority for expert determination.",
+    "escalate_if": "Low risk, but check the nominating body and the seat.",
+    "flag_if": [
+      "There is no escalation step to senior representatives before formal proceedings.",
+      "The expert determination nominating authority is not the Resolution Institute.",
+      "The seat or governing law does not match the site State.",
+      "A dispute does not relieve Freo of the obligation to comply with a direction, and there is no interim payment mechanism."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "CMR-07",
+    "title": "Operators are not counterparty employees",
+    "priority": "PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Commercial & Structural",
+    "where_to_look": "Independent contractor, no-employment and labour-hire provisions. Particularly important wherever the counterparty may direct Freo's personnel.",
+    "required": "Express confirmation that Freo personnel are not employees of the counterparty even where working under its direction on site.",
+    "fallback": "An express independent-contractor and no-employment clause covering operators specifically.",
+    "escalate_if": "Important wherever the counterparty directs Freo crews (see TRM-03) - it manages labour-hire, workers compensation and industrial relations exposure.",
+    "flag_if": [
+      "There is no express statement that Freo's operators are not the counterparty's employees.",
+      "The counterparty may direct or control Freo's personnel with no employment carve-out."
+    ],
+    "preferred_language": "For the avoidance of doubt, it is expressly agreed and understood that any operator or other Personnel provided by the Subcontractor shall not be, or be deemed to be, an employee of the Contractor even if such person is under the control of the Contractor on site.",
+    "source_tag": "Executed contract"
+  },
+  {
+    "rule_id": "CMR-08",
+    "title": "Compliance regimes - modern slavery, ABC, codes of conduct, procurement policies",
+    "priority": "ACCEPT+NOTE",
+    "applies_to": "All contract types",
+    "category": "Commercial & Structural",
+    "where_to_look": "Modern slavery, anti-bribery and corruption, supplier codes of conduct, ethics, sanctions and government procurement policy provisions.",
+    "required": "Accept, subject to review of the incorporated document.",
+    "fallback": "Accept, but require a copy of every incorporated policy and add a knowledge qualifier to any termination right for a compliance breach.",
+    "escalate_if": "Do not accept termination for an anti-bribery breach by a subcontractor without a knowledge qualifier.",
+    "flag_if": [
+      "A code of conduct or policy is incorporated by reference and has not been provided \u2014 request a copy.",
+      "Termination is available for an anti-bribery breach by a subcontractor with no knowledge qualifier.",
+      "Modern slavery obligations survive termination (see TRM-08).",
+      "A State procurement policy is imported by reference and has not been reviewed."
+    ],
+    "preferred_language": "and the Contractor knew or ought reasonably to have known of such violation",
+    "source_tag": "Freo register"
+  },
+  {
+    "rule_id": "CMR-09",
+    "title": "Audit rights",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Commercial & Structural",
+    "where_to_look": "Audit rights, records and inspection provisions.",
+    "required": "No audit right, or one confined to records directly relevant to amounts invoiced.",
+    "fallback": "Audit permitted within two years following the end of the year in which the invoice was submitted, on reasonable notice, limited to records relevant to the amounts charged.",
+    "escalate_if": "Do not accept an open-ended audit right, particularly alongside a most-favoured-customer clause \u2014 the two combine into a pricing exposure.",
+    "flag_if": [
+      "The audit right has no time limit.",
+      "The audit scope extends beyond records relevant to amounts invoiced.",
+      "An audit right accompanies a most favoured customer clause without being narrowed to match (see PAY-09)."
+    ],
+    "preferred_language": "The Contractor may conduct an audit of the Subcontractor and the Records within two (2) years following the end of the year in which an invoice was submitted under this Contract, on reasonable notice, limited to records relevant to the amounts charged.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "CMR-10",
+    "title": "Governing law and jurisdiction",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Commercial & Structural",
+    "where_to_look": "Governing law and jurisdiction provisions. Check any particulars or schedule item that sets the jurisdiction.",
+    "required": "Law of the place where the work is performed, with no conflicts-of-laws override.",
+    "fallback": "Governing law and jurisdiction of the Australian State or Territory in which the site is located.",
+    "escalate_if": "Do not accept a foreign governing law or a jurisdiction unconnected to the site. Do not accept a conflicts-of-laws provision that could import another law.",
+    "flag_if": [
+      "The governing law is not the Australian State or Territory in which the work is performed.",
+      "The governing law is foreign.",
+      "A conflicts-of-laws provision could import another law.",
+      "The jurisdiction field in the particulars table is blank or inconsistent with the body clause."
+    ],
+    "preferred_language": "This Contract shall be interpreted in accordance with, and shall be governed by, the laws of the State or Territory in which the work is performed, without regard to any conflicts of laws principles that could require application of any other law.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "FLW-01",
+    "title": "Binding Freo to the head contract",
+    "priority": "MUST PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Flow-down & Upstream Risk",
+    "where_to_look": "Any provision binding Freo to the head contract, prime contract, main contract or TSI contract, and any flow-down of upstream obligations.",
+    "required": "Do not accept any obligation to be bound by the head contract. Relevant terms to be extracted and appended to the subcontract.",
+    "fallback": "Bound only to head contract terms expressly set out in a schedule to the subcontract, plus a paramountcy clause providing that the subcontract prevails on any inconsistency.",
+    "escalate_if": "Two absolute preconditions before accepting any flow-down: Freo must receive a copy of the head contract before execution, and must have negotiated its liability cap. Never accept blind flow-down.",
+    "flag_if": [
+      "Freo is bound by all the terms and conditions of the head contract.",
+      "The head contract has not been provided to Freo.",
+      "There is no schedule or exhibit listing the specific head contract terms that apply.",
+      "There is no paramountcy clause providing that the subcontract prevails on inconsistency.",
+      "Freo must not cause the counterparty to breach the head contract.",
+      "Freo is deemed to have knowledge of head contract terms it has not seen."
+    ],
+    "preferred_language": "The Subcontractor agrees to be bound by the terms and conditions of the Head Contract only to the extent such terms and conditions are expressly included and set forth in Schedule [X] attached to this Contract. In the event the Head Contract is in conflict with this Contract, this Contract shall prevail and govern.",
+    "source_tag": "External counsel"
+  },
+  {
+    "rule_id": "FLW-02",
+    "title": "Back-to-back valuation and payment of variations",
+    "priority": "MUST PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Flow-down & Upstream Risk",
+    "where_to_look": "Back-to-back provisions for the valuation, process or payment of variations and change directives.",
+    "required": "Delete the back-to-back clause. Freo's entitlement to payment for a variation must not depend on the customer's recovery upstream.",
+    "fallback": "One-way flow-down only (owner to contractor to Freo). Never accept back-to-back operating in reverse.",
+    "escalate_if": "If Freo accepts back-to-back risk it must be a recorded commercial decision made with knowledge of the cash-flow consequence, not a drafting concession.",
+    "flag_if": [
+      "Valuation, process or payment of a variation is on a back-to-back basis with the upstream contract.",
+      "Freo is entitled to payment only once the counterparty has been approved and paid upstream.",
+      "Back-to-back operates in the reverse direction (for variations initiated by Freo)."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  },
+  {
+    "rule_id": "FLW-03",
+    "title": "Claims bound by an upstream determination",
+    "priority": "MUST PRESS",
+    "applies_to": "Wind / renewables subcontract",
+    "category": "Flow-down & Upstream Risk",
+    "where_to_look": "Provisions binding Freo to a determination made under the head contract, and any associated waiver of claims.",
+    "required": "Delete the clause entirely. Freo must not be bound by a determination made under a contract to which it is not a party.",
+    "fallback": "If the customer insists: Freo must be given a copy of the head contract, and every reference making additional compensation contingent on upstream recovery must be deleted.",
+    "escalate_if": "Never accept a waiver of Freo's claim for compensation or extension of time based on an upstream determination Freo cannot participate in or challenge.",
+    "flag_if": [
+      "Freo is bound by a determination made under the head contract.",
+      "Freo waives any claim for compensation or extension of time relating to that determination.",
+      "No compensation or extension is provided unless and until received from the owner upstream.",
+      "Freo must execute a change order accepting the resultant adjustment."
+    ],
+    "preferred_language": null,
+    "source_tag": null
+  }
+]
