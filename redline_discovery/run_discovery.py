@@ -4,16 +4,19 @@ Redline Discovery Engine — v1 PoC.
 Iterates CobbleStone requests, lists each request's files, and classifies
 each with all five playbook Phase 3 techniques in escalating cost order:
 the filename/text/email/Keywords heuristic (classifier.py, free) first;
-for whatever it leaves "Unclassified/Supporting", a structural check on the
-actual downloaded file bytes (structure_check.py — Word track-changes XML /
-PDF annotations, a cheap API call plus a deterministic parse, but only
-useful as a positive signal); and for what's still unresolved, an LLM
-fallback (workflows/ai_classification_workflow.js, run separately — this
-script only emits its candidate list). Writes a searchable catalog
-(JSON + CSV) — the Phase 1-3 deliverable from the playbook.
+then, for anything not already written off as Likely Executed/Signed, a
+structural check on the actual downloaded file bytes (structure_check.py —
+Word track-changes XML / PDF annotations, a cheap API call plus a
+deterministic parse, but only useful as a positive signal) — this both
+resolves Unclassified rows and firms up Draft/Redline rows' confidence with
+real proof; and for what's still unresolved, an LLM fallback
+(workflows/ai_classification_workflow.js, run separately — this script only
+emits its candidate list). Writes a searchable catalog (JSON + CSV) — the
+Phase 1-3 deliverable from the playbook.
 
 Usage:
     python run_discovery.py --limit 200
+    python run_discovery.py --limit 100 --snapshot output/pipeline_snapshot.json
 """
 
 import argparse
@@ -22,7 +25,8 @@ import json
 from collections import Counter
 
 import config
-from request_api import get_bearer_token, fetch_all_requests, fetch_request_file_list, download_file
+from request_api import (get_bearer_token, fetch_all_requests, fetch_request_file_list,
+                          download_file, load_pipeline_snapshot)
 from classifier import classify_file
 from structure_check import check_file_structure
 
@@ -47,14 +51,26 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=200,
                          help="Max number of requests to scan (default 200)")
+    parser.add_argument("--snapshot", default=None,
+                         help="Path to a pipeline snapshot (see fetch_snapshot.py) to reuse "
+                              "instead of re-fetching requests/files from the API")
     args = parser.parse_args()
 
     config.OUTPUT_DIR.mkdir(exist_ok=True)
 
+    # Structure-check still needs a live token even when reading from a
+    # snapshot (download_file() below hits the real API for file bytes).
     token = get_bearer_token()
 
-    print(f"Fetching up to {args.limit} requests...")
-    requests_ = fetch_all_requests(token, limit=args.limit)
+    if args.snapshot:
+        print(f"Loading requests + files from snapshot: {args.snapshot}")
+        snapshot = load_pipeline_snapshot(args.snapshot)
+        requests_ = snapshot["requests"][:args.limit] if args.limit else snapshot["requests"]
+        files_by_request = snapshot["files_by_request"]
+    else:
+        print(f"Fetching up to {args.limit} requests...")
+        requests_ = fetch_all_requests(token, limit=args.limit)
+        files_by_request = None
     print(f"Requests scanned: {len(requests_)}")
 
     rows = []
@@ -64,7 +80,8 @@ def main():
     confirmed_via_pdf_annotation = 0
     for i, req in enumerate(requests_, 1):
         request_id = req.get("RequestID")
-        files = fetch_request_file_list(request_id, token)
+        files = (files_by_request[request_id] if files_by_request is not None
+                 else fetch_request_file_list(request_id, token))
 
         # These are all already present on `req` (fetched for free — see
         # request_api.fetch_all_requests's "Fields": ["RequestID"] quirk,
@@ -97,10 +114,13 @@ def main():
 
             # A confirmed structural finding (real track-changes markup or PDF
             # annotations) is stronger evidence than the keyword heuristic —
-            # only attempted for files the heuristic couldn't already resolve,
-            # to keep this to the same population already validated for the
-            # AI-classification fallback below.
-            if (result["category"] == "Unclassified/Supporting"
+            # runs on anything the heuristic didn't already write off as
+            # Likely Executed/Signed, both to resolve Unclassified rows and to
+            # firm up Draft/Redline rows' confidence to 100 with real proof.
+            # Skipped for Likely Executed/Signed: a signed final copy isn't
+            # expected to carry markup, and finding a stray comment shouldn't
+            # reclassify it.
+            if (result["category"] != "Likely Executed/Signed"
                     and file_type in STRUCTURE_CHECKABLE_TYPES
                     and 0 < file_size <= MAX_DOWNLOAD_BYTES):
                 file_bytes = download_file(f.get("ID"), token)

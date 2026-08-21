@@ -12,7 +12,10 @@ never completes for them upstream — but occasionally do have Keywords).
 Word-XML track-changes and PDF-annotation detection (playbook Phase 3
 techniques 2, 3) are handled separately, in structure_check.py — they need
 actual file bytes (via request_api.download_file()), which this classifier
-deliberately doesn't fetch, staying a pure, network-free function.
+deliberately doesn't fetch, staying a pure, network-free function. Legacy
+binary .doc files can't go through that check at all (only .docx/.pdf are
+supported), so they're flagged here as unverifiable instead of silently
+skipped — see LEGACY_UNVERIFIABLE_EXTENSIONS.
 """
 
 import re
@@ -28,6 +31,13 @@ TEXT_SIGNALS = ["track changes", "for discussion purposes", "subject to change",
                 "inserted:", "redline"]
 
 EDITABLE_EXTENSIONS = {".docx", ".doc"}
+
+# Legacy binary Word (.doc, pre-2007 OLE format) can't be structurally checked
+# for track changes the way .docx can (structure_check.py only handles .docx/
+# .pdf) — flagged here so it's visibly called out as unverified rather than
+# silently invisible. A miss isn't proof of absence, and this file type can't
+# even attempt the check.
+LEGACY_UNVERIFIABLE_EXTENSIONS = {".doc"}
 
 EMAIL_EXTENSIONS = {".msg", ".eml"}
 
@@ -103,6 +113,9 @@ def classify_file(file_record: dict) -> dict:
         score += 1
         signals.append("ext:editable")
         methods.add("extension_heuristic")
+    if ext in LEGACY_UNVERIFIABLE_EXTENSIONS:
+        signals.append("structure_check:unavailable_legacy_format")
+        methods.add("legacy_doc_format")
 
     if score >= 5:
         category = "Redline"

@@ -14,6 +14,7 @@ import email
 import json
 import time
 import logging
+from pathlib import Path
 
 import requests
 
@@ -132,6 +133,43 @@ def fetch_request_file_list(request_id: int, token: str) -> list[dict]:
                                 headers=_headers(token), data=payload, timeout=30)
     resp.raise_for_status()
     return resp.json() or []
+
+
+def fetch_pipeline_data(token: str, limit: int | None = None) -> dict:
+    """
+    Fetch every request plus its file list once. `run_discovery.py` and
+    `run_pairing.py` each independently call `fetch_all_requests` +
+    `fetch_request_file_list` per request — running both back-to-back (the
+    normal pipeline invocation) doubled every API call for no reason, since
+    both scripts want the identical data. Callers that want to reuse a single
+    fetch across both scripts should go through this + a saved snapshot
+    (see save_pipeline_snapshot/load_pipeline_snapshot) instead.
+    """
+    requests_ = fetch_all_requests(token, limit=limit)
+    files_by_request = {
+        req.get("RequestID"): fetch_request_file_list(req.get("RequestID"), token)
+        for req in requests_
+    }
+    return {"requests": requests_, "files_by_request": files_by_request}
+
+
+def save_pipeline_snapshot(data: dict, path) -> None:
+    """Writes fetch_pipeline_data's result to disk. JSON object keys must be
+    strings, so files_by_request's int RequestID keys are stringified here and
+    restored to int in load_pipeline_snapshot."""
+    payload = {
+        "requests": data["requests"],
+        "files_by_request": {str(k): v for k, v in data["files_by_request"].items()},
+    }
+    Path(path).write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
+
+
+def load_pipeline_snapshot(path) -> dict:
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    return {
+        "requests": payload["requests"],
+        "files_by_request": {int(k): v for k, v in payload["files_by_request"].items()},
+    }
 
 
 def download_file(file_id: int, token: str) -> bytes | None:

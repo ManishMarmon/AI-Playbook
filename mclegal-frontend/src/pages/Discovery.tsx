@@ -55,6 +55,7 @@ const DETECTION_METHOD_LABELS: Record<string, string> = {
   extension_heuristic: "Extension",
   track_changes_xml: "Track Changes",
   pdf_annotation: "PDF Annotation",
+  legacy_doc_format: "Legacy .doc (unverified)",
 };
 
 function detectionMethodLabel(method: string): string {

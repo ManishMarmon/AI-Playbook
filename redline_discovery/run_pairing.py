@@ -9,6 +9,7 @@ Phase 4 goal. Requests are tagged with their u_RequestProcessStatus category
 
 Usage:
     python run_pairing.py --limit 200
+    python run_pairing.py --limit 100 --snapshot output/pipeline_snapshot.json
 """
 
 import argparse
@@ -17,7 +18,8 @@ import shutil
 from collections import Counter
 
 import config
-from request_api import get_bearer_token, fetch_all_requests, fetch_request_file_list
+from request_api import (get_bearer_token, fetch_all_requests, fetch_request_file_list,
+                          load_pipeline_snapshot)
 from pairing import pair_files
 from diffing import diff_documents
 
@@ -33,13 +35,26 @@ def _process_status_tag(status: str) -> str:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=200)
+    parser.add_argument("--snapshot", default=None,
+                         help="Path to a pipeline snapshot (see fetch_snapshot.py) to reuse "
+                              "instead of re-fetching requests/files from the API")
     args = parser.parse_args()
 
     config.OUTPUT_DIR.mkdir(exist_ok=True)
-    token = get_bearer_token()
 
-    print(f"Fetching up to {args.limit} requests...")
-    requests_ = fetch_all_requests(token, limit=args.limit)
+    if args.snapshot:
+        print(f"Loading requests + files from snapshot: {args.snapshot}")
+        snapshot = load_pipeline_snapshot(args.snapshot)
+        requests_ = snapshot["requests"][:args.limit] if args.limit else snapshot["requests"]
+        files_by_request = snapshot["files_by_request"]
+    else:
+        # Pairing never downloads file bytes (diff_documents works off the
+        # TextExtract CobbleStone already provides), so a token is only
+        # needed for a fresh fetch — skipped entirely when reading a snapshot.
+        token = get_bearer_token()
+        print(f"Fetching up to {args.limit} requests...")
+        requests_ = fetch_all_requests(token, limit=args.limit)
+        files_by_request = None
     print(f"Requests scanned: {len(requests_)}")
 
     results = []
@@ -48,7 +63,8 @@ def main():
 
     for i, req in enumerate(requests_, 1):
         request_id = req.get("RequestID")
-        files = fetch_request_file_list(request_id, token)
+        files = (files_by_request[request_id] if files_by_request is not None
+                 else fetch_request_file_list(request_id, token))
         pairing = pair_files(req, files)
 
         record = {
