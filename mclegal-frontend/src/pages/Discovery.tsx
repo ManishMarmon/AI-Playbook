@@ -16,7 +16,29 @@ type CatalogRow = {
   is_likely_redline: boolean;
   signals: string;
   detection_methods?: string;
+  contract_type?: string | null;
+  business_sector?: string | null;
+  location?: string | null;
+  law_firm?: string | null;
+  attorney_email?: string | null;
+  party_a?: string | null;
+  party_b?: string | null;
+  requestor?: string | null;
 };
+
+function requestTooltip(r: CatalogRow): string {
+  return [
+    r.contract_type && `Contract type: ${r.contract_type}`,
+    r.location && `Location: ${r.location}`,
+    r.party_a && `Party A: ${r.party_a}`,
+    r.party_b && `Party B: ${r.party_b}`,
+    r.law_firm && `Law firm: ${r.law_firm}`,
+    r.attorney_email && `Attorney: ${r.attorney_email}`,
+    r.requestor && `Requestor: ${r.requestor}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
 
 const CHIP_TONE: Record<CatalogRow["category"], ChipTone | undefined> = {
   Redline: "warn",
@@ -135,6 +157,8 @@ export default function Discovery({ search }: { search: string }) {
                   <tr>
                     <th>Request</th>
                     <th>File</th>
+                    <th>Business Sector</th>
+                    <th>Party B</th>
                     <th>Category</th>
                     <th>Confidence</th>
                     <th>Detected Via</th>
@@ -144,12 +168,20 @@ export default function Discovery({ search }: { search: string }) {
                 <tbody>
                   {visible.map((r, i) => (
                     <tr key={`${r.request_id}-${r.file_name}-${i}`}>
-                      <td>
+                      <td title={requestTooltip(r) || undefined}>
                         <div className="text-body">{r.request_title || `Request ${r.request_id}`}</div>
                         <div className="text-body-xs muted">#{r.request_id}</div>
                       </td>
                       <td className="text-body-sm" style={{ maxWidth: 280, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={r.file_name}>
                         {r.file_name}
+                      </td>
+                      <td className="text-body-sm">{r.business_sector || "—"}</td>
+                      <td
+                        className="text-body-sm"
+                        style={{ maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                        title={r.party_b || ""}
+                      >
+                        {r.party_b || "—"}
                       </td>
                       <td>
                         <Chip tone={CHIP_TONE[r.category]}>{r.category}</Chip>

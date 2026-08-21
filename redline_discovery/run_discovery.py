@@ -58,12 +58,38 @@ def main():
     print(f"Requests scanned: {len(requests_)}")
 
     rows = []
+    requests_catalog = []
     ai_candidates = []
     confirmed_via_track_changes = 0
     confirmed_via_pdf_annotation = 0
     for i, req in enumerate(requests_, 1):
         request_id = req.get("RequestID")
         files = fetch_request_file_list(request_id, token)
+
+        # These are all already present on `req` (fetched for free — see
+        # request_api.fetch_all_requests's "Fields": ["RequestID"] quirk,
+        # which returns the full ~140-field record) but were previously
+        # discarded entirely. One row per request, not per file.
+        requests_catalog.append({
+            "request_id": request_id,
+            "request_title": req.get("RequestTitle"),
+            "request_status": req.get("StatusID"),
+            "process_status": req.get("u_RequestProcessStatus"),
+            "entry_date": req.get("EntryDate"),
+            "contract_type": req.get("u_RequestType"),
+            "business_sector": req.get("u_MarmonSector"),
+            "location": req.get("u_MarmonBusinessUnitGeography"),
+            "law_firm": req.get("u_LawFirmName"),
+            "attorney_email": req.get("u_HandlingAttorneyEmail"),
+            "party_a": req.get("u_BusinessUnit"),
+            "party_b": req.get("u_VendorCounterpartyName"),
+            "requestor": req.get("u_Requestor"),
+            "amount": req.get("RequestAmount"),
+            "notes": req.get("u_Notes"),
+            "vendor_id": req.get("VendorID"),
+            "attachment_count": len(files),
+        })
+
         for f in files:
             result = classify_file(f)
             file_type = (f.get("FileType") or "").lower()
@@ -99,6 +125,14 @@ def main():
                 "request_status": req.get("StatusID"),
                 "request_entry_date": req.get("EntryDate"),
                 "vendor_id": req.get("VendorID"),
+                "contract_type": req.get("u_RequestType"),
+                "business_sector": req.get("u_MarmonSector"),
+                "location": req.get("u_MarmonBusinessUnitGeography"),
+                "law_firm": req.get("u_LawFirmName"),
+                "attorney_email": req.get("u_HandlingAttorneyEmail"),
+                "party_a": req.get("u_BusinessUnit"),
+                "party_b": req.get("u_VendorCounterpartyName"),
+                "requestor": req.get("u_Requestor"),
                 "file_id": f.get("ID"),
                 "file_name": f.get("FileName"),
                 "file_type": file_type,
@@ -131,6 +165,9 @@ def main():
 
     json_path = config.OUTPUT_DIR / "redline_catalog.json"
     json_path.write_text(json.dumps(rows, indent=2, default=str), encoding="utf-8")
+
+    requests_catalog_path = config.OUTPUT_DIR / "requests_catalog.json"
+    requests_catalog_path.write_text(json.dumps(requests_catalog, indent=2, default=str), encoding="utf-8")
 
     csv_path = config.OUTPUT_DIR / "redline_catalog.csv"
     if rows:
@@ -177,6 +214,7 @@ def main():
     print("=" * 50)
     print(f"Wrote {json_path}")
     print(f"Wrote {csv_path}")
+    print(f"Wrote {requests_catalog_path}")
     print(f"Wrote {summary_path}")
     print(f"Wrote {ai_candidates_path}")
 
