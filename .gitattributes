@@ -1,0 +1,8 @@
+# This machine has core.autocrlf=true, which rewrites checked-out files to CRLF.
+# Claude Code's Workflow tool rejects scripts containing CR control characters,
+# so a committed workflow script would break on the next checkout. Pin these to
+# LF regardless of the local autocrlf setting.
+redline_discovery/workflows/*.js text eol=lf
+
+# SQL run through psql/pgAdmin — keep LF for consistency across both.
+redline_discovery/db/*.sql text eol=lf

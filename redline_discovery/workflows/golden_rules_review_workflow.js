@@ -5,8 +5,8 @@
 // Invoke with args: { candidateDir: "<repo>/redline_discovery/output/review_candidates",
 // manifestPath: "<repo>/redline_discovery/output/review_run_manifest.json",
 // requestIds: [...], requestMeta: { [requestId]: { request_title, party_a, party_b,
-// playbook_id, playbook_label } }, ruleMetaById: { [rule_id]: { title, category,
-// priority, applies_to } } }
+// playbook_id, playbook_label, other_nontemplate_files_count } }, ruleMetaById:
+// { [rule_id]: { title, category, priority, applies_to } } }
 // — candidateDir has one JSON file per in-scope request id, produced by run_review.py.
 //
 // Rule *content* (where_to_look/required/fallback/escalate_if/flag_if) is NOT passed
@@ -194,6 +194,7 @@ const chunkResults = await pipeline(
           party_b: reqMeta.party_b ?? null,
           playbook_id: reqMeta.playbook_id ?? null,
           playbook_label: reqMeta.playbook_label ?? null,
+          other_nontemplate_files_count: reqMeta.other_nontemplate_files_count ?? 0,
           rule_id: r.rule_id,
           title: rule.title,
           category: rule.category,

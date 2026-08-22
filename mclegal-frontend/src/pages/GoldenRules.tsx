@@ -14,6 +14,7 @@ type RuleResult = {
   party_b?: string | null;
   playbook_id?: string | null;
   playbook_label?: string | null;
+  other_nontemplate_files_count?: number;
   rule_id: string;
   title?: string | null;
   category?: string | null;
@@ -302,6 +303,15 @@ function RuleCard({ r }: { r: RuleResult }) {
         {r.matched_location ? ` · ${r.matched_location}` : ""}
         {r.confidence ? ` · confidence: ${r.confidence}` : ""}
       </div>
+
+      {!!r.other_nontemplate_files_count && (
+        <div className="text-body-xs" style={{ marginTop: 4, color: "var(--warn, #b45309)" }}>
+          <AlertTriangle size={12} style={{ verticalAlign: "-2px", marginRight: 4 }} />
+          This request has {r.other_nontemplate_files_count} other attached file
+          {r.other_nontemplate_files_count === 1 ? "" : "s"} not reviewed (only the most
+          authoritative file — the executed contract or latest redline — is checked).
+        </div>
+      )}
 
       <div className="divider" />
 

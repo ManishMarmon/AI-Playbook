@@ -19,7 +19,7 @@ import config
 import db
 from request_api import load_pipeline_snapshot
 from pairing import pair_files
-from review_selection import select_playbook, select_review_text
+from review_selection import select_playbook, select_review_text, catalog_other_files
 
 PLAYBOOKS_DIR = Path(__file__).parent.parent / "mclegal-frontend" / "public" / "playbooks"
 
@@ -102,6 +102,9 @@ def main():
                              "business_sector": business_sector, "contract_type": contract_type})
             continue
 
+        other_files = catalog_other_files(files, review_text.get("file_id"))
+        other_nontemplate_files = [f for f in other_files if not f["looks_like_template"]]
+
         candidate = {
             "request_id": request_id,
             "request_title": req.get("RequestTitle"),
@@ -112,6 +115,10 @@ def main():
             "contract_text_source": review_text["source"],
             "contract_text_truncated": review_text.get("truncated", False),
             "negotiation_history": _load_negotiation_history(request_id),
+            # Every attached file NOT reviewed, so this candidate never silently
+            # implies full coverage of everything filed under the request — see
+            # review_selection.catalog_other_files.
+            "other_files": other_files,
         }
         (candidates_dir / f"{request_id}.json").write_text(
             json.dumps(candidate, indent=2, default=str), encoding="utf-8"
@@ -125,6 +132,8 @@ def main():
             "party_b": req.get("u_VendorCounterpartyName"),
             "playbook_id": playbook_id,
             "playbook_label": playbook_label,
+            "other_files_count": len(other_files),
+            "other_nontemplate_files_count": len(other_nontemplate_files),
         }
         # Full rule dict, not just the LLM-facing subset — the workflow's
         # orchestrator needs title/category/priority/preferred_language/source_tag
