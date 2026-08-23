@@ -63,6 +63,12 @@ def main():
     parser.add_argument("--category-prefixes", default=None,
                          help="Path to a JSON file mapping category name -> 2-4 letter prefix, for a raw "
                               "result predating the workflow's own category_prefix field")
+    parser.add_argument("--prefix-namespace", default=None,
+                         help="Short tag (e.g. 'RE') prepended to every category prefix, e.g. RE-DOC-01 "
+                              "instead of DOC-01. The clustering step only sees categories within its own "
+                              "playbook, so its auto-picked 2-4 letter prefixes (DOC, PAY, TRM...) can and "
+                              "will collide with another playbook's prefixes — this namespaces them so "
+                              "playbooks never need to coordinate prefix choices with each other.")
     args = parser.parse_args()
 
     raw = json.loads(Path(args.raw).read_text(encoding="utf-8"))
@@ -75,13 +81,15 @@ def main():
 
     def prefix_for(rule: dict) -> str:
         if rule.get("category_prefix"):
-            return rule["category_prefix"]
-        if rule["category"] in prefix_map:
-            return prefix_map[rule["category"]]
-        raise SystemExit(
-            f"No prefix for category {rule['category']!r} — the raw result doesn't include "
-            f"category_prefix and it's missing from --category-prefixes. Add it and re-run."
-        )
+            base = rule["category_prefix"]
+        elif rule["category"] in prefix_map:
+            base = prefix_map[rule["category"]]
+        else:
+            raise SystemExit(
+                f"No prefix for category {rule['category']!r} — the raw result doesn't include "
+                f"category_prefix and it's missing from --category-prefixes. Add it and re-run."
+            )
+        return f"{args.prefix_namespace}-{base}" if args.prefix_namespace else base
 
     counters: dict[str, int] = {}
     final_rules = []

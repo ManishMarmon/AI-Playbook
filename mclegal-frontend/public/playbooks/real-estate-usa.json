@@ -1,192 +1,470 @@
 [
   {
-    "rule_id": "RE-FRM-01",
-    "title": "Preamble & Recitals: Parties, Dates and Prior-Lease Background",
+    "rule_id": "RE-DOC-01",
+    "title": "Recitals Identifying and Defining the Underlying Lease Being Amended",
     "priority": "PRESS",
-    "applies_to": "All contract types",
-    "category": "Formation, Parties & Amendment Structure",
-    "where_to_look": "The opening preamble/caption naming the instrument and identifying the parties and signatories; the WHEREAS/\"Recitals\" or \"Background\"/\"Antecedentes\" section immediately preceding the Definitions or first operative section; and any property/premises description or defined-term block (e.g., \"Existing Lease,\" \"Initial Lease,\" \"the Lease\") located there.",
-    "required": "The Recitals/Background section must: (1) name each party's exact current legal entity and the individual signing on its behalf, with a representation that the signatory's authority (officer or attorney-in-fact) is current and has not been revoked, modified, or limited; (2) state a single, unambiguous execution/effective date that is consistent across every language version and every cross-reference to that date elsewhere in the document (signature blocks, exhibits, term-commencement language); (3) if the instrument amends, renews, or extends a pre-existing lease, recite that prior lease \u2014 and each intervening amendment \u2014 by exact title and date, and define an umbrella term (e.g., \"Existing Lease\") that expressly includes the base lease together with all amendments, commencement-date memoranda, and addenda that together comprise the operative lease relationship; and (4) carry forward (rather than silently drop) any representation still being relied on for signing authority or corporate capacity unless Marmon's counsel confirms it is redundant with a document that remains in force.",
-    "fallback": "Accept a streamlined recitals section that drops older corporate-capacity, tax-status, and notarial boilerplate carried over from a prior instrument \u2014 this is common and generally low-risk on renewal \u2014 provided the chain-of-title essentials survive: the prior lease and any amendments are still identified by name and exact date, and the umbrella defined term (\"Existing Lease\"/\"Initial Lease\") still captures every document that is actually part of the deal (base lease, amendments, and any commencement/errata memoranda). Minor recital-format differences (WHEREAS clauses vs. numbered Antecedentes, English vs. bilingual drafting) are acceptable as long as this substance is preserved.",
-    "escalate_if": "Escalate to an attorney regardless of how negotiations are going if: the recitals omit or misstate the date or identity of a prior lease/amendment that this instrument is actually amending or renewing; a representation of continuing signing authority (attorney-in-fact/officer authority) is dropped from a renewal or amendment without confirmation that the underlying authority is still valid; recitals in one language version conflict with another (e.g., different dates for the same referenced document) and are not reconciled before signature; the \"Existing Lease\"/\"Initial Lease\" defined term excludes a memorandum, amendment, or addendum that is actually part of the operative deal, risking that key terms (rent, term, premises) are not properly incorporated; or the property/premises description in the recitals conflicts with the description used in the operative sections or exhibits with no reconciling reference.",
+    "applies_to": "Lease amendment or renewal",
+    "category": "Document Structure & Amendment Mechanics",
+    "where_to_look": "Recitals or Background section at the front of an amendment, renewal, or extension, before the operative terms.",
+    "required": "Open the amendment with recitals that identify the underlying lease by title, date, parties, and premises, roll every prior amendment and related memorandum into one defined term, and state the purpose of this amendment.",
+    "fallback": "Accept shorter recitals that identify the underlying lease by date alone, provided the defined term expressly sweeps in all prior amendments and modifications and the amendment's purpose appears in the first operative section.",
+    "escalate_if": "An instrument that changes term, premises, or rent under an existing tenancy is drafted as a freestanding lease with no recitals identifying the lease it amends.",
     "flag_if": [
-      "Preamble execution/effective date does not match the date on signature blocks, exhibits, or other cross-references in the document",
-      "Operative provisions reference \"as amended,\" \"Extended Term,\" \"the Lease,\" or similar language presupposing a pre-existing lease that the recitals never identify",
-      "A defined term like \"Existing Lease,\" \"Initial Lease,\" or \"the Lease\" is used before being defined, or is defined to cover only one instrument when context shows multiple related documents (base lease plus amendments/memoranda) are actually involved",
-      "Bilingual or multi-version recitals give inconsistent dates, entity names, or signatory details between language versions",
-      "Corporate-capacity, tax-status, or signing-authority representations from a prior lease are silently dropped in a renewal/amendment with no cross-reference confirming they remain valid",
-      "Party legal name or signatory in the preamble does not match the name/signatory used in the signature block or in a related guaranty or amendment"
+      "The document moves from the party paragraph straight into operative terms with no recitals or background section.",
+      "The recitals name the original lease but omit a prior amendment, commencement date memorandum, or errata addendum.",
+      "The lease defined term used in the recitals differs from the term used in the operative sections.",
+      "A recital date for the underlying lease or a prior amendment conflicts with the referenced document or another language version.",
+      "The recitals describe the premises or square footage differently from the underlying lease."
     ],
-    "preferred_language": "RECITALS\n\nWHEREAS, Landlord and Tenant (or their predecessors-in-interest) are parties to that certain [Lease/Lease Agreement] dated as of [date] (the \"Original Lease\"), together with that certain [Commencement Date Memorandum/other document] dated [date] (the \"Commencement Agreement\"), and as further amended by that certain [First] Amendment to Lease dated [date] (the \"[First] Amendment\") (the Original Lease, the Commencement Agreement, the [First] Amendment, and any other document amending, supplementing, or memorializing the terms thereof, collectively, the \"Existing Lease\"), pursuant to which Landlord leases to Tenant, and Tenant leases from Landlord, the premises described therein (the \"Premises\"), located at [address/legal description], as more particularly described in the Existing Lease;\n\nWHEREAS, the parties to this instrument are [Landlord Legal Name], a [entity type] organized under the laws of [jurisdiction] (\"Landlord\"), acting by and through its duly authorized [officer/attorney-in-fact], [name/title], whose authority to act on Landlord's behalf remains in full force and has not been revoked, modified, or limited, and [Tenant Legal Name], a [entity type] organized under the laws of [jurisdiction] (\"Tenant\"), acting by and through its duly authorized [officer/representative], [name/title] (Landlord and Tenant, together, the \"Parties\");\n\nWHEREAS, this [Amendment/Renewal/Agreement] is made and entered into as of [single, unambiguous date] (the \"Effective Date\"), which date is consistent throughout this instrument and all exhibits, schedules, and signature pages hereto; and\n\nWHEREAS, the Parties now desire to [amend/renew/extend] the Existing Lease on the terms set forth below;\n\nNOW, THEREFORE, in consideration of the mutual covenants contained herein and other good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, the Parties agree as follows: [operative provisions follow].",
+    "preferred_language": "Landlord and Tenant are parties to that certain lease dated [date], together with every amendment, commencement date memorandum, errata addendum, and other modification of it executed by the parties, collectively the \"Lease,\" demising the premises described in the Lease, and the parties now desire to amend the Lease as expressly set forth in this Amendment. Each capitalized term used but not defined in this Amendment has the meaning given to it in the Lease, and the Lease remains in full force and effect as amended hereby.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on 14 usable findings (2 additional findings were excluded as flagged document-pairing/OCR noise, not genuine negotiated redlines) across 9 distinct counterparties/deals spanning US, Mexican, Polish, and Singaporean leases \u2014 Hannibal Industries, GLG Properties (two separate matters), PDC Industrial Center Warsaw, Indiana Athletic Apparel, Pool 4 Industrial TX, Whitney Architects, Royal & Sons Investments, FAE Holdings, and Creekside SPE. The direction is fairly consistent (recitals/background sections are repeatedly added, tightened, or corrected to properly identify parties, dates, and prior-lease chains), but significance is mixed (4 high, rest medium) and this reads more as a recurring drafting-accuracy issue than an adversarial, high-stakes negotiating position \u2014 hence PRESS rather than MUST PRESS, with genuine but occasional escalation-worthy risk (e.g., a dropped attorney-in-fact authority representation, an unresolved cross-language date discrepancy) rather than a uniformly dangerous pattern.",
+    "confidence_note": "Based on 9 findings across 9 counterparties, all moving in the same direction toward fuller recitals identifying the underlying lease, though most were medium rather than high significance.",
     "matching_clause_names": [
-      "Preamble",
       "Recitals",
       "Preamble / Recitals",
-      "Preamble (Agreement Date)",
-      "Recitals \u2013 Lessor's Representations / Background",
-      "Recitals \u2013 Lessee's Representations",
+      "Recitals / Purpose of Agreement",
       "Background \u2013 Prior First Amendment",
-      "Recitals / Definitions - \"Existing Lease\"",
-      "Background/Recitals - Item 1 (Initial Lease / Initial Leased Property description)"
+      "Background/Recitals - Item 1 (Initial Lease / Initial Leased Property description)",
+      "Recitals / Definitions - \"Existing Lease\""
     ]
   },
   {
-    "rule_id": "RE-FRM-02",
-    "title": "Party & Guarantor Substitution (Successor-in-Interest / Corporate Restructuring)",
+    "rule_id": "RE-DOC-02",
+    "title": "Effective / Execution Date and Document Identification",
     "priority": "PRESS",
     "applies_to": "All contract types",
-    "category": "Formation, Parties & Amendment Structure",
-    "where_to_look": "Preamble/recitals (Landlord/Lessor and Tenant/Lessee identification), the Guaranty preamble (guarantor identification), the Notices section (addresses and \"copy to\" requirements), and any successor-in-interest, assignment, or \"definition of the Lease\" language in amendments/extensions.",
-    "required": "Whenever Landlord, Tenant, or Guarantor has been renamed, converted to a different entity form, merged, or otherwise succeeded by another entity, the operative document must: (a) name the current, correct legal entity and its form (e.g., \"formerly known as,\" \"converted to a Delaware LLC,\" \"successor-in-interest to\"); (b) expressly recite the chain of succession/conversion so the relationship to the predecessor entity is documented on the face of the lease, not merely assumed; (c) confirm all obligations (including any guaranty) continue uninterrupted and binding on the successor without release of the predecessor absent a signed assumption/release; and (d) require that notices be copied to Marmon Holdings, Inc.'s (or the current parent's) in-house legal/real estate group in addition to notice to the local business unit.",
-    "fallback": "If the counterparty will not accept full successor-in-interest recital language, secure at minimum: (i) the current correct legal name, entity form, and address for every party and guarantor: (ii) a one-line statement that the name/entity change does not affect the validity or continuity of the lease or guaranty; and (iii) retain the notice-copy-to-parent-legal-and-real-estate requirement, which has been obtainable even when fuller succession language was not.",
-    "escalate_if": "Escalate to an attorney if a party's name changes in a lease document with no recital or evidence tying the new entity to the prior one (e.g., a materially different landlord entity appears with no \"successor-in-interest,\" assignment, or deed reference); if no supporting documentation (assignment and assumption, certificate of conversion/merger, deed) is available on request; or if a guarantor is substituted without a fresh or reaffirmed guaranty executed by the new guarantor entity.",
+    "category": "Document Structure & Amendment Mechanics",
+    "where_to_look": "Cover page caption, preamble, and opening recitals identifying the instrument, the parties, and its effective date.",
+    "required": "Require the preamble to state one specific effective date and to identify the instrument and every prior document it amends.",
+    "fallback": "Accept an effective date fixed by the last signature, provided the caption names the instrument correctly and the recitals identify each prior agreement by title and date.",
+    "escalate_if": "A blank, backdated, or internally conflicting effective date, or a preamble naming the wrong Marmon contracting entity, goes to an attorney.",
     "flag_if": [
-      "Party name in the preamble/recitals does not match the name in the signature block or notice address, with no explanation",
-      "A landlord, tenant, or guarantor name has changed since the prior lease document but no \"successor-in-interest\" or \"formerly known as\" recital was added",
-      "Guarantor's stated entity name does not match the actual signatory's employer, or no updated/reaffirmed guaranty was executed alongside a guarantor substitution",
-      "Notice provision does not require a copy to Marmon Holdings, Inc. (or current parent) legal/real estate group",
-      "An amendment or extension purports to reference \"the Lease\" or prior amendments but the current and prior documents show low textual similarity, suggesting they may not actually be sequential drafts of the same agreement",
-      "Entity form changed (e.g., Corporation to LLC) but is reflected inconsistently across preamble, defined terms, signature block, and notice address"
+      "The effective date is blank or left as a fill-in placeholder.",
+      "The preamble date conflicts with the signature-page, DocuSign, or notarial date.",
+      "The caption reads as a new lease while the recitals describe an amendment, renewal, or extension.",
+      "The recitals reference a prior agreement without stating its title and date.",
+      "The Marmon entity or signatory named in the preamble differs from the signature page.",
+      "The contract or document number on the cover page differs from the number used elsewhere in the document."
     ],
-    "preferred_language": "Successor Parties; Entity Changes. If Landlord, Tenant, or Guarantor is renamed, converts to a different form of entity, merges, consolidates, or is otherwise succeeded by another entity (whether by corporate restructuring, conversion, merger, assignment, or transfer of the underlying property or guaranty obligation), the party undergoing such change shall provide the other party written notice within thirty (30) days of the effective date, together with reasonably available documentation evidencing the change (e.g., a certificate of conversion or merger, an assignment and assumption agreement, or a deed). Any lease, amendment, guaranty, or notice executed on or after such change shall (a) identify the current legal name and entity form of the affected party, (b) expressly state that such party is the successor-in-interest to, or formerly known as, its predecessor, and (c) confirm that all obligations under this Lease and any related guaranty continue in full force and effect and are binding on the successor entity without interruption, release, or discharge of the predecessor's obligations absent a written assumption and release signed by Landlord. All notices under this Lease shall be delivered to Tenant at the address stated herein and shall also be copied to Marmon Holdings, Inc., Attention: Chief Legal Counsel - Real Estate, at its then-current notice address, or to such successor department or address as Tenant may designate in writing from time to time.",
+    "preferred_language": "This Agreement is effective as of the date on which the last Party executes it (the \"Effective Date\"), and the Effective Date controls for all purposes notwithstanding any other date appearing on the cover page, in the signature blocks, or in any notarial certificate. The recitals identify by title and date the prior agreement that this Agreement amends, renews, or extends, together with each amendment to that agreement then in effect.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on 4 findings across 3 distinct counterparties/deals (NAVA-guarantor renaming; Providence Properties-landlord and tenant identification; 319 LLC-landlord succession and tenant entity conversion), with significance high in 3 of 4 and the direction consistent (correct current entity naming, explicit succession recitals, notice-copy-to-parent requirements) \u2014 but one finding (the Providence Properties to JEM Land landlord substitution) was itself flagged in the source data as ambiguous, since low document similarity left it unclear whether it reflects a genuine successor change or two unrelated documents, so treat this rule as directionally sound but based on a small and partly uncertain sample.",
+    "confidence_note": "Based on 7 findings across 7 counterparties, consistent in direction toward a corrected date and an accurately captioned instrument, though three of the findings reflect document-pairing artifacts rather than true negotiated redlines.",
     "matching_clause_names": [
-      "Guaranty / Preamble (Guarantor Identification)",
-      "Parties (Landlord/Lessor Identification)",
-      "Parties (Tenant/Lessee Identification) / Notices",
-      "Preamble / Recitals (Parties and Reference to Lease)"
+      "Preamble",
+      "Preamble (Agreement Date)",
+      "Preamble / Document Identification"
     ]
   },
   {
-    "rule_id": "RE-FRM-03",
-    "title": "Order of Precedence & No-Novation (Amendment vs. Underlying Lease)",
+    "rule_id": "RE-DOC-03",
+    "title": "Order of Precedence, No Novation, and Survival of Unamended Terms",
     "priority": "PRESS",
-    "applies_to": "All contract types",
-    "category": "Formation, Parties & Amendment Structure",
-    "where_to_look": "In the amendment/renewal/extension document itself \u2014 typically near the end, under headings like \"Order of Precedence,\" \"Entire Agreement,\" \"No Novation,\" \"Ratification,\" or folded into General/Miscellaneous Provisions. Also check the original Lease's standalone provisions (especially Attorneys' Fees, Indemnification, Guaranty, Security Deposit) to see whether they are being restated, silently dropped, or left to survive by implication only.",
-    "required": "Include both an order-of-precedence clause AND a no-novation/survival clause in the same amendment: (1) the new document controls over the underlying Lease (as previously amended) only as to the specific matters it expressly addresses; (2) the underlying Lease and all prior amendments remain in full force and effect and are not extinguished, replaced, or novated by the new document; and (3) all terms not expressly modified \u2014 including attorneys'-fees/fee-shifting rights, indemnification, guaranties, and security \u2014 expressly survive and continue unchanged.",
-    "fallback": "Where the counterparty resists a full ratification/survival clause, accept the narrower pairing actually observed in practice: an order-of-precedence sentence (new document controls only where inconsistent with the prior Lease/amendments) plus a no-novation confirmation naming the prior Lease and amendment(s) and confirming their continued effect \u2014 but still insist on adding an express carve-out preserving attorneys' fees, guaranties, and security so they are not silently dropped just because they aren't repeated in the new document.",
-    "escalate_if": "The new document's precedence/integration language is broad enough to arguably supersede or extinguish the entire underlying Lease (not just the inconsistent provisions) \u2014 this risks unintentionally discharging guaranties, security, or fee-shifting rights, as nearly happened when a Letter Extension's precedence clause coincided with the disappearance of the original Lease's attorneys'-fees provision. Also escalate if any language could be read as effecting a novation of the Lease or an underlying guaranty (which in some governing-law jurisdictions can discharge a guarantor/surety), or if a no-novation confirmation is expressly refused where a guaranty or security instrument backs the Lease.",
+    "applies_to": "Lease amendment or renewal",
+    "category": "Document Structure & Amendment Mechanics",
+    "where_to_look": "Closing or miscellaneous provisions of any amendment, renewal, or letter extension to an existing lease.",
+    "required": "State expressly that the amendment controls over conflicting lease terms, that all unamended terms survive, and that no novation occurs.",
+    "fallback": "Accept precedence plus a savings clause confirming unamended terms remain in force, so long as every guaranty, security deposit, and letter of credit under the original lease is separately reaffirmed in writing.",
+    "escalate_if": "The amendment supersedes or replaces the underlying lease, or is silent on novation where the deal relies on a guaranty or posted security.",
     "flag_if": [
-      "A renewal/amendment/extension is being added on top of an already-amended Lease (multiple prior documents) with no order-of-precedence clause stating which document controls in a conflict.",
-      "Standalone provisions from the original Lease (attorneys' fees, indemnification, insurance, guaranty) are absent from the new document and there is no express survival/no-novation clause confirming they remain in effect.",
-      "The new document contains a broad 'entire agreement' or integration clause with no carve-out preserving the underlying Lease's terms except as expressly modified.",
-      "No-novation language is missing even though the Lease is backed by a corporate guaranty or security deposit.",
-      "Absolute supersession language such as 'this Amendment/Extension supersedes the Lease' rather than 'governs only to the extent inconsistent with the Lease as previously amended.'"
+      "The amendment contains no clause confirming that unamended lease terms remain in full force and effect.",
+      "No order-of-precedence sentence resolves conflicts between the amendment and the underlying lease.",
+      "The precedence language gives the underlying lease or a prior amendment priority over the current document.",
+      "A renewal or extension in a civil-law jurisdiction lacks an express no-novation statement.",
+      "A substantive lease provision drops out at the same location where a savings clause is inserted."
     ],
-    "preferred_language": "Order of Precedence; No Novation. This [Amendment/Renewal/Extension] amends and supplements, but does not replace, novate, or discharge, the Lease dated [___] between the parties, as previously amended by [identify prior amendment(s)] (collectively, the \"Lease\"). Except as expressly modified by this [Amendment/Renewal/Extension], all terms, covenants, conditions, and rights of the Lease remain unchanged and in full force and effect, including without limitation any attorneys'-fees or fee-shifting provisions, indemnification obligations, guaranties, and security deposits or other security instruments given in connection with the Lease. In the event of any conflict between the terms of this [Amendment/Renewal/Extension] and the Lease, the terms of this [Amendment/Renewal/Extension] shall control, but only with respect to the specific matters expressly addressed herein. The parties expressly agree that execution of this [Amendment/Renewal/Extension] does not constitute, and shall not be construed as, a novation of the Lease or of any guaranty or security given in connection therewith, and all obligations of any guarantor thereunder shall continue in full force and effect without interruption. This [Amendment/Renewal/Extension], together with the Lease and all prior amendments thereto, constitutes the entire agreement of the parties with respect to the subject matter hereof, and there are no other agreements or understandings, oral or written, not expressly referenced herein.",
+    "preferred_language": "Except as expressly amended by this Amendment, all terms and conditions of the Lease and of each prior amendment remain in full force and effect and are hereby ratified and confirmed. In the event of any conflict or ambiguity between this Amendment and the Lease or any prior amendment, this Amendment shall govern and control. This Amendment is supplemental to the Lease and shall not constitute a novation, extinguishment, or replacement of the Lease, of any prior amendment, or of any guaranty or security granted in connection therewith.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 3 findings drawn from 2 distinct counterparties/contracts (a GLG Properties lease renewal contributing 2 findings, and a 319 LLC letter extension contributing 1) \u2014 the direction is consistent (parties add order-of-precedence and no-novation protections during renewals, and the real danger is a precedence/integration clause silently dropping standalone rights like attorneys' fees), but with only two underlying deals this is a thin sample; priority is set to PRESS rather than MUST PRESS, and the rule should be revisited as more findings on this topic become available.",
+    "confidence_note": "Based on 4 findings across 3 counterparties with consistent direction, strongest on precedence and no-novation language in renewals and extensions.",
     "matching_clause_names": [
       "Terms of the Lease / Order of Precedence",
+      "Attorneys' Fees / Order of Precedence",
       "No Novation",
-      "Attorneys' Fees / Order of Precedence"
+      "Use / Miscellaneous"
+    ]
+  },
+  {
+    "rule_id": "RE-PTY-01",
+    "title": "Identity and Substitution of Contracting Parties, Successors, and Guarantors",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Parties, Entities & Authority",
+    "where_to_look": "Preamble party identification, notice addresses, and any guaranty or extension-letter recital naming the parties.",
+    "required": "Identify each party and guarantor by exact current legal name, entity form, and state of organization, and recite the successor-in-interest chain back to the party of record.",
+    "fallback": "Accept a trade name or former name only where the same provision also states the party's exact legal name, entity form, state of organization, and its status as successor to the original party of record.",
+    "escalate_if": "A different landlord, tenant, or guarantor entity is substituted without written proof of the successor's title and authority to bind.",
+    "flag_if": [
+      "A party is named without its entity form or state of organization.",
+      "A party is identified by a trade name or a former corporate name only.",
+      "The named landlord differs from the landlord of record under the prior lease or amendments.",
+      "The guarantor entity or the guarantor's signing officer differs from the existing guaranty.",
+      "Notice provisions do not copy Marmon Holdings in-house legal at its own address."
+    ],
+    "preferred_language": "Each party is identified herein by its exact current legal name, entity form, and state of organization, and each party represents that it is the party of record under the Lease or the successor-in-interest to that party, holding all right, title, and interest of that party. Any change in the identity of Landlord, Tenant, or Guarantor is effective only upon delivery of a written instrument to the other party identifying the successor entity, its entity form and state of organization, and the instrument by which it acquired that interest.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 4 findings across 3 counterparties, consistent in direction on entity-identity accuracy and successor recitals, though one landlord-substitution finding may reflect a document-pairing artifact rather than a negotiated change.",
+    "matching_clause_names": [
+      "Parties (Landlord/Lessor Identification)",
+      "Parties (Tenant/Lessee Identification) / Notices",
+      "Preamble / Recitals (Parties and Reference to Lease)",
+      "Guaranty / Preamble (Guarantor Identification)"
+    ]
+  },
+  {
+    "rule_id": "RE-PTY-02",
+    "title": "Corporate Capacity, Authority, and Formation Representations",
+    "priority": "MANAGE",
+    "applies_to": "All contract types",
+    "category": "Parties, Entities & Authority",
+    "where_to_look": "Opening recitals and party-representation clauses, including renewals and amendments that shorten the original recitals.",
+    "required": "Each party expressly represents its due organization, good standing, and the current unrevoked authority of its signatory.",
+    "fallback": "Accept dropping formation, notarial, and registry detail where the renewal or amendment expressly reaffirms the capacity and authority representations of the original agreement as of the new effective date.",
+    "escalate_if": "Never accept a renewal or amendment that carries no capacity or authority representation and no reaffirmation of the original.",
+    "flag_if": [
+      "Recitals name a signatory or attorney-in-fact without stating that the authority remains unrevoked.",
+      "A renewal or amendment deletes the original formation and authority recitals without reaffirming them.",
+      "The entity named in the recitals differs from the entity named in the signature block.",
+      "Title to the property sits with a trustee or beneficiary that is not a party to the agreement.",
+      "No party representation addresses good standing or power to enter the agreement."
+    ],
+    "preferred_language": "Each party represents and warrants that it is duly organized, validly existing, and in good standing under the laws of its jurisdiction of organization, that it has full power and authority to enter into and perform this Agreement, and that the individual executing this Agreement on its behalf holds authority that has not been revoked, modified, or limited. Each party reaffirms these representations as of the Effective Date.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings drawn from a single lease renewal with one counterparty, both of medium significance and both resting on ambiguous diff evidence, so this rule is provisional.",
+    "matching_clause_names": [
+      "Recitals \u2013 Lessor's Representations / Background",
+      "Recitals \u2013 Lessee's Representations"
+    ]
+  },
+  {
+    "rule_id": "RE-TRM-01",
+    "title": "Lease Term Length, Commencement, and Expiration Dates",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Term, Renewal & Extension",
+    "where_to_look": "Term or Lease Grant section, plus any amendment that restates the term, commencement date, or expiration date.",
+    "required": "Fix the term with express commencement and expiration dates and a firm initial term of no more than three years. Place any additional years in tenant-side renewal options.",
+    "fallback": "Accept a five-year firm term where the commencement and expiration dates are both stated expressly and the lease grants at least one tenant renewal option.",
+    "escalate_if": "The term lacks a stated expiration date, or it binds the tenant beyond five years with no renewal option and no early exit right.",
+    "flag_if": [
+      "The term is defined by duration only, with no stated expiration date.",
+      "Commencement is tied to an event that the lease does not define.",
+      "The firm initial term exceeds three years.",
+      "The stated commencement date does not match the date possession is actually delivered.",
+      "Renewal or extension years are folded into the firm term instead of stated as options."
+    ],
+    "preferred_language": "Term. The term of this Lease commences on the Commencement Date, being the date Landlord delivers exclusive possession of the Premises to Tenant, and expires at 11:59 p.m. on the last day of the thirty-sixth (36th) full calendar month thereafter. Landlord and Tenant shall confirm both dates in writing, and this Lease shall state each date expressly. Occupancy beyond the expiration date arises only through Tenant's exercise of a renewal option granted in this Lease.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 3 findings across 3 counterparties, all rated high significance and consistent in direction toward shorter firm terms with expressly dated boundaries, though one of the three may reflect a comparison across different underlying deals.",
+    "matching_clause_names": [
+      "Term"
+    ]
+  },
+  {
+    "rule_id": "RE-TRM-02",
+    "title": "Renewal and Extension Options: Fix Dates and Renewal Rent",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Term, Renewal & Extension",
+    "where_to_look": "Term, Renewal Option, or Extended Term sections, and any amendment or notice exercising a renewal option.",
+    "required": "State express commencement and expiration dates for each renewal or extension term and fix the renewal rent in the document itself. All other lease terms carry forward unchanged.",
+    "fallback": "Accept renewal rent set by a stated schedule with fixed annual escalation of no more than two percent, or a renewal duration and rent set by cross-reference to a named section of the existing lease. Accept a renewal term whose expiration is fixed by a stated number of months running from the commencement date.",
+    "escalate_if": "Renewal rent is set at fair market value, by landlord determination, or by future agreement, or a renewal term commences with no stated expiration date.",
+    "flag_if": [
+      "Renewal rent is stated as fair market value or is set by the landlord.",
+      "A renewal or extended term gives a commencement date without an expiration date.",
+      "The number or duration of remaining renewal options is deleted or left blank.",
+      "Renewal rent is left to future agreement between the parties.",
+      "Annual rent escalation during a renewal term exceeds two percent."
+    ],
+    "preferred_language": "Tenant shall have the option to extend the Term for one additional period commencing on the day after the then-current Term expires and expiring on the fifth anniversary of that commencement date, exercisable by written notice to Landlord given at least ninety (90) days before the then-current Term expires. Base Rent during the extension period shall equal the Base Rent in effect immediately before that period commenced, and all other terms and conditions of this Lease shall continue unchanged. Any remaining extension options granted to Tenant survive the exercise of this option.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 7 findings across 6 counterparties, consistent direction toward express renewal dates and rent fixed in the document, though two findings rest on fragmentary extracted text.",
+    "matching_clause_names": [
+      "Renewal/Extension Option (Lease \u00a72(b))",
+      "Additional Extension Option (Second Extended Term)",
+      "Term and Renewal",
+      "Term / Renewal",
+      "Extended Term",
+      "Term Extension and Rent Schedule",
+      "Term, Extension Option, and Rent"
+    ]
+  },
+  {
+    "rule_id": "RE-RNT-01",
+    "title": "Base Rent Amount, Rent Schedule, and Escalation",
+    "priority": "MUST PRESS",
+    "applies_to": "All contract types",
+    "category": "Rent & Monetary Terms",
+    "where_to_look": "Base Rent or Rent clause and any attached rent schedule, including renewal, extension, and amendment rent terms.",
+    "required": "Fix Base Rent for every period in a fully restated schedule stating each period dates and exact monthly amount, with escalations set as stated dollar figures.",
+    "fallback": "Accept a percentage escalator only where it is capped at a stated maximum, applies no more than once a year, and takes effect only after written notice. Any superseded rent schedule is deleted and restated in full rather than amended by cross-reference.",
+    "escalate_if": "Never accept a landlord right to adjust Base Rent unilaterally, an uncapped or market-reset escalator, or a rent figure whose words and numerals disagree.",
+    "flag_if": [
+      "The written-out rent amount and the numeral do not match.",
+      "A renewal or extension term has no stated rent amount.",
+      "An escalation is expressed without a stated cap or ceiling.",
+      "Landlord may adjust Base Rent without notice to Tenant.",
+      "A rent schedule is changed by cross-reference without being deleted and restated in full."
+    ],
+    "preferred_language": "Tenant shall pay Base Rent in the amounts and for the periods set forth in the Base Rent Schedule attached to this Lease, which is restated in full and supersedes every prior rent schedule. The commencement date, expiration date, and monthly Base Rent for each period are as stated in that Schedule. Where an amount appears in both words and numerals, the numerals control. Base Rent shall not increase except as expressly stated in the Schedule, and Landlord shall have no right to adjust Base Rent unilaterally.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 8 findings across 8 counterparties, all high significance and consistent in direction, including two where the written words and the numeral for rent disagreed after the change.",
+    "matching_clause_names": [
+      "Cl\u00e1usula Segunda (Rent)",
+      "Rent",
+      "Rent and Term",
+      "Base Rent",
+      "Base Rent / Exhibit C",
+      "Rent Schedule (Renewal Option)",
+      "Rent & Service Charge",
+      "Lease Term and Rent/Security Deposit"
+    ]
+  },
+  {
+    "rule_id": "RE-RNT-02",
+    "title": "Rent Payment Timing, Proration, and Collection Mechanics",
+    "priority": "MANAGE",
+    "applies_to": "Lease",
+    "category": "Rent & Monetary Terms",
+    "where_to_look": "Rent and service charge payment terms clause, including any proration provision for partial first and last months.",
+    "required": "Require day-count proration of rent and service charges for partial first and last months, with one fixed monthly due date.",
+    "fallback": "Accept rent payable monthly in advance without demand, and service charges recoverable as rent in arrears, provided proration for partial months is expressly stated and the tenant keeps a written notice and cure period before default remedies attach.",
+    "escalate_if": "A waiver of all deduction and set-off rights is paired with rent acceleration or with default remedies that attach without notice or cure.",
+    "flag_if": [
+      "The lease sets no proration method for a partial first or last calendar month.",
+      "Rent is payable in advance without demand and without any grace period.",
+      "Service charges are recoverable as if they were rent in arrears.",
+      "Rent is payable without any deduction, set-off, or counterclaim.",
+      "The first payment is due on the earlier of execution or the commencement date."
+    ],
+    "preferred_language": "Tenant shall pay Monthly Base Rent and the monthly service charge in advance on the first day of each calendar month of the Lease Term. If the Lease Term begins on a day other than the first day of a calendar month, or ends on a day other than the last day of a calendar month, Monthly Base Rent and the monthly service charge for that beginning or ending month shall be prorated based upon the number of days in such month occurring within the Lease Term.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings across 2 counterparties with mixed direction, one adding tenant-favorable proration and one accepting landlord collection mechanics, so this rule is provisional.",
+    "matching_clause_names": [
+      "Rent Payment",
+      "Rent & Service Charge - Payment Terms"
+    ]
+  },
+  {
+    "rule_id": "RE-RNT-03",
+    "title": "Rent Credits, Abatement, and Rent-Free Periods",
+    "priority": "PRESS",
+    "applies_to": "Lease",
+    "category": "Rent & Monetary Terms",
+    "where_to_look": "Rent commencement and rent credit provisions, and the definitions of Fitting-Out Period and Rent Free Period.",
+    "required": "Obtain a defined rent-free period covering the full fit-out window and a rent credit stated as a fixed amount applied to named rent installments.",
+    "fallback": "Accept a shorter rent-free period fixed by calendar dates, provided the credit amount and the specific rent installments it offsets are stated in the document and any unused balance carries forward.",
+    "escalate_if": "Never accept abatement or credit language that Landlord can revoke, recapture, or reduce on Tenant default without attorney approval.",
+    "flag_if": [
+      "Fitting-Out Period or Rent Free Period is defined as \"Not Applicable\".",
+      "Rent commencement is the same date as possession or lease commencement.",
+      "A rent credit or concession is referenced without a stated dollar amount.",
+      "The rent credit is not tied to identified rent installments or calendar months.",
+      "Abatement or credit is forfeited, repayable, or suspended on Tenant default."
+    ],
+    "preferred_language": "Rent Credit and Rent-Free Period. No Base Rent, additional rent, or service charge shall accrue or be payable during the Fitting-Out Period, which runs from delivery of possession of the Premises through the Rent Commencement Date. Landlord grants Tenant a rent credit of $[amount], which Tenant shall apply against the Base Rent installment first coming due after the Rent Commencement Date, with any unapplied balance carried forward to successive installments until exhausted. Such rent-free period and credit are unconditional and shall not be revoked, recaptured, or reduced.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings across 2 counterparties, consistent direction but a thin evidence base.",
+    "matching_clause_names": [
+      "Base Rent Credit (new Section 5)",
+      "Definitions \u2013 Fitting-Out Period / Rent Free Period"
+    ]
+  },
+  {
+    "rule_id": "RE-RNT-04",
+    "title": "Security Deposit and Advance Rental (Amount, Application, and Refund)",
+    "priority": "PRESS",
+    "applies_to": "Lease",
+    "category": "Rent & Monetary Terms",
+    "where_to_look": "The security deposit, rental deposit, and rental-in-advance clauses, and the deposit figures in the lease schedule.",
+    "required": "Cap the security deposit at one month's gross rent and require it refunded in full within thirty days after the Term ends, less only sums actually owed.",
+    "fallback": "Accept up to two months' gross rent held as deposit or advance rental, with refund within one month after the Term ends and deductions limited to sums actually due and itemized in writing.",
+    "escalate_if": "Never accept forfeiture of the deposit on any breach, refund left to Landlord discretion, or a lease with no outer date for return.",
+    "flag_if": [
+      "The deposit or advance rental exceeds two months' gross rent.",
+      "The lease sets no outer date for returning the deposit after the Term ends.",
+      "The deposit is stated to be forfeited or non-refundable on Tenant breach.",
+      "Deductions from the deposit are not limited to amounts actually due to the Landlord.",
+      "The deposit amount written in words does not match the numeral."
+    ],
+    "preferred_language": "Tenant shall pay Landlord a security deposit equal to one (1) month's gross rent, to be held as security for Tenant's performance and not applied as payment of rent or any other charge. Landlord shall refund the deposit in full within thirty (30) days after the expiry or earlier determination of the Term, subject to deduction only for sums then actually due and owing to Landlord and itemized in a written statement delivered to Tenant. The deposit shall not otherwise be forfeited on account of any breach by Tenant.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings from a single landlord across two leases, both marked high significance and pointing the same direction on deposit size and refund mechanics, but one turns on a words-versus-numerals discrepancy, so this rule is provisional.",
+    "matching_clause_names": [
+      "Deposit",
+      "Rental in Advance / Landlord's Remedies for Breach"
+    ]
+  },
+  {
+    "rule_id": "RE-OPX-01",
+    "title": "Scope of Operating Expense and Tax Pass-Throughs (Inclusions and Exclusions)",
+    "priority": "PRESS",
+    "applies_to": "Lease",
+    "category": "Operating Expenses, Taxes & Pass-Throughs",
+    "where_to_look": "The Operating Expenses definition with its inclusion and exclusion lists, and the definition of Taxes.",
+    "required": "Limit Operating Expenses to routine, non-capital costs of operating the Building itself, and narrow the Taxes definition to real estate taxes only.",
+    "fallback": "Accept a broader inclusion list only with express exclusions for capital expenditures, structural, roof and parking replacement, Landlord income and rent-based taxes, personnel not dedicated solely to the Building, latent defects, Hazardous Substances remediation, and duplicate charges. Permitted capital items must be amortized over useful life with Tenant paying only the annual share.",
+    "escalate_if": "Do not accept pass-through of structural, roof or Building-system replacement costs, or a Taxes definition reaching Landlord income or rent-based taxes, without attorney approval.",
+    "flag_if": [
+      "Operating Expenses include maintenance, repair or replacement of the roof, roof membrane, structure, foundation or exterior walls.",
+      "Taxes is defined as any tax rather than real estate taxes only.",
+      "Capital improvements or capital expenditures are chargeable to Tenant without an amortization limit.",
+      "Operating Expenses reach Park-wide, common-area or off-Building improvements such as paving, roads and landscaping.",
+      "Landlord salaries, wages or benefits are charged without a limit to personnel working solely for the Building."
+    ],
+    "preferred_language": "Operating Expenses shall mean the actual costs of routine, non-capital operation, maintenance and repair of the Building. Operating Expenses exclude capital improvements and capital expenditures, including roof and roof membrane replacement and parking area repaving; costs to maintain, repair or replace the structure, foundation, exterior walls, roof or Building systems; salaries and benefits of personnel not working solely for the Building; costs to cure latent defects or violations of law or to remediate Hazardous Substances; and any duplication of charges. Taxes means real estate taxes only, and excludes any tax based on Rent and any income tax imposed on Landlord.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings, both marked high significance and moving in the same direction, but both from a single lease negotiation with one counterparty, so the direction is clear while the breadth of the pattern is provisional.",
+    "matching_clause_names": [
+      "Operating Expenses",
+      "Operating Expenses / Taxes Definition"
+    ]
+  },
+  {
+    "rule_id": "RE-OPX-02",
+    "title": "Management Fee Caps and Capital-Cost Recovery / Amortization",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Operating Expenses, Taxes & Pass-Throughs",
+    "where_to_look": "Operating Expenses definition and its exclusions, covering the management fee component and capital-cost amortization language.",
+    "required": "Cap the property management and administrative fee at 3% of Operating Expenses. Include law-compliance capital costs only where the law first takes effect after the lease date, amortized over the item's full useful life.",
+    "fallback": "Accept a management fee cap of 4% of Operating Expenses computed without including the fee itself. Accept law-compliance capital costs amortized over the lesser of useful life or fifteen years where the work also produces a net reduction in Operating Expenses.",
+    "escalate_if": "Uncapped management fees payable to a Landlord affiliate, or pass-through of capital costs curing pre-existing legal non-compliance, require attorney approval.",
+    "flag_if": [
+      "Operating Expenses include property management fees with no stated percentage cap.",
+      "The management fee is payable to an affiliate of Landlord.",
+      "An administration or supervisory fee is charged in addition to a property management fee.",
+      "Law-compliance capital costs are includable regardless of when the underlying law took effect.",
+      "Capital costs are amortized over a fixed period shorter than the item's useful life."
+    ],
+    "preferred_language": "Operating Expenses shall include property management fees payable to a property manager, including any affiliate of Landlord, not to exceed three percent (3%) of all Operating Expenses, and no separate administration or supervisory fee shall be charged in addition thereto. Operating Expenses shall include the cost of additions or alterations made by Landlord to comply with applicable laws and regulations only to the extent such laws first become effective after the date of this Lease, or to the extent such additions or alterations result in a net reduction of overall Operating Expenses, and any such cost shall be amortized on a straight-line basis over the useful life of the item for federal income tax purposes.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings from a single counterparty lease negotiation, both rated high significance and pointing the same direction, so the direction is clear but the sample is thin.",
+    "matching_clause_names": [
+      "Operating Expenses - Property Management Fee",
+      "Operating Expenses - Capital Improvements for Law Compliance"
     ]
   },
   {
     "rule_id": "RE-PRM-01",
-    "title": "Expansion of Premises / Additional Leased Space",
+    "title": "Expansion of Premises and Addition of Space",
     "priority": "PRESS",
-    "applies_to": "All contract types",
-    "category": "Premises: Space & Permitted Use",
-    "where_to_look": "The Recitals and the \"Premises\"/granting-clause section of any lease amendment or addendum that adds space to an existing tenancy, and the correlated Rent, Term, Use, and Insurance sections of that same document (both findings show the expansion mechanic living in a newly added Recitals + restated \"Premises\"/\"Expansion of Premises\" operative section, with downstream edits to Term/Rent and Insurance/Use).",
-    "required": "Document any addition of space to an existing Marmon tenancy as a formal written amendment (not an informal side letter or an ambiguous freestanding \"new lease\") that: (a) recites and expressly incorporates the original lease by date and parties; (b) precisely defines the added space (e.g., \"Expansion Premises\"/\"Additional Premises\") by exact square footage and an attached exhibit/site plan/legal description; (c) states unambiguously whether the added space merges into a single combined \"Premises\" defined term or is tracked as a separate space, and states the resulting total square footage; (d) sets the incremental rent (or rate) for the added space with its own clear commencement date; (e) makes the term of the added space co-terminous with the original lease term unless deliberately and expressly staggered; and (f) confirms Tenant's insurance, use rights, and other lease obligations extend to the expanded space.",
-    "fallback": "Where the counterparty insists on a separate, free-standing addendum/second lease for the added space (as in the McKenzie Valve/Tommy Surber \"Lease 2\" addendum) rather than a full amendment to the original lease, accept it only if that addendum: expressly cross-references the original lease by date/parties, expressly states it does not disturb Tenant's rights under the original lease, and independently but fully addresses rent, term, insurance, and use for the added space with protections comparable to the primary lease.",
-    "escalate_if": "Escalate to an attorney regardless of how negotiations are going if: the combined/total square footage or the boundary between original and expansion premises is left ambiguous or unstated; the term or expiration date of the added space is not addressed (risking a mismatched holdover or expiration relative to the original lease); the counterparty uses the expansion document as a vehicle to reopen or weaken unrelated terms of the original lease (e.g., renewal options, exclusive-use rights, default/remedies provisions) that have nothing to do with the space being added; or new \"combined Premises\" language could be read to cross-default or cross-terminate the original and expansion spaces together when the parties intended them to be severable.",
+    "applies_to": "Lease",
+    "category": "Premises, Use & Access Rights",
+    "where_to_look": "Premises granting clause, and any amendment or addendum adding space, expansion premises, or adjusting rent.",
+    "required": "Add expansion space by amendment that folds it into the single defined Premises, coterminous with the existing term at a stated adjusted rent.",
+    "fallback": "Accept a separate addendum for the added space where it expressly incorporates all terms of the existing lease and states its own commencement and expiration dates.",
+    "escalate_if": "Expansion space is added without attorney review where the rent adjustment or the boundary of the added area is left undefined.",
     "flag_if": [
-      "Expansion/addition of space documented only by informal correspondence or email rather than a signed amendment or addendum",
-      "New document does not reference the original lease's date and parties (unclear whether it's an amendment or an unrelated new lease)",
-      "Added space's square footage or boundaries not specifically stated, or no exhibit/site plan/legal description attached",
-      "Incremental rent or rate for the added space not clearly stated as a defined amount, or no stated commencement date for the new rent",
-      "Term/expiration of the added space not explicitly aligned with (or expressly and deliberately staggered from) the original lease term",
-      "Insurance, use, or other lease obligations not updated to reference the expanded or combined premises",
-      "\"Premises\" redefined as a single combined term without clarifying whether original lease rights (renewal options, ROFR, exclusive use, etc.) extend to the new space",
-      "Rent/Term changes for the expansion space are bundled into a broader 'Miscellaneous' or savings-clause section rather than clearly itemized"
+      "The amendment adds space but does not fold it into the single defined term Premises.",
+      "The added space is described only by square footage with no exhibit or depiction attached.",
+      "The expansion space carries a term or expiration date different from the existing lease.",
+      "Rent is not restated or adjusted for the added square footage.",
+      "The document creates a second numbered lease instead of amending the existing one."
     ],
-    "preferred_language": "EXPANSION OF PREMISES. Landlord and Tenant may from time to time agree to add space to the Premises leased under this Lease by executing a written amendment to this Lease (each, an \"Expansion Amendment\"). Each Expansion Amendment shall: (a) reference this Lease by its original date and the parties hereto; (b) identify and describe the additional space (the \"Expansion Premises\") by square footage and by reference to an exhibit or site plan attached to the Expansion Amendment; (c) state whether the Expansion Premises is merged into and becomes part of the \"Premises\" as defined in this Lease or is instead added as a separately identified and tracked space, and in either case state the combined total square footage of the Premises following such addition; (d) state the incremental Base Rent (or Base Rent rate) payable for the Expansion Premises and its commencement date; (e) state the term applicable to the Expansion Premises, which shall be co-terminous with the Term of this Lease unless the Expansion Amendment expressly provides otherwise; and (f) confirm that Tenant's insurance obligations, use rights, and other obligations under this Lease extend to and cover the Expansion Premises. Except as expressly modified by an Expansion Amendment, all other terms and conditions of this Lease shall remain in full force and effect and shall apply equally to the Expansion Premises. [First draft only; not reviewed by counsel.]",
+    "preferred_language": "Expansion of Premises and Adjustment of Rent. Effective as of the Expansion Commencement Date, the Premises under the Lease are expanded to include the additional space depicted on Exhibit A (the \"Expansion Premises\"), and the Expansion Premises together with the Premises demised under the Lease shall be deemed the \"Premises\" for all purposes of the Lease. The Expansion Premises are leased on all of the terms and conditions of the Lease, the term for the Expansion Premises is coterminous with the Term, and Base Rent is increased by the amount set forth herein for the Expansion Premises.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 2 findings \u2014 a Hannibal Industries lease amendment (request 1757) and a Tommy Surber/McKenzie Valve addendum (request 3715) \u2014 both significance \"high\" and pointing the same direction (properly cross-referencing the original lease and separately spelling out rent/term/insurance for the added space, whether via a merged \"Expansion Premises\" or a separate \"Lease 2\"); the direction is consistent but the sample is thin (2 findings, 2 counterparties), so this rule should be treated as provisional and priority is set to PRESS rather than MUST PRESS pending more examples.",
+    "confidence_note": "Based on 2 findings across 2 counterparties, both high significance and consistent in direction, though the evidence base is thin.",
     "matching_clause_names": [
-      "Premises / Expansion of Premises and Adjustment of Rent",
-      "Leased Premises"
+      "Leased Premises",
+      "Premises / Expansion of Premises and Adjustment of Rent"
     ]
   },
   {
     "rule_id": "RE-PRM-02",
-    "title": "Permitted Use Scope",
-    "priority": "PRESS",
-    "applies_to": "All contract types",
-    "category": "Premises: Space & Permitted Use",
-    "where_to_look": "The \"Use\" / \"Permitted Use\" clause (often in the lease's definitions section, e.g. Section 1.01, or a standalone \"Use\" section such as Section 4 or 5); also check any lease amendment's renumbering/restatement of that section (e.g., where a \"Use\" section gets folded into a general \"Miscellaneous\" savings clause) to confirm the original use restriction wasn't silently narrowed or dropped.",
-    "required": "A permitted-use clause that names the primary intended use(s) broadly (e.g., by general category such as \"office, warehousing, manufacturing, and/or light-industrial\" rather than a single narrow product/activity) AND expressly includes a catch-all for \"uses ancillary, incidental, or related thereto\" (including administrative, sales, storage, and distribution activities). Avoid provisions requiring Landlord's consent for any change in use; if consent is required, it should be limited to non-ancillary changes and not unreasonably withheld, conditioned, or delayed.",
-    "fallback": "If Landlord will not agree to a broad category-based use description, fall back to a use clause that names the specific primary use(s) but still adds an express \"and uses ancillary or incidental thereto\" allowance (as opposed to a single, standalone, no-ancillary-use restriction). This is where negotiations have most consistently landed in practice.",
-    "escalate_if": "Landlord insists on (a) a single, narrowly-defined use tied to one specific product/activity (e.g., \"for [X] only\") with no ancillary/incidental-use allowance, combined with (b) a requirement that Tenant obtain Landlord's prior consent (especially in Landlord's sole discretion) for any change in use or in materials/activities on the Premises. That combination creates real default/operational risk if Marmon's business needs shift and should not be accepted without attorney review.",
+    "title": "Grant of Tenancy and Landlord Reserved Rights",
+    "priority": "MANAGE",
+    "applies_to": "Lease",
+    "category": "Premises, Use & Access Rights",
+    "where_to_look": "Demise or granting clause, and the landlord reserved-rights provisions covering entry, relocation, and remarketing.",
+    "required": "Obtain an express demise with common-area use rights, strike any unilateral relocation right, and allow Landlord entry only on reasonable prior written notice.",
+    "fallback": "Accept relocation only to space of substantially similar area and quality, at Landlord's sole cost, on not less than sixty days' prior written notice. Accept entry for emergency, cleaning, inspection, and for remarketing only after Tenant has given notice to terminate.",
+    "escalate_if": "Relocation is permitted with no minimum notice, no size and quality equivalence, or at Tenant's cost, or Landlord may reconfigure the Premises at will.",
     "flag_if": [
-      "Permitted use is tied to one specific narrow product, process, or activity (e.g., 'Rail Car Testing/Research' or storage of one named material) with no ancillary/incidental/related-use language",
-      "Any change in use, or in the materials/goods handled at the Premises, requires Landlord's prior written consent with no reasonableness standard",
-      "An amendment renumbers or restates the 'Use' section into a generic 'Miscellaneous' or savings clause in a way that makes it unclear whether the original use restriction survives, was narrowed, or was dropped",
-      "Use clause has no express carve-out for ordinary ancillary functions (administrative, sales, storage, distribution) incident to the primary use",
-      "Use description does not match Tenant's actual or reasonably anticipated operations at the Premises"
+      "Landlord may relocate Tenant or change the location of the Premises without a stated minimum notice period.",
+      "Relocation and moving costs are silent or charged to Tenant.",
+      "Landlord may enter the Premises at any time or without prior notice outside emergencies.",
+      "Landlord may show or remarket the Premises before Tenant has given notice to terminate.",
+      "There is no express granting or demise clause conveying the Premises and common-area rights to Tenant."
     ],
-    "preferred_language": "Permitted Use. Tenant may use the Premises for general office, warehousing, manufacturing, and/or light-industrial purposes consistent with applicable zoning classifications, together with any uses ancillary, incidental, or related thereto (including without limitation administrative, sales, storage, and distribution activities in support of Tenant's operations), and for no other purpose without Landlord's prior written consent, which consent shall not be unreasonably withheld, conditioned, or delayed. Tenant's use of the Premises shall at all times comply with applicable zoning ordinances and legal requirements. No amendment, restatement, or renumbering of this Section shall be deemed to narrow, waive, or terminate the permitted uses described herein unless expressly and specifically stated.",
+    "preferred_language": "Landlord hereby demises and lets to Tenant the Premises for the Term, together with the non-exclusive right for Tenant and its employees, agents, and invitees to use the Common Areas and Common Facilities. Landlord shall have no right to relocate Tenant or to change the location of the Premises during the Term. Landlord may enter the Premises only upon not less than twenty-four hours' prior written notice, during normal business hours, and solely for inspection, repair, or maintenance, except in the case of a bona fide emergency. Landlord shall exercise all reserved rights so as not to interfere materially with Tenant's use and occupancy of the Premises.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 3 findings across 3 different counterparties (Hannibal Industries, East End Maker Hub Sponsor LLC, Indiana Athletic Apparel LLC); 2 of the 3 clearly and consistently show Marmon's side pushing to broaden a narrow, single-purpose use restriction into a broader category plus an \"ancillary/related uses\" allowance, but the third finding's outcome is ambiguous (unclear whether the original restriction survived an amendment's renumbering) \u2014 treat this rule as directionally sound but provisional given the small, partly-unclear sample.",
+    "confidence_note": "Based on 3 findings across 3 counterparties, all showing landlord-side reserved rights inserted into the signed document and accepted with guardrails rather than resisted, so the direction is consistent but the stakes and leverage are moderate.",
     "matching_clause_names": [
-      "Use / Miscellaneous",
+      "Interpretation and Demise (Grant of Tenancy)",
+      "Landlord Rights (Relocation)",
+      "Access Rights and Hybrid Working"
+    ]
+  },
+  {
+    "rule_id": "RE-PRM-03",
+    "title": "Permitted Use and Scope of Use Restrictions",
+    "priority": "PRESS",
+    "applies_to": "Lease",
+    "category": "Premises, Use & Access Rights",
+    "where_to_look": "Permitted Use definition in the term sheet or basic lease provisions, and the Use covenant section of the lease.",
+    "required": "Draft the permitted use to cover Tenant's actual operations plus all uses ancillary or incidental thereto.",
+    "fallback": "Accept a use clause naming Tenant's specific operations where it expressly extends to ancillary and incidental uses, and Landlord's consent to additional compatible uses is not unreasonably withheld.",
+    "escalate_if": "Any use outside a single narrow named purpose is an immediate event of default, or the use clause is narrower than Tenant's planned operations.",
+    "flag_if": [
+      "The permitted use names a single activity with no ancillary or incidental uses.",
+      "The clause says the Premises may be used for no other purpose and provides no consent mechanism for added uses.",
+      "The permitted use is carried over from a term sheet and is narrower than Tenant's planned operations.",
+      "Landlord consent to a change in use is subject to Landlord's sole or absolute discretion.",
+      "Exceeding the permitted use is an event of default with no notice or cure period."
+    ],
+    "preferred_language": "Use. Tenant shall use the Premises for general office, warehousing, manufacturing and light industrial purposes, for all uses ancillary or incidental thereto, including administrative, sales, research and support activities, and for any other lawful use permitted by applicable zoning and approved by Landlord, which approval shall not be unreasonably withheld, conditioned or delayed. No change in use shall constitute a default so long as the use remains within the foregoing.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings across 2 counterparties with a consistent direction toward broader use language, though the sample is small and one change was of moderate significance only.",
+    "matching_clause_names": [
       "Use",
       "Permitted Use"
     ]
   },
   {
-    "rule_id": "RE-PCM-01",
-    "title": "Condition of Premises at Delivery (Latent Defects, Hazardous Materials, Law Compliance)",
-    "priority": "MUST PRESS",
-    "applies_to": "All contract types",
-    "category": "Premises Condition, Improvements & Maintenance",
-    "where_to_look": "The lease's defined-terms section for \"Delivery Date\"/\"Commencement Date\"; the \"Premises\" or \"Condition of Premises\" article (often near Article/Section 2); any standalone \"Condition\" representations-and-warranties section; and the indemnification article, specifically for carve-outs addressing pre-existing legal violations or hazardous materials.",
-    "required": "Landlord must affirmatively warrant and deliver the Premises (i) broom-clean, (ii) in good order, condition, and repair, (iii) free of latent defects, (iv) in compliance with all applicable laws (including environmental laws), and (v) free of Hazardous Substances/materials \u2014 with an express Landlord obligation to cure any latent defect, law violation, or hazardous-material condition within a commercially reasonable time after notice. Layer on top of that baseline: (a) a rent-commencement delay/abatement remedy if Landlord misses the delivery date or delivers non-conforming Premises, (b) a Landlord representation and warranty that the Premises, common areas, and appurtenances comply with law and are free of hazardous material, and (c) a Landlord defend/indemnify/hold-harmless obligation for any pre-existing violation or hazardous material not caused by Tenant.",
-    "fallback": "At minimum, secure the core delivery-condition standard plus the cure obligation: Landlord delivers broom-clean, in good order/condition/repair, free of latent defects, law-compliant, and free of Hazardous Substances, and must cure any such defect/violation/hazmat issue within a commercially reasonable time after written notice. This core package was obtained in every instance observed; the additional layers (rent-abatement remedy, standalone R&W section, full indemnification) were obtained in some but not all of the underlying deals and can be traded away first if Landlord resists.",
-    "escalate_if": "Escalate regardless of how negotiations are trending if: Landlord insists on delivering the Premises strictly \"AS-IS, WHERE-IS\" with no condition standard, no cure obligation, and no exception for latent defects, law violations, or hazardous materials; Landlord discloses (or Tenant's due diligence uncovers) known or suspected pre-existing environmental contamination or an existing code/legal-compliance violation and Landlord refuses any indemnity or cure commitment for it; or the space is intended for industrial/manufacturing use (elevated hazmat exposure) and Landlord will not warrant freedom from Hazardous Substances at delivery.",
+    "rule_id": "RE-CND-01",
+    "title": "Landlord Delivery-Condition Standard and Delivery Deadline Remedies",
+    "priority": "PRESS",
+    "applies_to": "Commercial lease",
+    "category": "Premises Condition, Maintenance & Environmental Risk",
+    "where_to_look": "The Delivery Date definition and the delivery/condition-of-premises section, including term-sheet condition and improvement fields.",
+    "required": "Require Landlord to deliver the Premises broom clean, in good order and repair, free of latent defects, legally compliant and free of Hazardous Substances by a fixed outside date, with the Rent Commencement Date extended one day for each day of late or non-conforming delivery.",
+    "fallback": "Accept a delivery standard limited to broom clean, good working order and compliance with law, with Landlord curing latent defects, legal violations and Hazardous Substances within a commercially reasonable time after notice, so long as the Rent Commencement Date still shifts day for day for delayed delivery.",
+    "escalate_if": "Landlord delivers strictly as-is with no cure obligation, or the Rent Commencement Date and rent obligations run from a fixed date regardless of when Landlord actually delivers.",
     "flag_if": [
-      "Lease has no defined delivery-condition standard, or defines delivery only as \"AS-IS\"/\"WHERE-IS\" with no carve-outs",
-      "No Landlord cure obligation (or no notice-and-cure period) for latent defects, law violations, or hazardous materials discovered after delivery",
-      "No remedy (e.g., rent-commencement delay/abatement) if Landlord fails to deliver on time or in the required condition",
-      "No Landlord indemnification for pre-existing environmental contamination or legal-compliance violations not caused by Tenant",
-      "No Landlord representation/warranty of law-compliance or freedom from hazardous material, or the representation is limited to the leased space only and excludes common areas/appurtenances",
-      "\"Latent defect\" or \"Hazardous Substances/materials\" is undefined or defined so narrowly it excludes likely real-world conditions"
+      "The lease delivers the Premises as-is with no stated delivery-condition standard.",
+      "The Delivery Date definition does not require delivery in the condition required under the lease.",
+      "Landlord has no obligation to cure latent defects, legal violations or Hazardous Substances after notice.",
+      "No outside date is fixed for Landlord's delivery of possession.",
+      "The Rent Commencement Date is a fixed calendar date that does not shift for delivery delay."
     ],
-    "preferred_language": "Condition of Premises at Delivery. Landlord shall deliver the Premises to Tenant on or before the Delivery Date in the following condition: (a) broom-clean; (b) in good order, condition, and repair; (c) free of latent defects; (d) in compliance with all applicable laws, ordinances, codes, and regulations, including without limitation all applicable environmental laws; and (e) free of any Hazardous Substances, except as expressly disclosed in Exhibit __. If, after the Delivery Date, any latent defect, violation of law, or presence of Hazardous Substances existing as of, or attributable to a condition first arising before, the Delivery Date is discovered, and such condition was not caused by Tenant or its agents, employees, or contractors, Landlord shall, at its sole cost and expense, remedy such condition within a commercially reasonable time (not to exceed thirty (30) days after Landlord's receipt of written notice from Tenant, or such longer period as is reasonably necessary provided Landlord commences the cure within such thirty (30)-day period and thereafter diligently pursues completion). If Landlord fails to deliver the Premises in the condition required by this Section on or before the Delivery Date, the Rent Commencement Date shall be delayed one (1) day for each day of such delay or non-conformance. Landlord represents and warrants to Tenant that, as of the Delivery Date, the Premises, the Building, and all common areas and appurtenances thereto comply with all applicable laws, including environmental laws, and are free of Hazardous Substances. Landlord shall defend, indemnify, and hold Tenant harmless from and against any and all claims, damages, fines, penalties, and costs (including reasonable attorneys' fees) arising out of any violation of law or the presence of Hazardous Substances at the Premises existing prior to, or not caused by Tenant after, the Delivery Date.",
+    "preferred_language": "Landlord shall deliver the Premises to Tenant on the Delivery Date broom clean, in good order, condition and repair, free from latent defects, in compliance with all applicable laws and free from Hazardous Substances. Landlord shall cure any latent defect, violation of law or Hazardous Substances condition within a commercially reasonable time after receipt of notice from Tenant. If Landlord fails to deliver possession of the Premises in the condition required under this Lease by the Outside Delivery Date, the Rent Commencement Date shall be extended by one day for each day of delay.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on 3 findings from 2 distinct counterparty negotiations (Indiana Athletic Apparel, LLC \u2014 1 finding; Providence Properties \u2014 2 related findings from the same lease negotiation), all rated high significance and all pointing the same direction (silence/no standard \u2192 affirmative delivery-condition, cure, and remedy obligations on Landlord); treat this as a consistent but thin evidence base \u2014 effectively 2 independent deals \u2014 and revisit if additional findings surface a different pattern.",
+    "confidence_note": "Based on 2 findings across 2 counterparties, one high-significance and detailed and one fragmentary, so the direction is consistent but the evidence base is thin.",
     "matching_clause_names": [
       "Delivery of Premises (Section 1.01 \"Delivery Date\" definition and new Section 2.01)",
-      "Premises - Condition and Environmental Indemnity",
-      "Condition (Representations and Warranties)"
+      "Condition of Premises / Additional Improvements"
     ]
   },
   {
-    "rule_id": "RE-PCM-02",
-    "title": "AS-IS Acceptance Carve-Outs Preserving Landlord's Ongoing Obligations",
+    "rule_id": "RE-CND-02",
+    "title": "AS-IS Acceptance and Carve-Outs for Landlord's Continuing Obligations",
     "priority": "PRESS",
-    "applies_to": "All contract types",
-    "category": "Premises Condition, Improvements & Maintenance",
-    "where_to_look": "The \"Condition of Premises\" section (typically near the front of the lease, e.g., a Section 2.0x delivery-condition provision), the Tenant Improvements section and any related exhibit/allowance schedule, and \u2014 critically \u2014 any renewal or extension amendment's acceptance-of-premises language, since AS-IS disclaimers are frequently re-inserted or broadened at renewal.",
-    "required": "An AS-IS/WHERE-IS acceptance clause (whether in the original lease, a Tenant Improvement/allowance provision, or a renewal/extension amendment) must be expressly made subject to, and must not be construed to waive, release, or override, any of Landlord's other obligations under the Lease as a whole \u2014 including delivery-condition obligations, and ongoing maintenance, repair, and replacement obligations \u2014 and, where the acceptance language appears in an amendment or extension, it must equally preserve Landlord's obligations under the Existing Lease being amended or extended, not just obligations stated within the amendment itself.",
-    "fallback": "If Landlord resists a broad \"subject to the Lease generally\" carve-out, accept a narrower carve-out limited to obligations \"expressly set forth\" in the Lease (or Existing Lease, for renewals/amendments) \u2014 i.e., Landlord's disclaimer of improvement/repair obligations and Tenant's AS-IS acceptance do not override Landlord's existing maintenance, repair, and/or replacement obligations that are explicitly stated elsewhere in the governing lease document(s), even though implied or general obligations are not separately preserved.",
-    "escalate_if": "Landlord's counsel proposes (or the base paper contains) a blanket AS-IS/WHERE-IS acceptance with NO carve-out at all \u2014 i.e., language stating Landlord has \"no obligation whatsoever\" to improve, maintain, or repair, with no reference back to obligations under the Lease or Existing Lease, and no exception preserving pre-existing maintenance/repair/replacement duties. This is the worst pre-negotiation position observed and should never be accepted as final; it must go to an attorney for a required carve-out to be negotiated back in, particularly for renewal/extension amendments where silence could be read as extinguishing Landlord's original-lease obligations.",
+    "applies_to": "Lease",
+    "category": "Premises Condition, Maintenance & Environmental Risk",
+    "where_to_look": "AS-IS acceptance and condition-of-premises provisions, including tenant-improvement and extension-term amendments.",
+    "required": "Make each AS-IS acceptance expressly subject to all Landlord obligations under this Lease and the Existing Lease.",
+    "fallback": "Accept AS-IS with a written carve-out naming Landlord's delivery-condition duties and its maintenance, repair, and replacement obligations.",
+    "escalate_if": "Never accept AS-IS language that waives, limits, or supersedes Landlord's maintenance, repair, or replacement obligations.",
     "flag_if": [
-      "AS-IS/WHERE-IS acceptance language with no cross-reference to \"this Lease,\" \"the Existing Lease,\" or Landlord's other obligations \u2014 i.e., the disclaimer stands alone or only references a narrow exhibit",
-      "A renewal or extension amendment where Tenant re-accepts the Premises AS-IS for the new term but the carve-out (if any) is limited to obligations stated \"herein\"/\"in this Amendment\" rather than also covering the Existing Lease",
-      "A Tenant Improvement or allowance provision disclaiming Landlord's obligation \"to improve the Premises, Building, or Common Areas\" without an exception for Landlord's existing maintenance/repair/replacement obligations",
-      "Absence of a phrase resembling \"except as otherwise expressly provided in this Lease\" or \"subject to Landlord's obligations under the Existing Lease\" adjacent to any AS-IS or no-obligation-to-improve language",
-      "Broad disclaimers of representations and warranties bundled together with (and potentially bleeding into a waiver of) Landlord's ongoing repair/maintenance covenants elsewhere in the lease"
+      "AS-IS acceptance appears with no carve-out for Landlord's obligations.",
+      "The only carve-out points to a single exhibit rather than the whole Lease.",
+      "Landlord disclaims any obligation to repair, replace, or improve the Premises, Building, or Common Areas.",
+      "An extension or amendment restates AS-IS acceptance without preserving the Existing Lease obligations.",
+      "AS-IS acceptance is paired with a waiver of all representations and warranties."
     ],
-    "preferred_language": "Tenant's acceptance of the Premises (including, if applicable, the Premises during any Extension or Renewal Term) in its \"AS-IS, WHERE-IS\" condition, without representation or warranty of any kind by Landlord, shall not release, diminish, waive, or otherwise be construed to override any obligation of Landlord under this Lease (or, if this instrument amends or extends an existing lease, under such existing lease, the \"Existing Lease\"), including without limitation any obligation relating to the delivery condition of the Premises and any obligation to maintain, repair, or replace the Premises, the Building, and/or the Common Areas. Nothing in this Section, in any Tenant Improvement or allowance provision of this Lease, or in Landlord's disclaimer of any obligation to improve the Premises, Building, or Common Areas, shall be interpreted to excuse Landlord from performing any obligation otherwise imposed on Landlord under this Lease or the Existing Lease, and all such obligations shall survive and remain in full force and effect notwithstanding Tenant's AS-IS acceptance of the Premises. [Fallback, if the above is rejected: substitute \"any obligation expressly set forth in this Lease (or the Existing Lease, as applicable)\" for \"any obligation ... under this Lease.\"]",
+    "preferred_language": "Tenant accepts the Premises in their AS-IS, WHERE-IS condition, without representation or warranty by Landlord, subject in all respects to Landlord's delivery-condition obligations and to Landlord's maintenance, repair, and replacement obligations set forth in this Lease, in any amendment hereto, and in the Existing Lease, all of which survive and are not waived, limited, or superseded by Tenant's acceptance of the Premises.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 3 findings drawn from 2 distinct counterparties (2 of the 3 findings come from the same lease-extension negotiation/amendment), so this is a thin sample; however, the direction was fully consistent across all three \u2014 every negotiated outcome broadened or added a carve-out preserving Landlord's pre-existing/ongoing obligations against an AS-IS or no-improvement-obligation disclaimer \u2014 which is why this is set at PRESS rather than MUST PRESS or MANAGE; treat the specific fallback/escalation thresholds as provisional pending more data points.",
+    "confidence_note": "Based on 3 findings across 2 counterparties, consistent direction with one high-significance instance.",
     "matching_clause_names": [
       "Condition of the Premises (Section 2.02)",
       "Condition of Premises / Extension Term Acceptance",
@@ -194,366 +472,279 @@
     ]
   },
   {
-    "rule_id": "RE-PCM-03",
-    "title": "Tenant Improvements: Scope, Discretion & Landlord Approval",
+    "rule_id": "RE-CND-03",
+    "title": "Environmental and Legal-Compliance Condition Representations",
     "priority": "PRESS",
     "applies_to": "All contract types",
-    "category": "Premises Condition, Improvements & Maintenance",
-    "where_to_look": "The lease's \"Tenant Improvements\" / \"Alterations\" section (commonly its own numbered section, e.g. Section 7, or a Work Letter/Exhibit); the \"Condition of Premises\" or delivery-condition clause; any Tenant Improvement Allowance provisions in the Basic Lease Information page or an improvements exhibit; and the sub-clause governing Landlord's review/approval of Tenant's construction drawings or plans.",
-    "required": "(1) The lease should state Landlord's delivery condition and the cost allocation for any improvements beyond that condition explicitly and specifically \u2014 not a bare \"as-is\" \u2014 ideally including a Landlord-funded Tenant Improvement Allowance for base-building items. (2) Tenant should have express language confirming that the decision to make improvements \"necessary or desirable\" for its business operations rests in Tenant's sole discretion, subject only to Landlord's approval as separately provided. (3) Landlord's approval of Tenant's construction drawings/plans must be expressly subject to a \"not unreasonably withheld, conditioned, or delayed\" standard, ideally paired with a deemed-approval mechanism (e.g., approval deemed given if Landlord does not respond with reasonably specific objections within 10 business days).",
-    "fallback": "Where the full package above isn't obtainable, secure at minimum: (a) the \"necessary or desirable\" scope language plus the express statement that the decision whether to improve is Tenant's, \"subject to Landlord approval as set forth herein\"; and (b) an express \"not unreasonably withheld, conditioned, or delayed\" qualifier on Landlord's approval of construction drawings, even without a deemed-approval clock. Cost allocation can be accepted on an as-is-plus-limited-landlord-obligation basis (e.g., Landlord paints/preps only, Tenant funds the rest) provided the scope of Landlord's limited obligation and the resulting Tenant cost responsibility are stated with specificity rather than left to inference \u2014 this is the pattern actually observed in the negotiated outcomes reviewed.",
-    "escalate_if": "Escalate to an attorney regardless of how negotiations are otherwise going if: (a) Landlord's approval of Tenant's TI plans is left entirely to Landlord's \"sole\" or \"absolute\" discretion with no reasonableness qualifier whatsoever; (b) Landlord's consent right extends beyond approving construction drawings to approving the underlying business decision to improve (i.e., Landlord can veto whether Tenant improves the space, not just how); or (c) the premises delivery condition is undefined or purely \"as-is\" while Landlord simultaneously retains broad, unqualified approval rights over any improvements Tenant would need just to make the space usable \u2014 that combination can leave Tenant unable to both fund and obtain approval for improvements it needs to operate.",
+    "category": "Premises Condition, Maintenance & Environmental Risk",
+    "where_to_look": "Premises condition and delivery sections, landlord representations, and any environmental or compliance-with-laws clause.",
+    "required": "Require the landlord to represent the premises are law-compliant and free of hazardous material, and to indemnify for pre-existing conditions.",
+    "fallback": "Accept a representation limited to the landlord's actual knowledge at delivery if the landlord keeps the duty to remediate pre-existing hazardous material and legal violations at its own cost after notice.",
+    "escalate_if": "Never accept as-is delivery that leaves Marmon responsible for hazardous material or legal violations it did not cause.",
     "flag_if": [
-      "Construction-drawing/plan approval clause requires Landlord's consent with no \"reasonable,\" \"not unreasonably withheld,\" or similar qualifying standard attached",
-      "Improvement-scope language is limited to \"necessary\" (omitting \"or desirable\") and/or does not expressly confirm the decision to improve rests with Tenant",
-      "\"Condition of Premises\" is defined only as \"as-is\" with Landlord's stated obligations limited to cosmetic/minor items (e.g., painting) and no Tenant Improvement Allowance or clear delineation of who funds the rest",
-      "No stated response deadline or deemed-approval mechanism for Landlord's review of TI plans, leaving approval timing entirely open-ended",
-      "Approval standard uses \"sole discretion\" or \"absolute discretion\" language specifically tied to TI plan approval rather than to unrelated lease matters"
+      "The premises are delivered as-is with no landlord representation on condition or legal compliance.",
+      "No clause allocates responsibility for hazardous material existing before the commencement date.",
+      "The tenant must comply with environmental laws with no corresponding landlord representation.",
+      "The landlord's environmental representation carries no remediation or indemnity obligation.",
+      "Surrender or restoration obligations reference environmental condition without carving out pre-existing contamination."
     ],
-    "preferred_language": "Tenant Improvements; Landlord Approval. Tenant shall have the right, at its sole cost and expense (except to the extent of any Landlord contribution expressly set forth in this Lease), to construct in the Premises such improvements, alterations, and installations as Tenant deems necessary or desirable for its business operations (the \"Tenant Improvements\"), and Tenant's decision whether to undertake any Tenant Improvements shall be in Tenant's sole discretion. Prior to commencing any Tenant Improvements requiring Landlord's consent under this Lease, Tenant shall submit construction drawings and plans to Landlord for approval, which approval shall not be unreasonably withheld, conditioned, or delayed. If Landlord fails to approve or disapprove such plans (stating with reasonable specificity the grounds for any disapproval) within ten (10) business days after receipt of a complete submission, such plans shall be deemed approved. Landlord's condition of delivery of the Premises, and the allocation of costs for any improvements beyond that condition \u2014 including any Tenant Improvement Allowance to be funded by Landlord \u2014 shall be expressly and specifically set forth in this Lease, and the Premises shall not be delivered on a bare \"as-is\" basis without such express allocation.",
+    "preferred_language": "Lessor represents and warrants that, as of delivery, the Premises, common areas, and all appurtenances comply with all applicable laws, including environmental laws, and are free from hazardous material and latent defects. Lessor shall cure any latent defect, violation of law, or hazardous material condition within a commercially reasonable time after notice from Lessee. Lessor shall defend, indemnify, and hold Lessee harmless from any violation of law or hazardous material in, on, or under the Premises that pre-dates the Commencement Date or is not caused by Lessee.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 3 findings, and effectively 2 distinct counterparty negotiations (2 of the 3 findings \u2014 the discretion-scope and approval-standard changes \u2014 come from the same lease with the same landlord); all three are rated \"medium\" significance, not \"high.\" The direction is internally consistent (broader tenant discretion, explicit reasonableness standard on approval, more specific cost/condition allocation), but the sample is too thin to call this a firmly established market pattern \u2014 treat this rule as provisional and revisit once more findings on this topic are available.",
+    "confidence_note": "Based on 2 findings from a single counterparty and one lease, both rated high significance and moving in the same direction, so the direction is clear but the sample is narrow.",
     "matching_clause_names": [
-      "Condition of Premises / Additional Improvements",
-      "Tenant Improvements - Scope and Discretion",
-      "Tenant Improvements - Landlord Approval Standard"
+      "Premises - Condition and Environmental Indemnity",
+      "Condition (Representations and Warranties)"
     ]
   },
   {
-    "rule_id": "RE-PCM-04",
-    "title": "Repairs & Maintenance Allocation / Building Systems Upkeep",
+    "rule_id": "RE-CND-04",
+    "title": "Allocation of Repair, Maintenance, and Building-Systems Responsibility",
     "priority": "PRESS",
-    "applies_to": "All contract types",
-    "category": "Premises Condition, Improvements & Maintenance",
-    "where_to_look": "The \"Repairs and Maintenance\" (or \"Maintenance and Repairs\") section of the lease body; any rider/addendum addressing fire protection, sprinkler, PIV (post indicator valve), or other life-safety/building-systems testing; and HVAC/mechanical or \"Building Systems\" provisions. Also check the original term sheet/LOI \u2014 a bare one-line \"Tenant is responsible for all maintenance\" term-sheet statement is a common starting point that gets substantially rebuilt in the actual lease.",
-    "required": "Landlord bears responsibility for maintaining, repairing, and replacing all structural and major building-system components \u2014 foundation, roof, exterior walls/structure, exterior and subterranean utility lines (water, gas, sewer, electrical) up to their point of entry into the Premises, any HVAC system not serving the Premises exclusively, and the sprinkler/fire-protection system. Landlord must also affirmatively maintain and test life-safety systems on a defined schedule (monthly PIV exercise; quarterly fire-protection/sprinkler testing), keep written records of that testing, and make those records available to Tenant on request. Tenant's obligation is limited to routine, non-structural, interior maintenance of the Premises and equipment serving it exclusively.",
-    "fallback": "If Landlord resists the full allocation, fall back to securing Landlord responsibility for at minimum the \"big four\" structural items (roof, foundation, exterior walls, base-building/shared HVAC) plus the fire-protection/sprinkler system itself, even if the formal testing-and-recordkeeping schedule (monthly PIV, quarterly system test, written records on request) is negotiated down to a general \"Landlord shall comply with applicable fire code and insurance testing requirements\" obligation rather than the specific procedure. Do not fall back below Landlord owning the structural shell and life-safety system itself \u2014 only the documentation/frequency detail is a reasonable trade.",
-    "escalate_if": "Escalate to an attorney and do not accept if: (1) the lease assigns Tenant sole and undifferentiated responsibility for \"all maintenance of the Premises\" with no landlord carve-out for structural components, roof, or shared/base-building systems; (2) the lease is silent on landlord testing/maintenance of fire protection, sprinkler, or PIV systems and instead disclaims landlord liability for their condition or failure; or (3) Tenant would be required to indemnify Landlord for injury, property damage, or business interruption arising from a structural failure or an untested/unmaintained life-safety system that was never Tenant's to inspect or control.",
+    "applies_to": "Lease",
+    "category": "Premises Condition, Maintenance & Environmental Risk",
+    "where_to_look": "Repairs and maintenance sections of the lease and any addendum, plus the maintenance line in the term sheet.",
+    "required": "Require Landlord to maintain, repair and replace the structure, roof, exterior walls and shared building systems, and to test fire protection systems on a documented recurring schedule.",
+    "fallback": "Accept Tenant responsibility for routine interior maintenance and for systems exclusively serving the Premises, provided Landlord keeps the foundation, structural elements, roof, exterior walls and fire protection systems, and Tenant may inspect Landlord's testing records on request.",
+    "escalate_if": "Tenant is made responsible for repairing or replacing the roof, foundation, structural elements, or the building's fire protection and sprinkler systems.",
     "flag_if": [
-      "Maintenance clause is a single undifferentiated sentence (e.g., 'Tenant shall maintain the Premises') with no express landlord carve-out for structural or major-system items",
-      "No allocation at all for roof, foundation, or exterior wall/structural maintenance",
-      "HVAC, plumbing, or electrical equipment serving other tenants or common/base-building areas is assigned to Tenant rather than Landlord",
-      "Lease or addenda contain no fire protection / sprinkler / PIV testing obligation on Landlord, or the topic is entirely absent",
-      "No requirement for Landlord to create or share written records of life-safety system testing",
-      "Subterranean or exterior utility lines are made Tenant's responsibility beyond the point of entry into the Premises",
-      "The operative 'Repairs and Maintenance' language still reads like unedited term-sheet boilerplate (one line, no landlord/tenant split) rather than a fully built-out multi-part clause"
+      "Maintenance is assigned to Tenant with no carve-out for structure, roof, or exterior walls.",
+      "Landlord's repair obligation omits HVAC, plumbing, or utility lines that do not exclusively serve the Premises.",
+      "The lease is silent on who maintains and tests sprinkler and fire protection systems.",
+      "Landlord has no obligation to keep written testing records or make them available to Tenant.",
+      "Tenant is charged with capital repairs or replacement of building systems at its own cost."
     ],
-    "preferred_language": "Repairs and Maintenance.\n(a) By Tenant. Except as expressly set forth in this Section, Tenant shall, at its sole cost and expense, keep and maintain the interior, non-structural portions of the Premises in good order, condition, and repair, including routine maintenance of interior fixtures, finishes, and any equipment serving the Premises exclusively, reasonable wear and tear and casualty excepted.\n(b) By Landlord. Landlord shall maintain, repair, and replace, as and when needed, and keep in good working order: (i) the foundation and structural elements of the building; (ii) the roof, including the roof membrane and structural roof deck; (iii) the exterior walls and structural components of the Premises; (iv) the exterior and subterranean portions of the water, gas, sewer, and plumbing lines and electrical facilities, up to their point of entry into the Premises; (v) any heating, ventilating, and air conditioning system that does not serve the Premises exclusively; and (vi) the sprinkler system and other fire protection or life-safety systems serving the building, if any.\n(c) Fire Protection and Life-Safety Systems Testing. Landlord shall (i) physically exercise all post indicator valves (PIVs) located on the exterior of the facility on a monthly basis, which testing shall include, without limitation, confirming that each valve is open, closing the valve three full turns, and reopening the valve; and (ii) test all fire protection systems, no less than quarterly, including all water-flow alarms and sprinkler control valve tampers. Landlord shall maintain written records of the foregoing testing and shall make such records available for review by Tenant, or Tenant's employees, agents, or designees, upon request.",
+    "preferred_language": "Landlord shall, at its sole cost and expense, maintain, repair and replace the foundation, structural elements, exterior walls, roof, and all building systems and utility lines that do not exclusively serve the Premises, including all sprinkler and fire protection systems, in good order and repair. Landlord shall test all fire protection systems no less than quarterly and shall maintain written records of such testing for review by Tenant upon request. Tenant's maintenance obligations are limited to routine maintenance of the interior of the Premises.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 2 findings (from 2 different counterparties/deals \u2014 one general lease repairs-and-maintenance clause, one fire-protection/PIV testing addendum), both rated high significance and both showing the same direction of movement (Landlord taking on structural/major-system upkeep and documented life-safety testing that was absent or Tenant-only in the starting position); the sample is thin, so treat this rule as directionally consistent but still provisional pending more data points.",
+    "confidence_note": "Based on 2 findings across 2 counterparties, both high significance and both shifting responsibility to the landlord, so the direction is consistent but the sample is small.",
     "matching_clause_names": [
       "Repairs and Maintenance",
       "Fire Protection / Building Systems Maintenance"
     ]
   },
   {
-    "rule_id": "RE-PCM-05",
-    "title": "Fitting-Out Period / Rent-Free Period &amp; Fit-Out Logistics",
-    "priority": "PRESS",
-    "applies_to": "All contract types",
-    "category": "Premises Condition, Improvements & Maintenance",
-    "where_to_look": "The Definitions clause (where \"Fitting-Out Period\" and \"Rent Free Period\" are defined, e.g. Clause 2.1), and the substantive \"Availability of Demised Premises for Fitting-Out Works\" / \"Possession and Tenant's Fitting-Out Works\" clause (often Clause 7 or similar) together with any First/Second Schedule specifying fit-out conditions and landlord-provided fixtures.",
-    "required": "A defined Fitting-Out Period of adequate length, commencing on the later of lease execution or actual delivery of possession, during which no rent, service charge, or other outgoings accrue; free pre-period access for measuring/planning; landlord approval of fit-out plans on a \"not unreasonably withheld, conditioned, or delayed\" standard with a defined response/deemed-approval window; a day-for-day extension of the Fitting-Out Period for any landlord delay in delivering possession; and a qualified (not blanket) waiver of tenant claims for landlord's own concurrent building works, carved out for landlord's gross negligence or willful misconduct.",
-    "fallback": "A defined Fitting-Out Period with specific start/end dates and a coextensive Rent-Free Period (rent and service charges suspended for the full fit-out window); tenant given reasonable pre-period access solely for drawings/plans; landlord retains approval rights over fit-out plans (not unreasonably withheld) and requires prior lease execution as a condition of access; tenant bears its own fit-out costs and is restricted to 8:00am-midnight work hours without disturbing other tenants; landlord keeps an essentially unqualified right to carry out its own works during the period with tenant waiving claims arising from that work; and landlord's fixture/fitting obligation is capped to what is listed in the schedule, with no tenant right to demand more.",
-    "escalate_if": "The lease leaves \"Fitting-Out Period\" / \"Rent Free Period\" as \"Not Applicable,\" blank, or otherwise undefined, with rent accruing from execution/commencement regardless of the tenant's ability to occupy and fit out (this was the actual starting position in every sampled instance and must never be accepted as a final position); the landlord's own-works exculpation is broadened to cover the full Term (not just the Fitting-Out Period) or to waive claims for landlord's willful misconduct/gross negligence; there is no outside date for delivery of possession or no reasonableness/timing standard on the landlord's plan-approval right; or the Fitting-Out Period/Rent-Free Period dates are left blank at signature.",
+    "rule_id": "RE-IMP-01",
+    "title": "Tenant Improvement Scope, Allowance Use, and Landlord Approval Standard",
+    "priority": "MANAGE",
+    "applies_to": "Lease",
+    "category": "Improvements, Fit-Out & Alterations",
+    "where_to_look": "Tenant Improvements or Alterations section, including allowance use and landlord sign-off on construction drawings.",
+    "required": "Give Tenant sole discretion over whether to make improvements necessary or desirable for its operations, with Landlord approval not to be unreasonably withheld, conditioned, or delayed.",
+    "fallback": "Accept Landlord approval of plans and drawings on a reasonableness standard with a stated response deadline, provided Tenant still decides which permitted improvements to pursue and may apply the unused allowance to them.",
+    "escalate_if": "Landlord holds sole or absolute discretion over Tenant improvements, or unused allowance is forfeited or reverts to Landlord on Landlord's refusal to approve.",
     "flag_if": [
-      "Definitions clause shows \"Fitting-Out Period\" or \"Rent Free Period\" marked \"Not Applicable,\" blank, or omitted entirely",
-      "No clause obligating the landlord to make the premises available for fit-out prior to rent commencement",
-      "Tenant's waiver of claims for landlord's concurrent building works is unqualified (no carve-out for negligence/willful misconduct) or extends beyond the Fitting-Out Period",
-      "Approval of tenant's fit-out plans has no \"not unreasonably withheld\" standard or response-time/deemed-approval mechanism",
-      "No day-for-day extension of the Fitting-Out Period when the landlord delays delivering possession",
-      "Landlord's fixture/fitting delivery obligation is vague or not tied to a specific schedule/exhibit",
-      "Fit-out work-hour restrictions or access conditions are narrow enough to make the fit-out period practically unusable (e.g., no access outside a tight daily window, no weekend/holiday access)"
+      "Landlord approval of improvements or construction drawings is stated without a reasonableness standard.",
+      "Approval is subject to Landlord's sole, absolute, or unfettered discretion.",
+      "Permitted improvements are limited to those strictly necessary for Tenant's operations.",
+      "No outside deadline governs Landlord's response to submitted plans or drawings.",
+      "Landlord, rather than Tenant, decides whether additional improvements are made or allowance is drawn."
     ],
-    "preferred_language": "7.1 Fitting-Out Period. Landlord shall make the Premises available to Tenant for Tenant's fit-out works for a period of [__] days (the \"Fitting-Out Period\"), commencing on the later of (a) the date of execution of this Lease and (b) the date Landlord delivers possession of the Premises to Tenant in the condition required under Schedule [__]. No Base Rent, service charge, or other Additional Rent shall accrue or be payable during the Fitting-Out Period. If Landlord fails to deliver possession of the Premises in the required condition by the scheduled delivery date, the Fitting-Out Period shall be extended day-for-day for each day of delay.\n\n7.2 Pre-Access for Planning. Prior to the commencement of the Fitting-Out Period, Landlord shall grant Tenant and its designers/contractors reasonable access to the Premises, at reasonable hours and at no cost or rent liability, solely for the purpose of measuring, inspecting, and preparing fit-out drawings and plans.\n\n7.3 Approval of Plans. Tenant shall submit its proposed fit-out plans to Landlord for approval, which approval shall not be unreasonably withheld, conditioned, or delayed. Landlord shall respond within [10] business days of submission; failure to respond within such period shall be deemed approval.\n\n7.4 Tenant's Fit-Out Works. Tenant shall perform its fit-out works at its own cost and expense, in accordance with the approved plans and applicable law. Tenant may perform such works between 8:00 a.m. and midnight, provided Tenant does not unreasonably disturb other occupants of the building. Any delay in completion of Tenant's fit-out works, other than delay caused by Landlord, shall not extend the Fitting-Out Period or excuse Tenant's other obligations under this Lease.\n\n7.5 Landlord's Concurrent Works. If Landlord carries out its own works in the Premises or the building during the Fitting-Out Period, Landlord shall use commercially reasonable efforts to minimize interference with Tenant's fit-out works. Tenant waives claims against Landlord for costs, damages, or delay arising from such Landlord works performed in compliance with applicable law or regulatory requirement, except to the extent caused by Landlord's gross negligence or willful misconduct.\n\n7.6 Landlord's Fixtures. Landlord shall deliver the Premises with the fixtures and fittings described in Schedule [__] (\"Landlord's Fixtures\") in good working condition as of the commencement of the Fitting-Out Period. Tenant shall have no claim to any fixtures or fittings beyond those specified in Schedule [__].\n\n[Drafting note: this is a first-draft implementation of the REQUIRED position only, not reviewed by counsel; conform defined terms (Premises, Term, Base Rent, etc.) to the governing lease's existing definitions.]",
+    "preferred_language": "Tenant may make any improvements to the Premises that Tenant deems necessary or desirable for the conduct of its business, and the decision whether to make any such improvements, and to apply any unused Tenant Improvement Allowance to them, shall be in Tenant's sole discretion. Such improvements shall be performed in accordance with construction drawings approved in writing in advance by Landlord, which approval shall not be unreasonably withheld, conditioned, or delayed.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 3 findings, and all 3 trace back to the same counterparty (Royal & Sons Investments Pte Ltd) across what appear to be two related lease negotiations, not three independent deals -- the directional pattern (landlord's base template offers no fit-out/rent-free period at all; Marmon's tenant side adds a dated, rent-free Fitting-Out Period while accepting the landlord's own-works exculpation and a fixture cap) is internally consistent, but the evidence is narrow and single-counterparty, so treat elements of \"required\" that go beyond what was actually observed in the \"after\" text (e.g., the qualified exculpation carve-out, deemed-approval timing, day-for-day extension) as aspirational drafting rather than a proven negotiated outcome, and prioritize this as PRESS rather than MUST PRESS pending more diverse samples.",
+    "confidence_note": "Based on 2 findings from a single counterparty and a single transaction, consistent in direction but medium significance, so treat as provisional until more leases confirm it.",
+    "matching_clause_names": [
+      "Tenant Improvements - Scope and Discretion",
+      "Tenant Improvements - Landlord Approval Standard"
+    ]
+  },
+  {
+    "rule_id": "RE-IMP-02",
+    "title": "Fit-Out Access, Timing, Cost, and Landlord Non-Liability During Works",
+    "priority": "PRESS",
+    "applies_to": "Lease",
+    "category": "Improvements, Fit-Out & Alterations",
+    "where_to_look": "Fitting-out availability and possession clauses, and the fit-out works schedule covering access, hours, and cost.",
+    "required": "Secure a defined rent-free and service-charge-free fit-out period with access from execution and landlord approval of fit-out plans not to be unreasonably withheld. The landlord remains liable for loss caused by its own works during that period.",
+    "fallback": "Accept tenant-borne fit-out cost, restricted working hours, and the landlord's right to carry out its own concurrent works, provided the landlord's exculpation excludes negligence and wilful acts and the fit-out period extends day for day for landlord-caused delay.",
+    "escalate_if": "A blanket waiver of all tenant claims against the landlord for the landlord's own works during fit-out, or rent running before the premises are available for fit-out.",
+    "flag_if": [
+      "Fit-out availability or possession clauses are marked 'Not Applicable' or omitted from the lease.",
+      "Rent or service charge is payable during the fit-out period.",
+      "The tenant waives all claims against the landlord for the landlord's works during the fit-out period.",
+      "Landlord approval of the tenant's fit-out plans carries no reasonableness qualifier.",
+      "Landlord-caused delay does not extend the fit-out period."
+    ],
+    "preferred_language": "The Landlord shall make the Demised Premises available to the Tenant for the Tenant's fitting-out works from the date of this Agreement, subject only to approval of the Tenant's fitting-out plans by the relevant authorities and the Landlord, such approval not to be unreasonably withheld or delayed, and no rent or service charge shall be payable during the Fitting-Out Period. The Landlord may carry out its own works during the Fitting-Out Period provided that it does not materially interfere with the Tenant's fitting-out works, the Fitting-Out Period is extended day for day for any resulting delay, and the Landlord remains liable for loss and cost caused by such works.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 high-significance findings arising from a single counterparty's lease template, consistent in direction but narrow in sourcing, so treat as provisional outside comparable landlord-form tenancy agreements.",
     "matching_clause_names": [
       "Fitting-Out Works and Possession",
-      "Definitions \u2013 Fitting-Out Period / Rent Free Period",
       "Availability of Demised Premises for Fitting-Out Works / Possession and Tenant's Fitting-Out Works"
     ]
   },
   {
-    "rule_id": "RE-TRM-01",
-    "title": "Lease Term Length / Commencement & Expiration Dates",
-    "priority": "PRESS",
-    "applies_to": "All contract types",
-    "category": "Term & Renewal",
-    "where_to_look": "The dedicated \"Term\" / \"Lease Term\" article (often in or near the Recitals, immediately before the Rent or Insurance sections), any \"Extended Term\" / \"Renewal Term\" / \"Option to Extend\" section, and \u2014 for existing leases \u2014 any First Amendment or extension amendment that restates Section 1/2 commencement and expiration dates.",
-    "required": "State the Initial Term and every Extended/Renewal Term with explicit, unambiguous calendar commencement and expiration dates (never a bare duration or an open-ended renewal with no stated end date), with the Commencement Date tied to actual delivery of possession/use rather than an assumed or default execution date. Structure the deal as a defined initial term sized to the business's realistic minimum need, paired with one or more express extension/renewal options exercisable at Marmon's election (rather than a single long, inflexible fixed term), so Marmon can walk away or extend on its own timeline.",
-    "fallback": "Accept the counterparty's proposed commencement/expiration dates and term structure (including a longer flat initial term, or a shorter initial term with renewal options, or an amendment extending an existing term) so long as (a) both the commencement date and the expiration date are stated as explicit calendar dates for every term and every extended/renewal term, and (b) any extension of an existing lease is memorialized in a signed amendment with its own explicit dates before the current term lapses.",
-    "escalate_if": "A Term or Extended Term provision leaves the expiration date undefined, open-ended, or determined solely by a future contingent event with no outside/backstop date; the lease provides for automatic/perpetual renewal with no cap or notice mechanism; or term dates are inconsistent across sections of the same document/amendment (e.g., recitals vs. a schedule) such that it is unclear which dates actually govern.",
-    "flag_if": [
-      "Term section states only a duration (e.g., \"a term of five (5) years\") with no explicit calendar commencement and expiration dates",
-      "An Extended Term/Renewal Term section has a stated commencement date but no corresponding stated expiration date, or vice versa",
-      "Commencement Date is defined by reference to an undefined or unscheduled event (e.g., \"substantial completion,\" \"delivery of possession\") with no outside date if that event is delayed",
-      "A long flat initial term (5+ years) with no renewal/extension option and no early-termination right",
-      "A lease extension or renewal is being implemented informally (letter, email, course of conduct) rather than by a signed amendment stating new commencement/expiration dates",
-      "Term dates in an amendment or renewal notice do not match term/rent-commencement/insurance dates stated elsewhere in the same document set"
-    ],
-    "preferred_language": "Term. The initial term of this Lease (\"Initial Term\") shall commence on [Commencement Date], being the date on which Landlord delivers actual and exclusive possession of the Premises to Tenant in the condition required under this Lease, and shall expire at 11:59 p.m. on [Expiration Date], unless earlier terminated as provided herein. If the actual date of possession differs from the date anticipated as of execution, Landlord and Tenant shall confirm the actual Commencement Date and the resulting Expiration Date in a written notice or amendment promptly following delivery of possession, and such confirmed dates shall govern for all purposes under this Lease. Tenant shall have the option to extend the term of this Lease for [one (1)/two (2)] additional period(s) of [__] years each (each, an \"Extended Term\"), exercisable by Tenant delivering written notice to Landlord no later than [180] days prior to expiration of the then-current term. Each Extended Term shall commence immediately upon expiration of the Initial Term or the preceding Extended Term, as applicable, and the parties shall memorialize the specific Commencement Date and Expiration Date of each Extended Term in the notice of extension or a corresponding written amendment. In no event shall the Initial Term or any Extended Term be deemed to have an undefined, indefinite, or open-ended expiration date.",
-    "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 4 findings, but spread across 4 different counterparties (Winston Furniture, Providence Properties, FAE Holdings, Creekside SPE) and all independently rated high significance; the direction was mixed (term extended in two deals, contracted-with-optionality in one, clarified in one), so treat the structural asks here \u2014 explicit dates and renewal optionality \u2014 as the reliable takeaway rather than a single directional target, and treat this rule as provisional given the small sample.",
-    "matching_clause_names": [
-      "Term",
-      "Extended Term"
-    ]
-  },
-  {
-    "rule_id": "RE-TRM-02",
-    "title": "Renewal & Extension Options",
-    "priority": "MUST PRESS",
-    "applies_to": "All contract types",
-    "category": "Term & Renewal",
-    "where_to_look": "The Term / Renewal Option / Extension Option section of the lease (commonly titled \"Term,\" \"Renewal Option,\" or \"Extension Option\"); any Rent or Rent Schedule section cross-referenced by the renewal clause; lease amendments or addenda that extend the term; exercise-of-option notice letters; and cover-page/signature-block renewal-election mechanisms in short-form renewal documents.",
-    "required": "Tenant retains at least two successive renewal/extension options (e.g., two additional 5-year terms, or multi-year terms sized to the deal), each exercisable by written notice within a clearly defined window (e.g., 90-180 days before expiration), subject only to a standard non-default condition that includes a cure-period carve-out. Base Rent for each extension term either continues at the rate in effect immediately before the extension (no increase) or is subject to a small, pre-fixed escalation (target no more than ~2%) \u2014 never reset to an open-ended \"fair market rent\" or other mechanism determined unilaterally by Landlord.",
-    "fallback": "A single renewal/extension option (term length matched to the deal, commonly 1-5 years) with a modest, pre-fixed rent escalation of roughly 2-3% over the immediately preceding term's rent \u2014 consistent with the ~2% and ~3.2% escalations actually negotiated across these findings \u2014 with explicit start/end dates, notice mechanics, and dollar figures spelled out rather than left to a later cross-reference or open negotiation.",
-    "escalate_if": "Escalate to an attorney regardless of how negotiations are going if: (a) the extension-term rent is tied to open-ended \"then-prevailing fair market rent\" or any mechanism not fixed/capped in the lease; (b) exercise of the renewal option is subject to Landlord's sole/unfettered discretion or can be refused without cause; (c) the lease is approaching expiration with no renewal/extension provision addressed at all and no confirmed fallback space (the business-continuity risk seen where a term-extension provision was entirely absent from the original instrument); or (d) an amendment recasts term/renewal mechanics purely by cross-reference to an \"Original Lease\" or other document that has not been located and reviewed.",
-    "flag_if": [
-      "Extension/renewal section is silent, deleted, or replaced with a bare cross-reference to another lease/amendment document that has not been attached or reviewed.",
-      "Rent for the extension term is left blank, marked 'TBD,' or tied to 'fair market rent' / 'then-current market rate' with no cap or floor.",
-      "Only one renewal option is offered where the base term is short (e.g., 12 months), leaving a thin overall occupancy runway.",
-      "Notice window to exercise the option is unusually short (under 60 days), undefined, or missing entirely.",
-      "Exercise of the option is conditioned on 'no default' with no cure-period carve-out, giving Landlord a pretext to block renewal.",
-      "Rent escalation on renewal exceeds roughly 3-5% per term without a stated cap, or compounds with no ceiling across multiple option periods.",
-      "An amendment or addendum extends the term or updates the rent schedule without correspondingly updating all cross-referenced sections (e.g., rent is amended 'per Section 4 of the Original Lease' but the extension-term escalation formula from that original section isn't restated or verified)."
-    ],
-    "preferred_language": "Tenant shall have two (2) successive options to extend the Term of this Lease, each for a period of [___] years (each, an \"Extension Term\"), on the same terms and conditions as the initial Term except as set forth below, by delivering written notice to Landlord not less than ninety (90) days and not more than one hundred eighty (180) days prior to the expiration of the then-current Term, provided that Tenant is not in material default under this Lease beyond any applicable notice and cure period at the time of such exercise. Base Rent during each Extension Term shall be the Base Rent in effect immediately prior to the commencement of such Extension Term, increased by no more than two percent (2%) over the Base Rent in effect during the immediately preceding Term. In no event shall Base Rent for any Extension Term be determined by reference to then-prevailing fair market rent, appraisal, or any other mechanism not fixed by this Lease. Within thirty (30) days after Tenant's exercise notice, Landlord and Tenant shall execute an amendment confirming the new expiration date and adjusted Base Rent, provided that Tenant's timely exercise notice shall be self-effectuating and binding whether or not such confirming amendment is executed.",
-    "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on 7 findings across 7 distinct counterparties (Hannibal Industries, Fort Acquisitions LLC, GLG Properties, W. W. Williams Company, 319 LLC, FAE Holdings, and IWG PLC/Regus) \u2014 5 of 7 rated high significance and the direction is fairly consistent (renewal mechanics get formalized/clarified, and extension-term rent is kept flat or modestly capped rather than reset to market), but the specific fact patterns are heterogeneous (amendment cross-referencing, sequential option exercise, rent-schedule updates, brand-new renewal insertions), so treat the specific numeric thresholds above as directional rather than precisely benchmarked.",
-    "matching_clause_names": [
-      "Term, Extension Option, and Rent",
-      "Term Extension and Rent Schedule",
-      "Term / Renewal",
-      "Rent Schedule (Renewal Option)",
-      "Renewal/Extension Option (Lease \u00a72(b))",
-      "Additional Extension Option (Second Extended Term)",
-      "Term and Renewal"
-    ]
-  },
-  {
-    "rule_id": "RE-RNT-01",
-    "title": "Base Rent Amount & Escalation",
-    "priority": "MUST PRESS",
-    "applies_to": "All contract types",
-    "category": "Rent, Payment & Operating Costs",
-    "where_to_look": "The core rent clause (variously titled \"Rent,\" \"Base Rent,\" \"Rent and Term,\" \"Lease Term and Rent/Security Deposit,\" or \"Rent & Service Charge\"), any attached rent schedule or Exhibit (e.g., \"Exhibit C \u2013 Base Rent Schedule\"), the summary/cover term-sheet fields (Base Rent, Amount Due at Lease Signature), and \u2014 critically \u2014 any amendment or renewal section that resets or extends the rent obligation for a new term or expanded premises.",
-    "required": "Base Rent must be stated as a specific, unambiguous dollar figure per month and per year, expressed identically in both numerals and written (spelled-out) words within the same clause. Any rent applicable to a renewal, extension, or expanded premises must be set out as a complete, dollar-denominated schedule fixed in the lease/amendment itself (not left to later landlord determination). If the lease provides for escalation, the escalation must be capped at a stated, reasonable percentage (or tied to a defined index such as CPI, itself capped) and must require Landlord to give Tenant advance written notice \u2014 with its calculation \u2014 before any increase takes effect; open-ended or \"without further notice\" escalation rights should not be accepted.",
-    "fallback": "Where a hard cap with full transparency cannot be obtained, accept a capped percentage escalation at lease renewal/expiration (the observed market fallback was up to 8%) provided Marmon still secures a written-notice requirement before the increase applies. Similarly, accept rent adjustments tied to a verified change in square footage (using an agreed measurement method) as a reasonable basis for a rent-schedule update, even if the cap/notice language above cannot be added.",
-    "escalate_if": "Escalate to an attorney if: the redline introduces an uncapped or fully discretionary rent-increase right for Landlord (no percentage ceiling, no formula, and/or \"without further notice\" language); the current or renewal-term rent figure is blank, left as a placeholder, or otherwise undefined at signature; the numeral and written-word rent amounts conflict and cannot be reconciled from the document (this creates real ambiguity as to the legally controlling amount); or a rent credit/concession is referenced in the text but its dollar amount or mechanics are not actually specified anywhere in the executed document.",
-    "flag_if": [
-      "Spelled-out rent amount in a clause does not match the numeral shown in the same passage",
-      "Escalation language includes phrases like \"without further notice\" or gives Landlord sole discretion to set the increase",
-      "No percentage cap or index formula is stated for a rent escalation clause",
-      "A renewal/extension/amendment references a new Base Rent or rent schedule but the actual dollar figures are missing, cut off, or left blank",
-      "A replaced Exhibit/rent schedule changes total square footage or per-foot rate without correspondingly updating all cross-referenced totals elsewhere in the document",
-      "A rent credit, abatement, or concession is mentioned but its amount and application mechanics are not spelled out",
-      "Rent increase is tied to added square footage without stating how that footage was measured or verified"
-    ],
-    "preferred_language": "Base Rent. Tenant shall pay to Landlord Base Rent in the amount of $[_____] per month ($[_____] per annum), which amount is stated above in both numerals and written words; in the event of any conflict between the numeral and the written amount in this Lease or any amendment hereto, the parties shall promptly execute a written correction, and until corrected the written (spelled-out) amount shall control. Base Rent payable during any renewal, extension, or amended Lease Term shall be set forth as a complete, dollar-denominated schedule agreed by the parties and attached as an Exhibit to this Lease or the applicable amendment, stating the exact monthly and annual Base Rent for each year of such renewal, extension, or amended term. Any escalation of Base Rent during the Lease Term or any renewal or extension shall not exceed [three percent (3%)] per annum (or, if index-based, the increase in the Consumer Price Index for the applicable period, not to exceed [five percent (5%)] per annum), and Landlord shall provide Tenant no less than [sixty (60)] days' prior written notice, including Landlord's calculation of the increase, before any such increase takes effect. If the Premises are expanded, any resulting adjustment to Base Rent shall be calculated using an agreed method of measurement (e.g., the BOMA standard) and set forth in a written amendment executed by both parties before Tenant becomes obligated to pay the adjusted amount.",
-    "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on 8 findings across 8 different counterparties (NAVA, GLG Properties, East End Maker Hub Sponsor, Tommy Surber, FAE Holdings, Creekside SPE, B360 Holdings, and Royal & Sons), all independently flagged high significance \u2014 a reasonably solid sample for a core financial term. The direction is consistent in that Base Rent amount/escalation is always heavily negotiated and material, but the specific sub-issue varies across findings (escalation caps and notice, rent credits, schedule resets for renewals or added square footage, and numeral-vs-words drafting mismatches), so this rule synthesizes across several related but distinct fact patterns rather than one single repeated numeric ask.",
-    "matching_clause_names": [
-      "Cl\u00e1usula Segunda (Rent)",
-      "Rent",
-      "Lease Term and Rent/Security Deposit",
-      "Rent and Term",
-      "Base Rent Credit (new Section 5)",
-      "Base Rent",
-      "Base Rent / Exhibit C",
-      "Rent & Service Charge"
-    ]
-  },
-  {
-    "rule_id": "RE-RNT-02",
-    "title": "Rent Payment Mechanics (Timing, Proration & Arrears Treatment)",
-    "priority": "MANAGE",
-    "applies_to": "All contract types",
-    "category": "Rent, Payment & Operating Costs",
-    "where_to_look": "The core Rent / Base Rent payment provision (often titled \"Rent,\" \"Rent & Service Charge,\" or \"Payment of Rent\"), typically immediately after the Demise/Premises or Term clause; also check any Additional Rent, Service Charge/CAM, or Operating Cost provisions, and the Default/Remedies clause for cross-references that deem those charges \"rent\" for collection purposes.",
-    "required": "Rent (and any Additional Rent/service charges) is payable monthly in advance, with no amount due before the Commencement Date, and an express per-diem proration formula for any partial first or last calendar month based on actual days within the Term. If service charges/CAM are deemed \"additional rent\" for default-remedy purposes, that treatment is expressly conditioned on Landlord giving Tenant written notice of nonpayment and a reasonable cure period (10+ business days) before any default remedy, late charge, or acceleration applies. Tenant retains a right to deduct/set off amounts Landlord does not dispute in writing within a set notice period.",
-    "fallback": "Accept \"no set-off / no demand required\" payment language (as landlords commonly insist on) and service charges treated as rent-in-arrears for collection purposes, provided (a) the partial-month proration mechanic is included so billing at commencement/expiration isn't disputed, and (b) some minimal notice-and-cure window survives before default/late-fee remedies attach \u2014 even if shorter than the ask above.",
-    "escalate_if": "Escalate to an attorney if the clause requires rent/service charge paid in full before lease execution or the Commencement Date with no proration mechanism at all, or if \"without demand, without deduction\" language is combined with automatic default, acceleration, or lien/repossession rights that trigger with zero notice or cure period for a missed payment \u2014 i.e., strict-liability default exposure with no off-ramp. Also escalate if payment-timing terms purport to waive statutory set-off/abatement rights beyond what is enforceable in the governing jurisdiction.",
-    "flag_if": [
-      "Rent/charges stated as \"due and owing upon execution\" with no language prorating a partial first or last month",
-      "No per-diem or days-in-month proration formula for partial periods at commencement or expiration",
-      "Service charge, CAM, or other additional charges deemed \"recoverable as if rent\" or \"rent in arrears\" without any carve-out for notice before default remedies apply",
-      "\"Without any deductions\" and/or \"without demand\" language appearing together with an automatic/immediate default or acceleration clause (no defined cure period)",
-      "No stated grace period before late fees or default triggers on a missed rent or service-charge payment",
-      "Rent and service charge/additional rent have inconsistent due dates or payment cadences (e.g., rent in advance, service charge in arrears) creating tracking/compliance risk"
-    ],
-    "preferred_language": "4.1 Payment of Rent. Tenant shall pay Landlord Monthly Base Rent in advance, without prior demand, on the first day of each calendar month during the Term, at the address Landlord designates in writing. No Rent shall be due or payable for any period prior to the Commencement Date. If the Term begins on a day other than the first day of a calendar month, or ends on a day other than the last day of a calendar month, Monthly Base Rent for such beginning or ending month shall be prorated on a per diem basis based on the actual number of days in that month falling within the Term.\n\n4.2 Additional Rent / Service Charges. Any service charge, common area maintenance charge, or other operating cost reimbursement payable by Tenant under this Lease (collectively, \"Additional Rent\") shall, for collection and default-remedy purposes, be treated as if it were Rent; provided, however, that before exercising any default remedy, assessing any late charge, or accelerating any obligation based on Tenant's failure to pay Rent or Additional Rent when due, Landlord shall give Tenant written notice of such failure, and Tenant shall have not less than ten (10) business days following such notice to cure.\n\n4.3 Set-Off. Tenant shall be entitled to deduct from Rent any amount owed to Tenant by Landlord under this Lease that Landlord does not dispute in writing within fifteen (15) business days after Tenant's written notice of such amount.",
-    "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 2 findings, from two different counterparties and covering two different sub-issues (partial-month proration on one hand, service-charge/payment-timing-and-arrears mechanics on the other) \u2014 the sample is thin, the two examples don't reinforce a single clear negotiating pattern, and one of them shows Marmon's side accepting landlord-favorable terms (no deduction, no demand, service charge as rent-in-arrears). Treat this rule as especially provisional and revisit once more instances of this topic are found.",
-    "matching_clause_names": [
-      "Rent & Service Charge - Payment Terms",
-      "Rent Payment"
-    ]
-  },
-  {
-    "rule_id": "RE-RNT-03",
-    "title": "Security Deposit / Advance Rent Payment Terms",
-    "priority": "MANAGE",
-    "applies_to": "All contract types",
-    "category": "Rent, Payment & Operating Costs",
-    "where_to_look": "The Security Deposit / Advance Rental clause, usually in or near the Rent article or Tenant's Covenants section; in some (esp. Singapore/APAC-style) leases it is bundled near \"Use of Premises\" and \"Document Charges & Stamp Duty\" provisions rather than isolated.",
-    "required": "Deposit/advance rental sum is held purely as security (never characterized as prepaid rent), is interest-free, and may be applied by Landlord only to cure an uncured, notified Tenant default (with a written itemized deduction statement) \u2014 never applied automatically or at Landlord's sole discretion. Balance refundable within 30 days after lease expiration/termination. Deposit amount stated once in numerals with the spelled-out words cross-checked to match exactly. Push for the lowest defensible deposit multiple (e.g., 1-2 months' rent) and confirm the deposit clause does not silently expand Landlord's other remedies (e.g., termination rights) beyond what is separately negotiated.",
-    "fallback": "Deposit/advance rental accepted as a security fund (not rent), interest-free, refundable within a defined but longer window (30-60 days) after end of term, subject to deduction for uncured Tenant defaults if Landlord provides a written accounting; Landlord's other remedies (including termination) are preserved but must remain separately conditioned on notice-and-cure, not triggered automatically by the deposit clause itself. Numerals and spelled-out amount must be reconciled before signature even if the underlying number is renegotiated downward.",
-    "escalate_if": "Deposit/advance rent is characterized as non-refundable, forfeited automatically, or treated as liquidated damages regardless of fault; deduction or forfeiture is permitted without notice, an itemized accounting, or any cure opportunity; the clause preserves Landlord's unilateral termination right for \"breach\" without tying it to a defined notice-and-cure process; or the numeral and spelled-out deposit amounts in the executed document conflict with no controlling provision to resolve the ambiguity (as occurred in one of the source findings, where \"Twenty-One Thousand Five Hundred\" was left next to a numeral of $28,500.00).",
-    "flag_if": [
-      "Deposit or advance rent described as non-refundable or forfeited automatically upon any breach, with no cure period",
-      "Spelled-out (words) deposit amount does not match the numeral amount stated in the same or a cross-referenced clause",
-      "No stated timeframe (or an unreasonably long one) for refunding the deposit after lease expiration/termination",
-      "Deposit permitted to be applied to routine/current rent rather than held strictly as security for default",
-      "Clause is silent on interest where the deposit is sizeable or the term is long",
-      "Deposit/advance-rent language is bundled with, or used to backdoor, broader landlord remedies-for-breach or termination rights that have not been independently negotiated",
-      "Deduction from the deposit is allowed without a written itemized statement to Tenant"
-    ],
-    "preferred_language": "\"Security Deposit. Concurrently with execution of this Lease, Tenant has paid to Landlord, and Landlord acknowledges receipt of, a security deposit in the amount of $[AMOUNT] (the \"Security Deposit\"; in words, [AMOUNT IN WORDS], which words shall control in the event of any conflict with the numeral). The Security Deposit is held by Landlord solely as security for Tenant's performance of its obligations under this Lease and shall not be deemed prepayment of Rent, Additional Rent, or any other charge due hereunder, nor shall Tenant have any right to apply the Security Deposit toward payment of Rent. The Security Deposit shall bear no interest for the benefit of Tenant. Landlord shall not apply any portion of the Security Deposit except (a) following an Event of Default by Tenant that remains uncured after any applicable notice and cure period expressly provided under this Lease, and (b) then only in the amount reasonably necessary to cure such default or compensate Landlord for the resulting loss, accompanied by a written itemized statement delivered to Tenant within ten (10) business days after any such application. Provided Tenant is not then in uncured default under this Lease, Landlord shall return the unapplied balance of the Security Deposit to Tenant within thirty (30) days after the expiration or earlier termination of this Lease. Landlord's rights under this Section are in addition to, and not in lieu of, any other right or remedy available to Landlord under this Lease or at law, and no application or retention of the Security Deposit shall itself constitute a waiver of, or substitute for, Landlord's obligation to comply with the notice-and-cure and termination provisions set forth elsewhere in this Lease.\"",
-    "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 2 findings, both from the same single counterparty (Royal & Sons Investments Pte Ltd), and addressing two different sub-issues (deposit/advance-rent mechanics and remedies in one finding vs. a numeral-vs-words deposit-amount discrepancy in the other) rather than one lever tested repeatedly \u2014 treat this rule as provisional and revisit if findings from additional counterparties become available.",
-    "matching_clause_names": [
-      "Rental in Advance / Landlord's Remedies for Breach",
-      "Deposit"
-    ]
-  },
-  {
-    "rule_id": "RE-RNT-04",
-    "title": "Operating Expenses / CAM & Tax Pass-Through Scope",
-    "priority": "PRESS",
-    "applies_to": "All contract types",
-    "category": "Rent, Payment & Operating Costs",
-    "where_to_look": "The \"Operating Expenses\" / \"Common Area Maintenance\" / \"Additional Rent\" definition section of the lease (often its own defined-terms subsection or exhibit), specifically: (1) the itemized list of includable maintenance/repair/replacement categories, (2) any property/management fee provision, (3) the capital-improvement/law-compliance cost recovery and amortization language, (4) the Operating Expenses exclusions list, and (5) the \"Taxes\" or \"Real Estate Taxes\" defined term (sometimes located in the Rent article rather than the Opex section).",
-    "required": "Operating Expenses defined narrowly, not by an open-ended itemized list of all Building/Park systems: (a) capital expenditures and capital improvements (roof replacement, parking resurfacing, structural/foundation/exterior wall/major Building-system replacement) excluded by default; (b) any management/administrative fee payable to Landlord or a Landlord affiliate capped at 3% of Operating Expenses; (c) capital costs to comply with law includable only when required by a Legal Requirement first enacted or made applicable AFTER the Lease date (never to cure Landlord's pre-existing/legacy non-compliance), amortized over the improvement's full useful life with no artificial short amortization ceiling; (d) a full standard exclusions list carved out of Operating Expenses: Landlord's income/franchise/transfer/estate taxes, capital expenditures, leasing commissions and tenant-improvement costs, debt service/financing costs, salaries/benefits of personnel not dedicated solely to the Building, costs to cure latent defects/Hazardous Substances/pre-existing law violations, fines/penalties from Landlord's own default or negligence, and any duplicate recovery of the same cost; and (e) \"Taxes\"/\"Real Estate Taxes\" defined narrowly as ad valorem real property taxes and assessments only, expressly excluding Landlord's income, franchise, transfer, and estate taxes.",
-    "fallback": "If Landlord resists the full exclusions package, accept a shorter but still substantive exclusions list that at minimum removes Landlord's income-type taxes, capital expenditures/structural replacement costs, and debt-service/financing costs from Operating Expenses, and narrows \"Taxes\" to real-estate-type taxes. If a hard 3% management-fee cap is not obtainable, accept a cap tied to a stated market-rate ceiling (e.g., a fixed percentage in the mid-single digits) rather than no cap. If full-useful-life amortization for law-compliance capital costs is not obtainable, accept a longer fixed amortization ceiling (e.g., 15 years) rather than reverting to a short (e.g., 10-year) ceiling, and hold firm on excluding compliance costs tied to laws that predate the Lease.",
-    "escalate_if": "Landlord's draft (i) includes an unbounded, itemized list making Tenant responsible for essentially all Building- and Park-wide capital systems (roof, paving, structural, all mechanical) as Operating Expenses with no capital-expenditure exclusion at all; (ii) imposes a management/administrative fee payable to a Landlord affiliate with no cap whatsoever; (iii) defines \"Taxes\" as \"any tax\" or otherwise broadly enough to sweep in Landlord's income/franchise taxes; or (iv) allows Landlord to charge Tenant for capital costs to cure Landlord's own pre-existing legal non-compliance, or refuses to include any Operating Expenses exclusions list at all. Any of these should go to an attorney regardless of how the rest of the negotiation is trending, since they shift open-ended capital and tax risk onto Tenant.",
-    "flag_if": [
-      "Operating Expenses definition contains a long itemized list of specific Building/Park systems (roof, HVAC, paving, structural elements) with no accompanying capital-expenditure exclusion",
-      "No percentage or dollar cap on management/administrative fees, especially fees payable to a Landlord affiliate",
-      "\"Taxes\" or \"Real Estate Taxes\" is defined as \"any tax\" or is otherwise broad enough to include Landlord's income, franchise, transfer, or estate taxes",
-      "Capital improvement / law-compliance cost-recovery language does not distinguish between laws in effect before vs. after the Lease date",
-      "No amortization period is specified for capital cost pass-throughs, or an unusually short ceiling (e.g., 5-10 years) front-loads the annual charge to Tenant",
-      "Standard exclusions are missing from the Operating Expenses definition (leasing commissions, tenant-improvement costs, debt service, Landlord's income taxes, capital expenditures, latent-defect/Hazardous-Substances remediation, duplicate charges)",
-      "Operating Expenses / CAM is defined by an open-ended catch-all (e.g., \"all costs of operating the Building\") rather than an itemized, exclusion-qualified definition"
-    ],
-    "preferred_language": "\"Operating Expenses\" means the actual, reasonable costs paid or incurred by Landlord in operating, managing, maintaining, and repairing the Building and the Project, determined in accordance with sound accounting principles consistently applied. Operating Expenses shall exclude: (a) Landlord's income, franchise, estate, inheritance, transfer, gift, and gross-receipts taxes, and any tax based on rent, except to the extent such amount would otherwise qualify as Taxes under this Lease; (b) capital expenditures and capital improvements of any kind, including without limitation roof replacement (as distinguished from routine roof repair and maintenance), parking area resurfacing, and repair or replacement of the foundation, floors, exterior walls, roof structure, or other structural or major Building systems, except as expressly permitted under clause (f) below; (c) leasing commissions, marketing costs, and costs of renovating or improving space for tenants or prospective tenants; (d) debt service, ground rent, and other financing or refinancing costs; (e) salaries, wages, and benefits of personnel not dedicated exclusively to the Building or Project; (f) the cost of capital additions or alterations required solely to comply with any Legal Requirement first enacted, or first made applicable to the Building, after the date of this Lease (expressly excluding any cost arising from a Legal Requirement in effect as of the date of this Lease or from Landlord's violation thereof), amortized on a straight-line basis over the full useful life of the improvement as reasonably determined in accordance with sound accounting principles; (g) costs to remediate Hazardous Substances or to cure latent defects or violations of law existing as of the date of this Lease; (h) fines, penalties, and interest resulting from Landlord's negligence, violation of law, or default under any agreement; (i) any management or administrative fee payable to Landlord or any affiliate of Landlord in excess of three percent (3%) of total Operating Expenses (exclusive of such fee) for the applicable calendar year; and (j) any cost otherwise includable in Operating Expenses to the extent Landlord actually receives reimbursement from insurance, warranty, condemnation award, or any third party, or to the extent such cost would otherwise result in Landlord's duplicate recovery of the same cost from Tenant. \"Taxes\" means real estate ad valorem taxes and assessments levied against the Building and the Project by any governmental authority, and expressly excludes Landlord's income, franchise, capital stock, transfer, estate, and inheritance taxes.",
-    "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on 4 findings, all significance \"high\" and all pointing the same direction (narrowing Operating Expenses scope, capping the management fee, restricting law-compliance capital pass-throughs, and narrowing \"Taxes\") - but all 4 come from a single negotiated lease with one counterparty (Indiana Athletic Apparel, LLC, request 3807), not 4 independent deals, so this reflects one well-documented instance rather than a confirmed cross-counterparty market pattern; priority is set to PRESS rather than MUST PRESS on that basis, and this rule should be revisited (and likely upgraded) if the same pattern shows up in other leases.",
-    "matching_clause_names": [
-      "Operating Expenses",
-      "Operating Expenses - Property Management Fee",
-      "Operating Expenses - Capital Improvements for Law Compliance",
-      "Operating Expenses / Taxes Definition"
-    ]
-  },
-  {
     "rule_id": "RE-RSK-01",
-    "title": "Insurance Coverage & Liability/Damage Allocation",
+    "title": "Insurance Requirements, Coverage Form, and Waiver of Subrogation",
     "priority": "PRESS",
     "applies_to": "All contract types",
-    "category": "Risk, Default & End-of-Term",
-    "where_to_look": "Indemnification clause; Insurance section (Property/Casualty Insurance requirements, often labeled \"Property Insurance\"); Liability for Damage / Waiver of Subrogation provisions; Alterations, Damage & Tenant-Installations section (damage liability for tenant/agents/contractors and IT/cabling consent rights); and any Lease Amendment or Addendum signed when premises size, use, or occupied space changes, since insurance scope is frequently revisited there.",
-    "required": "Mutual, negligence-based risk allocation rather than a one-way transfer onto Marmon: (1) reciprocal indemnification \u2014 each party indemnifies the other only for claims arising from its own (or its employees'/contractors'/agents') negligence, gross negligence, willful misconduct, or breach, expressly excluding consequential/indirect/punitive damages and excluding matters caused by the indemnified party's own negligence or willful misconduct; (2) property-damage liability allocated on a negligence basis (each party liable only for damage it negligently, recklessly, or intentionally causes to the other's property), paired with a mutual waiver of subrogation and a requirement that both parties carry \"Causes of Loss \u2013 Special Form\" (all-risk) or equivalent property insurance on their respective interests; (3) any insurance-scope expansion tied to Tenant's own added space/use only, not open-ended; (4) alterations/IT-installation consent rights subject to a \"not unreasonably withheld\" standard rather than the counterparty's unfettered \"absolute discretion,\" with damage liability and installation/removal costs on Tenant limited to damage it or its invitees actually cause.",
-    "fallback": "Where full mutuality isn't obtainable, accept a one-way indemnity running to the landlord/counterparty provided it is expressly limited to Tenant's (or its employees'/contractors'/agents') negligence, gross negligence, willful misconduct, or breach \u2014 not \"any and all\" claims without qualification \u2014 and carved out for the counterparty's own negligence or willful misconduct. Separately, still insist on: a mutual waiver of subrogation and modernized \"Special Form\"/all-risk (not narrower \"Broad Form\"/named-perils) property insurance language even if the liability-for-damage clause itself is not made fully mutual; and a reasonableness qualifier on any consent right over alterations/IT installations even if the cost-shifting onto Tenant is retained.",
-    "escalate_if": "Escalate to an attorney regardless of negotiation posture if: the draft imposes uncapped indemnification with no carve-out for the counterparty's own negligence or willful misconduct; the indemnity or damage-liability language sweeps in consequential, indirect, or punitive damages; Tenant is made liable for pre-existing conditions or the counterparty's building-systems/structural failures; the counterparty retains \"sole\"/\"absolute discretion\" to refuse Tenant alterations or IT installations with no reasonableness standard while also shifting unlimited damage liability (including for invitees/visitors) onto Tenant; or the insurance/subrogation-waiver obligation is one-sided (only Tenant waives or only Tenant must carry/expand coverage) with no reciprocal obligation on the counterparty.",
+    "category": "Insurance, Indemnity & Liability",
+    "where_to_look": "Property and liability insurance sections and the damage-liability clause, including any amendment revising them.",
+    "required": "Require property coverage written on a Causes of Loss - Special Form basis and a mutual waiver of subrogation in both parties' policies, with each party liable only for damage it causes negligently, recklessly, or intentionally.",
+    "fallback": "Accept an equivalent all-risk property form and a waiver of subrogation running in Marmon's favor, so long as losses that are insured or required to be insured stay carved out of each party's damage liability.",
+    "escalate_if": "The waiver of subrogation runs only in the counterparty's favor, or Marmon bears damage liability for losses the other party was required to insure.",
     "flag_if": [
-      "Indemnification clause obligates Tenant to indemnify the landlord/counterparty but contains no reciprocal indemnity running the other way",
-      "Indemnity or damage-liability language uses unqualified 'any and all claims/losses' phrasing with no limitation to negligence, gross negligence, willful misconduct, or breach",
-      "No carve-out excluding the counterparty's own negligence or willful misconduct from Tenant's indemnification obligation",
-      "Insurance section requires Tenant alone to maintain or expand coverage (e.g., due to added space, inventory, or personnel) with no matching obligation on the landlord/counterparty",
-      "Property insurance is described in outdated/narrow named-perils terms ('Broad Form,' 'fire and extended coverage') rather than 'Causes of Loss \u2013 Special Form' / all-risk or equivalent",
-      "Liability-for-damage clause lacks a mutual waiver-of-subrogation provision paired with the insurance requirement",
-      "Alterations/IT-installation clause gives the landlord 'sole' or 'absolute discretion' to withhold consent with no reasonableness standard, while shifting unlimited damage liability (including for agents/contractors/invitees) onto Tenant",
-      "Draft is entirely silent on indemnification, liability-for-damage, or insurance scope (common in informal early-stage proposals) \u2014 the gap should be flagged and filled on Marmon's terms, not left unaddressed"
+      "The property insurance section requires Broad Form Causes of Loss or fire and extended coverage rather than Special Form.",
+      "Neither party's property policies are required to contain a waiver of subrogation.",
+      "The waiver of subrogation is written in favor of the landlord alone.",
+      "The damage-liability clause leaves Marmon liable for losses covered by the other party's insurance.",
+      "An amendment broadens required coverage to reach added inventory, personnel, or space."
     ],
-    "preferred_language": "Indemnification. Each party (the \"Indemnifying Party\") shall indemnify, defend, and hold harmless the other party and its officers, employees, and agents (the \"Indemnified Party\") from and against any and all third-party claims, losses, damages, liabilities, and reasonable expenses (including reasonable attorneys' fees) to the extent arising out of the negligence, gross negligence, willful misconduct, or breach of this Agreement by the Indemnifying Party or its employees, contractors, or agents, except to the extent caused by the negligence or willful misconduct of the Indemnified Party. Neither party's indemnification obligation under this Section shall extend to consequential, indirect, special, or punitive damages.\n\nInsurance and Waiver of Subrogation. Landlord and Tenant shall each, at its own expense, maintain property insurance covering its respective interest in the Premises on a \"Causes of Loss \u2013 Special Form\" (all-risk) basis or its equivalent, in commercially reasonable amounts. Each party's property insurance policy shall include a waiver of subrogation in favor of the other party, and each party hereby waives any right of recovery against the other for damage to its own property to the extent such damage is covered, or required hereunder to be covered, by insurance, regardless of the negligence of the party to be charged.\n\nLiability for Damage. Except as insured or required to be insured under this Section, each party shall be liable to the other for damage to the other's property proximately caused by the negligent, reckless, or intentional acts of that party or its employees, contractors, agents, or invitees.\n\nAlterations; Damage; Installations. Tenant shall be liable for damage to the Premises caused by Tenant or those entering the Premises with Tenant's express or implied permission, including Tenant's employees, contractors, and agents, except to the extent such damage is covered by insurance maintained (or required to be maintained) by Landlord or arises from Landlord's negligence or willful misconduct. Tenant shall not install cabling, IT, or telecommunications connections without Landlord's prior written consent, which shall not be unreasonably withheld, conditioned, or delayed; Tenant shall bear the reasonable cost of installation and removal of any such installations.",
+    "preferred_language": "Each party shall maintain property insurance covering its own property at the Premises written on a Causes of Loss - Special Form basis, or its equivalent. Each party shall be liable to the other for all damage to the property of the other caused negligently, recklessly, or intentionally by that party or its agents, employees, or invitees, except to the extent the loss is insured, or is required to be insured under this Agreement, and subrogation is waived under the insuring party's policy. Each party shall cause its property insurance policies to contain a waiver of subrogation in favor of the other party.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 4 findings, each from a different counterparty and a different contract sub-type (a traditional lease, a lease addendum expanding space, a storage-lease amendment, and a flex-office/coworking license agreement); the direction is fairly consistent \u2014 counterparties tend to start from silence or a one-way, tenant-unfavorable risk allocation, with a fully mutual negligence-based standard achieved in only one of the four instances \u2014 but the small sample and varied fact patterns make this rule provisional, so priority is set to PRESS rather than MUST PRESS.",
+    "confidence_note": "Based on 2 findings across 2 counterparties moving in the same direction, one of which carries a low document-similarity caveat, so treat this rule as provisional.",
     "matching_clause_names": [
-      "Indemnification",
       "Insurance",
-      "Property Insurance (Section 9A) / Liability for Damage (Section 10)",
-      "Alterations, Damage and IT Installations"
+      "Property Insurance (Section 9A) / Liability for Damage (Section 10)"
     ]
   },
   {
     "rule_id": "RE-RSK-02",
-    "title": "Default & Cure/Notice Period Mechanics",
+    "title": "Indemnity and Liability for Damage Caused by a Party or Its Contractors",
     "priority": "MANAGE",
     "applies_to": "All contract types",
-    "category": "Risk, Default & End-of-Term",
-    "where_to_look": "The lease's \"Default,\" \"Events of Default,\" \"Tenant's Default,\" or \"Remedies\" section (often a late-added or heavily negotiated section, sometimes with no counterpart in the initial proposal/LOI); also check any clause elsewhere in the lease that conditions Tenant's other rights (access to Premises, renewal/expansion options, subletting/assignment, signage) on Tenant \"not being in default\" \u2014 the exact notice/cure wording used there matters.",
-    "required": "(1) Every default \u2014 including nonpayment of Rent \u2014 requires written notice from the non-defaulting party before any remedy may be exercised; no carve-out excusing notice for monetary default. (2) Defined, reasonable cure periods (e.g., 5-10 days for monetary default, 30 days for non-monetary default with diligent-prosecution extension). (3) No landlord self-help remedies \u2014 no unilateral lock-changing, lock-out, or seizure of Tenant's property; repossession only through lawful judicial process. (4) No provision purporting to waive, override, or supersede state statutory landlord-tenant notice/eviction protections. (5) Anywhere Tenant's other rights (access, options, etc.) are conditioned on absence of default, the trigger must be default \"beyond any applicable notice AND cure period\" \u2014 not \"cure period\" alone.",
-    "fallback": "If a shorter notice-and-cure window is the price of movement, accept it (e.g., 10 days' written notice for monetary default) as long as written notice itself is preserved for every default type \u2014 do not trade away the notice requirement to shorten the clock. If Landlord self-help/lock-out language cannot be struck entirely, at minimum condition it on the full notice-and-cure period having already run and add an express savings clause that the Lease supplements rather than overrides state statutory tenant protections. The \"notice or cure period\" (rather than \"cure period\" alone) wording for conditioned Tenant rights (access, options, etc.) has been obtained in practice and should be treated as an easily achievable floor.",
-    "escalate_if": "Escalate to an attorney regardless of how talks are going if the counterparty's draft: (a) allows self-help repossession, lock-changing, or lock-out of the Premises without prior judicial process; (b) states or implies the Lease \"supersedes\"/\"controls over\" a state Property Code or other statutory landlord-tenant protection; (c) exempts any default type (especially nonpayment of Rent) from a written-notice requirement; or (d) is entirely silent on default/remedies in an otherwise fully negotiated lease, since such provisions have been observed to be inserted later with landlord-favorable, hard-to-walk-back terms.",
+    "category": "Insurance, Indemnity & Liability",
+    "where_to_look": "Indemnity and hold-harmless provisions, and alterations or damage-liability terms in leases and license agreements.",
+    "required": "Make the indemnity mutual and fault-based, limited to each party's own negligence and willful misconduct.",
+    "fallback": "Accept a one-way indemnity limited to Marmon's negligence and willful misconduct, with claims caused by the landlord or its agents carved out and consequential damages excluded.",
+    "escalate_if": "The indemnity reaches claims caused by the landlord's own negligence, or applies without regard to fault and without any liability cap.",
     "flag_if": [
-      "Text stating a party \"shall not be required to provide\" written notice for any default (especially nonpayment of Rent)",
-      "Language permitting Landlord to \"change the door lock(s)\", \"lock out\", or otherwise physically bar access to the Premises",
-      "Any reference to the Lease \"superseding\" or \"controlling over\" a state Property Code or similar landlord-tenant statute",
-      "A brand-new \"Default\"/\"Remedies\" section appearing in a later draft with no counterpart in the earlier LOI/proposal",
-      "A clause conditioning Tenant's access, options, or other rights on absence of default that references only a \"cure period\" and omits \"notice period\""
+      "The indemnity obligation runs in one direction only.",
+      "The trigger is any claim arising out of the occupancy rather than the indemnitor's fault.",
+      "Marmon is made liable for damage caused by anyone present with its express or implied permission.",
+      "The clause sweeps in fines, attorney fees, and consequential damages without limitation.",
+      "Consent to alterations or IT and cabling work is refusable in the landlord's absolute discretion with all costs on Marmon."
     ],
-    "preferred_language": "10. Default; Notice and Cure.\n(a) Monetary Default. If Tenant fails to pay any installment of Rent or other sum due under this Lease when due, and such failure continues for ten (10) days after Landlord delivers written notice thereof to Tenant, Tenant shall be in default under this Lease (\"Monetary Default\").\n(b) Non-Monetary Default. If Tenant fails to perform any other obligation under this Lease, and such failure continues for thirty (30) days after Landlord delivers written notice thereof to Tenant (or, if such default cannot reasonably be cured within thirty (30) days, if Tenant fails to commence cure within such period and thereafter diligently prosecute the same to completion), Tenant shall be in default under this Lease (\"Non-Monetary Default\").\n(c) Remedies. Upon a Monetary Default or Non-Monetary Default that remains uncured beyond the applicable notice and cure period set forth above, Landlord may pursue any remedy available at law or in equity, including termination of this Lease and recovery of possession, but only through lawful judicial process. Landlord shall have no right to employ self-help, to change, add, or disable any lock to the Premises, or otherwise to take possession of the Premises or of Tenant's property except pursuant to a judgment or order of a court of competent jurisdiction. Nothing in this Section shall be construed to waive, limit, or supersede any notice, cure, or procedural protection afforded to either party under applicable law, including the [State] Property Code.\n(d) Conditioned Rights. Wherever this Lease conditions Tenant's exercise of any right (including access to the Premises, renewal or expansion options, or assignment/subletting rights) on Tenant not being in default, that condition is satisfied unless Tenant is in default beyond the applicable notice and cure period described in this Section 10.",
+    "preferred_language": "Each party shall indemnify, defend and hold harmless the other party and its officers, employees and agents from and against third-party claims, losses, damages, and reasonable attorneys' fees to the extent caused by the negligence or willful misconduct of the indemnifying party or its employees, contractors, or agents. Each party's indemnity obligation is reduced in proportion to the negligence of the indemnified party. Neither party shall be liable to the other for consequential, incidental, special, or punitive damages.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 2 findings (1 \"Default,\" 1 \"Tenant's Access Rights\"), from 2 different counterparties, with mixed signal: the Default finding is high-significance but shows a tenant-adverse outcome (landlord self-help lock-out plus an override of the Texas Property Code inserted with no counterpart in the earlier proposal), while the Tenant's Access Rights finding is medium-significance and shows a modest tenant-favorable notice-wording win \u2014 treat this rule as provisional and revisit priority once more findings accumulate.",
+    "confidence_note": "Based on 2 findings across 2 counterparties pointing the same direction, but both were one-way indemnities inserted and accepted rather than fought over, so this rule is provisional.",
+    "matching_clause_names": [
+      "Indemnification",
+      "Alterations, Damage and IT Installations"
+    ]
+  },
+  {
+    "rule_id": "RE-DEF-01",
+    "title": "Default, Notice-and-Cure Periods, and Landlord Remedies",
+    "priority": "PRESS",
+    "applies_to": "All contract types",
+    "category": "Default, Remedies & End of Term",
+    "where_to_look": "Default and remedies sections, and any provision that conditions a tenant right on the absence of default.",
+    "required": "Require written notice and a cure period before any default arises, and strike all landlord self-help lockout rights.",
+    "fallback": "Accept shorter cure periods of five days for rent and twenty days for other defaults, and accept lockout rights only after those periods expire and only with written notice delivered to Tenant.",
+    "escalate_if": "Never accept a default or lockout right exercisable without written notice, or a waiver of tenant protections under the governing property code.",
+    "flag_if": [
+      "The lease excuses Landlord from giving written notice of nonpayment of Rent.",
+      "Landlord may change the door locks or otherwise bar Tenant from the Premises.",
+      "The default section states that it supersedes or overrides the governing property code.",
+      "A default carries consequences before the applicable notice period has run.",
+      "Landlord is released from liability for wrongful eviction, conversion, or forcible entry claims."
+    ],
+    "preferred_language": "Default. Tenant shall not be in default under this Lease unless Landlord has delivered written notice of the alleged default to Tenant and Tenant has failed to cure it within ten (10) days after such notice for a monetary default or thirty (30) days after such notice for any other default. No right or remedy of Landlord conditioned on a Tenant default shall arise or be exercised before those notice and cure periods expire, and Landlord shall not change the locks to or otherwise deny Tenant access to the Premises without a judicial order of possession. This Section does not waive any protection afforded Tenant under applicable law.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings across 2 counterparties moving in the same direction, though the evidence is thin and one change was a narrow notice-period insertion, so treat as provisional.",
     "matching_clause_names": [
       "Default",
       "Tenant's Access Rights"
     ]
   },
   {
-    "rule_id": "RE-RSK-03",
-    "title": "Landlord Reserved Rights (Relocation & Premises Access)",
-    "priority": "MANAGE",
-    "applies_to": "All contract types",
-    "category": "Risk, Default & End-of-Term",
-    "where_to_look": "Landlord's/Operator's Reserved Rights or Miscellaneous article of a lease (look for a \"Right to Relocate,\" \"Substitution of Premises,\" or \"Landlord's Reserved Rights\" clause) and the entry/access provisions of the General Terms and Conditions in flexible-workspace or coworking agreements (look for \"Access to the Accommodation,\" \"Right of Entry,\" or \"Hybrid Working\" language).",
-    "required": "No unilateral right for Landlord/Operator to relocate Tenant or to enter for marketing/remarketing purposes at will. If Landlord insists on a relocation right, it must be: entirely at Landlord's sole cost and expense (moving, reinstallation, signage, telecom/data reconnection); to space of substantially equal or greater size and comparable or superior quality, configuration, and location; on not less than 90 days' prior written notice; with Tenant having a right to terminate without penalty if the substitute space is unsuitable, and rent abatement for any resulting downtime. Access/entry rights should be limited to genuine emergencies (no notice) or defined purposes (inspection, repair, showing to prospective purchasers/lenders/tenants) on at least 48 hours' notice, with any \"remarket the space\" access limited to a defined pre-termination window, and any hybrid-working/shared-use permission tied to an enforceable maximum-occupancy cap.",
-    "fallback": "Accept a landlord/operator reserved right to relocate or access the premises, but hold the line on the baseline guardrails actually seen in practice: relocation at Landlord's sole cost and expense, to premises \"substantially similar\" in area and quality, on at least 60 days' prior written notice; and, for flexible-workspace/access clauses, preserve the operator's broad entry/remarketing right but keep a hard, enforceable maximum-occupancy cap on any hybrid-working or shared-use permission.",
-    "escalate_if": "Escalate to an attorney regardless of how negotiations are trending if: the relocation right contains no cost-shifting to Landlord (i.e., Tenant would bear its own moving/reinstallation costs); there is no \"substantially similar\" size/quality/configuration standard (Landlord could move Tenant to materially inferior space); notice is silent or under 30 days; the access/entry right permits entry \"at any time\" for non-emergency purposes with no notice requirement at all; or the right to show/remarket the space to prospective new occupants is not tied to an actual notice of termination or a defined pre-expiration window (i.e., Landlord/Operator could market the space to replace Tenant at any point during an active term).",
+    "rule_id": "RE-DEF-02",
+    "title": "Surrender, Restoration and Post-Termination Survival",
+    "priority": "PRESS",
+    "applies_to": "Lease",
+    "category": "Default, Remedies & End of Term",
+    "where_to_look": "Surrender and return-condition provisions, including alteration-removal obligations and post-termination survival language.",
+    "required": "Limit the return condition to broom-clean and good repair, excepting ordinary wear and tear, casualty damage, and anything Landlord is obligated to repair or maintain. Require any alteration-removal demand to be made in writing at the time the alteration is installed.",
+    "fallback": "Accept a removal demand made in writing when Landlord approves the alteration plans, and accept survival of the surrender obligations for up to twelve months, so long as casualty damage and Landlord's own repair obligations remain carved out of the return condition.",
+    "escalate_if": "Landlord requires restoration of casualty damage or of Landlord-maintained systems, imposes removal demands first raised at move-out, or insists on indefinite survival.",
     "flag_if": [
-      "Relocation clause with no requirement that Landlord bear all relocation costs (moving, reinstallation, signage, IT/telecom reconnection)",
-      "Relocation clause allows a move to space that is not expressly \"substantially similar\" in size, quality, or configuration, or omits any comparability standard entirely",
-      "Relocation notice period is silent or shorter than 60 days",
-      "No Tenant right to terminate or receive rent abatement if the substitute premises are unsuitable or the relocation disrupts business operations",
-      "Access/entry clause allows Landlord or Operator to enter \"at any time\" or \"without notice\" for non-emergency purposes",
-      "Access clause allows Landlord/Operator to show, market, or \"resell\" the space to prospective occupants without tying that right to an actual notice of termination or a defined pre-expiration window",
-      "Hybrid-working, shared-desk, or shared-use language with no defined maximum-occupancy cap or no stated enforcement mechanism for that cap",
-      "The reserved-rights or access language appears as a clause newly inserted late in negotiation with no counterpart in the original draft (before_text is blank/absent) \u2014 a sign the other side's counsel added it unilaterally and it may not have been substantively negotiated"
+      "The return condition is excepted only for ordinary wear and tear.",
+      "Landlord may demand removal of alterations at or after lease expiration.",
+      "Tenant must restore the Premises to original, shell, or base-building condition.",
+      "The surrender provision survives expiration or termination with no stated end date.",
+      "Move-out conditions sit in a schedule Landlord can revise unilaterally."
     ],
-    "preferred_language": "Landlord's Right to Relocate; Access to Premises.\n(a) Relocation. Landlord shall have no right to relocate Tenant during the Term except as expressly set forth in this Section. Any relocation shall be undertaken entirely at Landlord's sole cost and expense (including, without limitation, all costs of moving, reinstallation, new signage, and reconnection of telecommunications, data, and other utilities), to substitute premises of substantially equal or greater size, and of comparable or superior quality, configuration, and location within the property, upon not less than ninety (90) days' prior written notice to Tenant. Tenant shall have the right, exercisable by written notice within thirty (30) days after receipt of Landlord's relocation notice, to terminate this Lease without penalty if Tenant reasonably determines the proposed substitute premises are not suitable for Tenant's business operations. Base Rent and other charges shall abate during any period Tenant is unable to occupy the Premises or the substitute premises as a result of the relocation.\n\n(b) Access to Premises. Landlord and its authorized agents may enter the Premises only (i) in a genuine emergency threatening life, safety, or property, without prior notice; or (ii) for inspection, maintenance, or repairs, or to show the Premises to prospective purchasers or lenders at any time, or to prospective replacement tenants only during the last one hundred eighty (180) days of the Term or after Tenant has given notice of non-renewal or early termination, in each case upon not less than forty-eight (48) hours' prior written or electronic notice to Tenant and, if requested by Tenant, accompanied by a Tenant representative. All such entries shall be conducted so as to minimize interference with Tenant's business operations and shall comply with Tenant's reasonable security and confidentiality requirements. Any permitted hybrid-working, shared-desk, or shared-use arrangement shall at no time result in more individuals occupying the accommodation than the maximum occupant limit stated in this Agreement.",
+    "preferred_language": "Upon the expiration or earlier termination of this Lease, Tenant shall surrender the Premises broom-clean and in good condition and repair, excepting ordinary wear and tear, damage by fire or other casualty, and any condition Landlord is obligated to repair, maintain or replace under this Lease. Tenant shall remove its personal property, and shall remove an alteration only if Landlord requested such removal in writing at the time such alteration was installed, and shall promptly repair any damage caused by such removal. The provisions of this Section shall survive the expiration or termination of this Lease for a period of six (6) months.",
     "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 2 findings, from two quite different real-estate contract types (a traditional ground-lease relocation clause with East End Maker Hub Sponsor and a flexible-workspace/coworking access-and-hybrid-working clause with IWG/Regus) and two different counterparties; both are \"medium\" significance and both show the counterparty's broad reserved-rights language being accepted into the final signed agreement with only baseline guardrails (landlord's-cost, size/quality comparability, notice period, occupancy cap) rather than being negotiated away or heavily contested \u2014 directionally consistent in outcome but thin in volume and heterogeneous in subject matter, so this rule should be treated as provisional and revisited as more findings accumulate.",
-    "matching_clause_names": [
-      "Landlord Rights (Relocation)",
-      "Access Rights and Hybrid Working"
-    ]
-  },
-  {
-    "rule_id": "RE-RSK-04",
-    "title": "Surrender / Return Condition & Post-Termination Survival",
-    "priority": "MANAGE",
-    "applies_to": "All contract types",
-    "category": "Risk, Default & End-of-Term",
-    "where_to_look": "The \"Surrender,\" \"Return of Premises,\" or \"Condition on Surrender\" provision, typically near the end-of-term/expiration provisions or in a Default & End-of-Term section; also check the Alterations clause for any cross-referenced removal-at-surrender language, and check whether a Survival clause (often at the tail of the Surrender section or in Miscellaneous/General Provisions) caps how long these obligations continue post-termination.",
-    "required": "Tenant's surrender obligation should require return of the Premises broom-clean and in good order, condition, and repair, subject to three carve-outs: (1) ordinary wear and tear, (2) damage from fire or other casualty (typically insured), and (3) any condition falling within Landlord's own repair/maintenance obligations under the lease. Removal of Tenant's alterations at surrender should be required only if Landlord gave Tenant written notice, at the time the alteration was installed/approved, that removal would be required at lease-end \u2014 no open-ended, after-the-fact removal demands. Obligations surviving expiration/termination under the Surrender section should be subject to a defined sunset (e.g., 6 months post-termination) rather than surviving indefinitely.",
-    "fallback": "If the full package above isn't obtainable, prioritize (a) the casualty/insured-damage and landlord-maintenance carve-outs to the return-condition standard, and (b) some defined survival cap (even if longer than 6 months, e.g., 12 months) over the written-notice-at-installation requirement for alteration removal, which is the most frequently contested of the three elements.",
-    "escalate_if": "Escalate to an attorney if the surrender obligations survive termination indefinitely with no stated end point AND the lease simultaneously gives the counterparty unfettered discretion to demand alteration removal at lease-end without any advance notice \u2014 that combination creates open-ended, unbounded post-termination liability. Also escalate if the return-condition standard would require Marmon to bear restoration or removal costs for casualty damage that is separately covered by insurance (risk of double-recovery/double-charge), or if a proposed survival period exceeds what's reasonable relative to the governing-law statute of limitations for contract claims.",
-    "flag_if": [
-      "Surrender clause requires return 'broom-clean and in good condition' with no express ordinary-wear-and-tear exception",
-      "No carve-out from the return-condition standard for fire/casualty damage or for conditions that are the landlord's own repair/maintenance responsibility",
-      "Clause lets the landlord demand removal of tenant alterations 'at Landlord's option' or 'as Landlord may require' at surrender, with no requirement that removal be flagged in writing when the alteration was installed",
-      "Survival language states surrender obligations survive termination 'indefinitely' or contains no stated expiration/sunset for post-termination claims",
-      "No defined time window (e.g., a number of months) within which a claim under the surrender provision must be brought after lease-end"
-    ],
-    "preferred_language": "Surrender. Upon the expiration or earlier termination of this Lease, Tenant shall surrender the Premises to Landlord broom-clean and in good order, condition, and repair, reasonable wear and tear excepted, and further excepted for (a) damage caused by fire or other casualty, and (b) any condition that Landlord is obligated to repair or maintain under this Lease. Tenant shall be required to remove any alterations, additions, or improvements made by Tenant only if, at the time Landlord approved or was notified of such alteration, Landlord notified Tenant in writing that removal would be required upon surrender; absent such written notice given at that time, Tenant may leave the alteration in place at surrender without any removal or restoration obligation. The obligations of Tenant under this Section shall survive the expiration or earlier termination of this Lease, provided that any claim by Landlord arising under this Section must be asserted, if at all, within six (6) months after the date of such expiration or termination, after which time Tenant's obligations under this Section shall automatically terminate and be of no further force or effect.",
-    "source_tag": "Unvetted draft - counsel review needed",
-    "confidence_note": "Based on only 3 findings, and all 3 come from a single contract negotiation (one counterparty, Indiana Athletic Apparel, LLC, request 3807) rather than multiple independent deals; the direction is internally consistent within that one deal (each change reduces post-termination exposure \u2014 casualty/maintenance carve-out, advance-notice-for-removal, and a 6-month survival cap), but this is a thin, single-source sample, so treat this rule as provisional pending corroboration from additional Real Estate contracts before elevating its priority.",
+    "confidence_note": "Based on 3 findings drawn from a single lease with one counterparty, all moving the same direction across return condition, removal timing, and survival, so the direction is clear but the sample is thin.",
     "matching_clause_names": [
       "Surrender of Premises",
       "Surrender of Premises / Alterations",
       "Surrender of Premises - Survival"
+    ]
+  },
+  {
+    "rule_id": "RE-SVC-01",
+    "title": "Scope of Services: Covered Equipment and Service Locations",
+    "priority": "MANAGE",
+    "applies_to": "Service agreement",
+    "category": "Service-Operations & Equipment Arrangements",
+    "where_to_look": "Scope of Services and Definitions provisions, plus any attached equipment schedule or service-location schedule.",
+    "required": "Define covered equipment and every service location in attached schedules that are integral parts of the agreement and amendable only by mutual written agreement.",
+    "fallback": "Accept a narrower equipment definition limited to owned and leased units, provided the location schedule remains amendable by mutual written agreement and closure or relocation of a listed mobile unit requires only written notice rather than consent.",
+    "escalate_if": "Unilateral amendment of the equipment or location schedules by the counterparty, or treatment of a mobile unit closure or relocation as breach or default.",
+    "flag_if": [
+      "Covered equipment is referenced in general terms with no defining clause.",
+      "Service locations are fixed in the body of the agreement instead of an amendable schedule.",
+      "A schedule can be amended by one party without the other party's written consent.",
+      "Closing or relocating a mobile service unit is an event of breach or default.",
+      "Third-party equipment is either excluded outright or admitted with no approval requirement."
+    ],
+    "preferred_language": "Services shall be performed on Covered Equipment at the locations designated in Schedule A. Covered Equipment means units owned, finance leased, net leased or full service leased by Customer, and units belonging to other entities approved by Customer, that are delivered to a designated location for repair or inspection. Remote Services shall be provided from Service Trucks and from the mobile unit locations listed in Schedule B, to the extent of the capabilities of those mobile units. Schedules A and B are integral parts of this Agreement and may be amended only by written agreement of the parties. Closure or relocation of a mobile unit shall not constitute a breach of this Agreement, provided that Provider gives Customer written notice of the closure of any mobile unit listed in Schedule B.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings from a single counterparty within one rail car maintenance arrangement, both medium significance and pointing the same direction, so treat this rule as provisional until more deals confirm it.",
+    "matching_clause_names": [
+      "MARATHON Rail Cars Definition & Service Locations (Schedule A/B)",
+      "Mobile Unit Closure / Service Trucks Definition"
+    ]
+  },
+  {
+    "rule_id": "RE-SVC-02",
+    "title": "Equipment Ownership, Site Cost Allocation, and End-of-Term Purchase Option",
+    "priority": "PRESS",
+    "applies_to": "Services agreement",
+    "category": "Service-Operations & Equipment Arrangements",
+    "where_to_look": "Facilities, equipment ownership, and termination sections covering site cost allocation and end-of-term equipment.",
+    "required": "Equipment title and maintenance cost stay with the party that supplied it, and any end-of-term purchase option prices at mutually agreed fair market value.",
+    "fallback": "Accept a counterparty purchase option on Marmon-supplied equipment where the price is fair market value, the option expires within a fixed window, and Marmon may remove and redeploy equipment the counterparty declines to buy.",
+    "escalate_if": "Never accept transfer of equipment title at no cost or at book value, or maintenance and casualty cost for equipment Marmon does not own.",
+    "flag_if": [
+      "The agreement transfers equipment title on termination without a stated purchase price.",
+      "A purchase option is priced at book value, original cost, or a fixed formula rather than fair market value.",
+      "The purchase option has no expiration date or exercise window.",
+      "Marmon must maintain, repair, or insure equipment owned by the counterparty.",
+      "Site utilities, permits, structures, or track infrastructure are not assigned to a named party at each location."
+    ],
+    "preferred_language": "Each party shall retain title to all equipment it provides under this Agreement and shall bear the cost of maintaining, repairing, and insuring such equipment, except for costs arising from damage or loss caused by the negligence of the other party. Upon termination, the providing party shall offer the other party an option, exercisable within one hundred eighty (180) days, to purchase such equipment at fair market value as mutually agreed by the parties, taking into account original purchase price and equipment condition. If the option is not exercised within that period, the providing party may remove and redeploy the equipment without further obligation.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings from a single contract with one counterparty, consistent in direction but a narrow evidence base.",
+    "matching_clause_names": [
+      "Facilities Allocation (Catlettsburg/Canton/Robinson) & MARATHON Equipment Ownership",
+      "Equipment Purchase Option Upon Termination"
+    ]
+  },
+  {
+    "rule_id": "RE-SVC-03",
+    "title": "Regulatory Certification, Procedures, and Site-Safety Compliance",
+    "priority": "MANAGE",
+    "applies_to": "Services agreement",
+    "category": "Service-Operations & Equipment Arrangements",
+    "where_to_look": "Performance-standards, procedures, and certification provisions, and standalone site-safety or hazard-warning articles.",
+    "required": "Limit compliance to named regulatory standards and the certifications listed in the schedules, and require advance written notice before revised counterparty procedures bind.",
+    "fallback": "Accept compliance with counterparty procedures as revised where changes apply prospectively only and any revision that increases cost, scope, or time entitles the service provider to an equitable adjustment of pricing and schedule.",
+    "escalate_if": "Certification or site-safety obligations reach beyond the contracted service scope, or regulatory noncompliance is excluded from the liability cap.",
+    "flag_if": [
+      "Compliance obligations incorporate the counterparty's internal procedures including future modifications.",
+      "Certification requirements are stated without reference to a schedule or a defined service category.",
+      "Revised procedures take effect without advance written notice to the service provider.",
+      "Hazard-warning language imposes duties on personnel without any corresponding site-information obligation on the counterparty.",
+      "Regulatory noncompliance triggers immediate termination or is carved out of the limitation of liability."
+    ],
+    "preferred_language": "Service Provider shall perform the Services in accordance with the standards, practices, and manuals of the regulatory bodies identified in the Schedules and shall maintain the certifications expressly listed therein. Service Provider's obligation to comply with Customer's internal procedures extends only to procedures delivered to Service Provider in writing and applies prospectively. Where a revision to such procedures increases Service Provider's cost, scope, or time of performance, the parties shall equitably adjust the affected pricing and schedules.",
+    "source_tag": "Unvetted draft - counsel review needed",
+    "confidence_note": "Based on 2 findings from a single agreement with one counterparty, and the underlying text reads as an operational rail-car servicing arrangement rather than a lease, so the direction is consistent but the sample is thin and the rule is provisional.",
+    "matching_clause_names": [
+      "Procedures & Certification Compliance",
+      "H2S / Safety Warning"
     ]
   }
 ]

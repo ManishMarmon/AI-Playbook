@@ -1,3 +1,15 @@
+// ARCHIVED v1 — superseded by synthesize_playbook_workflow.js. Kept for
+// comparison/reproducibility only; do not run this for new playbooks.
+//
+// Why it was replaced: measured against the reference Freo Group AU playbook,
+// v1's rules averaged ~5,040 characters vs. Freo's ~1,057 (required field 8x
+// longer, escalate_if 5x, preferred_language 4x). The cause was in this
+// file's draft prompt: asking for conservatism and pattern-grounding across
+// all findings pushed the model to show its reasoning inside the rule fields
+// (hedges, enumerations, parentheticals) instead of stating a decided
+// position the way a lawyer-authored playbook does. v1 output is preserved at
+// mclegal-frontend/public/playbooks/real-estate-usa-v1.json.
+//
 // Turns Phase 5 clause-tagging output (many contracts' worth of real
 // draft-vs-signed clause changes) into a first-draft Golden Rules playbook,
 // in the same schema as the human-authored Freo Group AU playbook. This is
@@ -17,8 +29,8 @@
 // frontend's isUnvetted() check keys off that exact substring.
 
 export const meta = {
-  name: 'synthesize-playbook',
-  description: 'Cluster real negotiation findings into clause topics, then draft one Golden Rules-shaped rule per topic',
+  name: 'synthesize-playbook-v1-archived',
+  description: 'ARCHIVED v1 — verbose-output synthesis, superseded by synthesize-playbook',
   phases: [
     { title: 'Cluster', detail: 'group findings into clause topics + categories' },
     { title: 'Draft', detail: 'per-topic LLM drafts one rule from the pattern across all its findings' },
@@ -93,24 +105,15 @@ Each finding shows a REAL negotiated change: what a clause said before negotiati
 Synthesize ONE rule from the PATTERN across all of this topic's findings (not any single instance):
 - priority: MUST PRESS if the findings show this is consistently contested and high-stakes (significance mostly "high", the position moves substantially); PRESS if real but more moderate; MANAGE if it's a real issue but lower-stakes or inconsistently pushed; ACCEPT+NOTE if it's usually just noted/accepted rather than fought over.
 - applies_to: this field is matched EXACTLY by downstream code, so it must be either the literal string "All contract types", or a short specific sub-type name under 40 characters (e.g. "Ground lease", "Purchase agreement") if — and only if — the findings clearly show this rule doesn't apply to every deal this playbook covers. Do NOT write a descriptive sentence or parenthetical here (that belongs in where_to_look or confidence_note instead) — an exact-match value is required for the rule to ever actually get selected.
-- where_to_look: ONE short sentence naming the clause/section type where this shows up. Target ~110 characters, hard ceiling 200.
-- required: the position to ask for first, stated as a decided instruction. Target ~105 characters, hard ceiling 300.
-- fallback: the position to accept if "required" isn't achievable. Target ~125 characters, hard ceiling 420.
-- escalate_if: what must never be accepted without an attorney. Target ~125 characters, hard ceiling 290.
-- flag_if: 3-5 short, individually-testable detection signals. Each ONE sentence, no sub-clauses or parentheticals.
-- preferred_language: contract clause language implementing REQUIRED. Target ~390 characters, hard ceiling 850. One clause, not a whole section — no RECITALS blocks, no multi-paragraph agreements, no bracketed fill-in forms unless a single placeholder is genuinely unavoidable.
-- confidence_note: ONE sentence on how many findings and how consistent (e.g. "Based on 4 findings across 4 counterparties, consistent direction" or "Based on 2 findings with mixed signals — especially provisional").
+- where_to_look: where in a real estate contract this issue typically shows up (section/clause type).
+- required: the strongest defensible position Marmon should ask for first — informed by the best-observed "after" positions across the findings, not just the average.
+- fallback: a realistic fallback position — where negotiations have actually landed most often across the findings, when "required" isn't achievable.
+- escalate_if: conditions under which this should never be accepted / must go to an attorney regardless of how negotiations are going — informed by the worst "before" positions seen, if any are genuinely dangerous.
+- flag_if: an array of concrete textual/contextual signals a reviewer should watch for that indicate this rule may be violated.
+- preferred_language: draft realistic contract clause language implementing the REQUIRED position, in plain professional contract-drafting style. This is a first draft only, not reviewed by counsel.
+- confidence_note: one honest sentence on how many findings this is based on and how consistent the pattern was (e.g. "Based on 4 findings across 4 different counterparties, consistent direction" vs "Based on 2 findings with mixed signals — treat this rule as especially provisional").
 
-WRITING STYLE — this matters as much as the substance. You are writing as a senior lawyer who has ALREADY decided the position, recording it for a reviewer to act on. You are NOT writing a memo justifying your reasoning.
-
-- State conclusions. Never show your work inside a rule field.
-- No hedging inside where_to_look / required / fallback / escalate_if / flag_if / preferred_language. Words like "typically", "generally", "may", "consider whether", "it is unclear", "informed by the findings" do not belong there.
-- No evidence talk in the rule fields — no counterparty names, no finding counts, no "the three findings underlying this rule". ALL of that goes in confidence_note and nowhere else.
-- No enumerated sub-conditions inside a single field (no "(1)... (2)... (3)..." chains). If a field needs that many parts, it is really two topics or belongs in flag_if as separate entries.
-- Avoid parentheticals and em-dash asides. One idea per sentence.
-- Uncertainty is expressed by choosing a LOWER priority (MANAGE instead of MUST PRESS) and by saying so in confidence_note — never by qualifying the rule text itself.
-
-If the findings for this topic are sparse or inconsistent, lean toward MANAGE and say so plainly in confidence_note — but still write the rule itself as a clean, decided position.`
+Be conservative: if the findings for this topic are sparse or inconsistent, say so plainly in confidence_note and lean toward a lower priority (MANAGE) rather than overclaiming MUST PRESS from thin evidence.`
 }
 
 phase('Cluster')
@@ -135,36 +138,11 @@ const drafted = await pipeline(
 )
 
 const succeeded = drafted.filter(Boolean)
-
-// The reference Freo playbook averages ~1,057 chars of rule body per rule.
-// v1 of this workflow averaged ~5,040 because the prompt let the model reason
-// inside the rule fields — so measure it here rather than finding out by
-// eyeballing a Word export later.
-const CEILINGS = { where_to_look: 200, required: 300, fallback: 420, escalate_if: 290, preferred_language: 850 }
-const bodyChars = ({ draft }) =>
-  Object.keys(CEILINGS).reduce((n, f) => n + (draft[f] || '').length, 0) +
-  (draft.flag_if || []).reduce((n, s) => n + s.length, 0)
-
-const overCeiling = []
-for (const { topic, draft } of succeeded) {
-  for (const [field, ceiling] of Object.entries(CEILINGS)) {
-    const len = (draft[field] || '').length
-    if (len > ceiling) overCeiling.push(`${topic.topic_id}.${field}=${len} (max ${ceiling})`)
-  }
-}
-const avgBody = succeeded.length
-  ? Math.round(succeeded.reduce((n, r) => n + bodyChars(r), 0) / succeeded.length)
-  : 0
-
 log(`Done: ${succeeded.length}/${topics.length} topics drafted into rules`)
-log(`Avg rule body: ${avgBody} chars (Freo reference ~1057; v1 of this workflow ~5040)`)
-if (overCeiling.length) log(`${overCeiling.length} field(s) over ceiling: ${overCeiling.join(', ')}`)
 
 return {
   topicsTotal: topics.length,
   rulesDrafted: succeeded.length,
-  avgRuleBodyChars: avgBody,
-  fieldsOverCeiling: overCeiling,
   rules: succeeded.map(({ topic, draft }) => ({
     title: draft.title,
     category: topic.category,
