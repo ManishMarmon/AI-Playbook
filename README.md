@@ -89,6 +89,9 @@ redline_discovery/              Backend pipeline (Python), run manually per stag
                                  --request-type/--geography — this is how a playbook's source
                                  population gets scoped, e.g. "Real Estate" + "U.S.")
 
+  build_request_meta.py         Looks up request_title/party_a/party_b in Postgres for every
+                                 request id run_pairing.py produced a diff chunk for — feeds
+                                 clause_tagging_workflow.js's requestMeta arg
   extract_confirmed_findings.py  Pulls the CONFIRMED findings array out of a saved
                                  clause_tagging_workflow.js run, for synthesis to consume
   finalize_playbook.py          Turns a synthesize_playbook_workflow.js result into a real
@@ -191,7 +194,9 @@ python finalize_review.py --raw <saved workflow output> --copy-to-frontend
 **Playbook synthesis — build a NEW playbook for a contract type + jurisdiction:**
 ```bash
 python run_pairing.py --limit 500 --request-type "Equipment Leasing" --geography "U.S."
-# Phase 5 tagging on the resulting diff_chunks, same as above, scoped to this request set
+python build_request_meta.py --chunk-dir output/diff_chunks --out output/<name>_request_meta.json
+# Phase 5 tagging via the Workflow tool: args: { chunkDir, requestIds, requestMeta } —
+# requestIds/requestMeta come from the diff_chunks directory and the file above
 python extract_confirmed_findings.py --raw <saved tagging output> --out output/<name>_clause_findings.json
 # synthesize_playbook_workflow.js via the Workflow tool:
 #   args: { findingsPath: "output/<name>_clause_findings.json" }
