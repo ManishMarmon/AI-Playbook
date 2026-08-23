@@ -2,12 +2,27 @@
   {
     "id": "freo-group-au",
     "label": "Freo Group AU - Crane Hire",
+    "jurisdiction": "Australia",
+    "status": "attorney_reviewed",
     "contractTypes": [
       "Equipment hire",
       "Mining master supply agreement",
       "Wind / renewables subcontract"
     ],
-    "businessSectors": ["Crane"],
+    "businessSectors": [
+      "Crane"
+    ],
     "file": "freo-group-au.json"
+  },
+  {
+    "id": "real-estate-usa",
+    "label": "US Real Estate",
+    "jurisdiction": "United States",
+    "status": "ai_draft",
+    "contractTypes": [
+      "Real Estate"
+    ],
+    "businessSectors": [],
+    "file": "real-estate-usa.json"
   }
 ]

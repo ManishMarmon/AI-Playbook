@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Search, FileSearch, GitCompare, ScanSearch, BarChart3, BookOpen, Lightbulb, FileSignature, ClipboardList } from "lucide-react";
+import { Search, FileSearch, GitCompare, ScanSearch, BarChart3, BookOpen, Library, Lightbulb, FileSignature, ClipboardList } from "lucide-react";
 
 const NAV = [
   { to: "/requests", label: "All Requests", icon: ClipboardList },
@@ -8,6 +8,7 @@ const NAV = [
   { to: "/clause-findings", label: "Clause Findings", icon: ScanSearch },
   { to: "/analytics", label: "Reporting & Analytics", icon: BarChart3 },
   { to: "/golden-rules", label: "Golden Rules", icon: BookOpen },
+  { to: "/playbooks", label: "Playbooks", icon: Library },
   { to: "/suggested-rules", label: "Suggested Rules", icon: Lightbulb },
   { to: "/draft-contract", label: "Draft Contract", icon: FileSignature },
 ];

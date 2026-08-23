@@ -17,13 +17,6 @@ export type Rule = {
   source_tag: string | null;
 };
 
-export type PlaybookManifestEntry = {
-  id: string;
-  label: string;
-  contractTypes: string[];
-  file: string;
-};
-
 export type AssembledClause = {
   number: string;
   title: string;
@@ -106,16 +99,22 @@ export function assembleContract(
     byCategory.get(r.category)!.push(r);
   }
 
-  const unknownCategories = [...byCategory.keys()].filter((c) => !CONTRACT_SECTION_ORDER.includes(c));
-  if (unknownCategories.length > 0) {
-    // A future playbook could introduce a category this order doesn't know
-    // about yet — fail loudly rather than silently dropping those clauses.
-    throw new Error(`Unrecognized categories not in CONTRACT_SECTION_ORDER: ${unknownCategories.join(", ")}`);
-  }
+  // CONTRACT_SECTION_ORDER is a curated reading order for Freo's own category
+  // names. A different playbook brings its own category set — rather than
+  // requiring a manual update here for every future playbook, known
+  // categories keep their curated position and any category this order
+  // doesn't recognize is appended afterward in the order it first appears in
+  // `rules` (which is itself usually already a sensible drafting order, since
+  // it reflects how the playbook's own categories were authored/derived).
+  const categoriesInRules = [...byCategory.keys()];
+  const orderedCategories = [
+    ...CONTRACT_SECTION_ORDER.filter((c) => categoriesInRules.includes(c)),
+    ...categoriesInRules.filter((c) => !CONTRACT_SECTION_ORDER.includes(c)),
+  ];
 
   const sections: AssembledSection[] = [];
   let sectionNumber = 0;
-  for (const category of CONTRACT_SECTION_ORDER) {
+  for (const category of orderedCategories) {
     const categoryRules = byCategory.get(category);
     if (!categoryRules || categoryRules.length === 0) continue;
     sectionNumber += 1;

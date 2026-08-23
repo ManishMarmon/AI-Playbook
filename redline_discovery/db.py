@@ -105,11 +105,18 @@ def upsert_file(conn: psycopg.Connection, file: dict, request_id: int) -> None:
 
 
 def get_requests(conn: psycopg.Connection, limit: int | None = None,
-                  business_sector: str | None = None, active_only: bool = False) -> list:
+                  business_sector: str | None = None, active_only: bool = False,
+                  request_type: str | None = None, geography: str | None = None) -> list:
     where, params = [], []
     if business_sector:
         where.append("u_marmon_sector = %s")
         params.append(business_sector)
+    if request_type:
+        where.append("u_request_type = %s")
+        params.append(request_type)
+    if geography:
+        where.append("u_marmon_business_unit_geography = %s")
+        params.append(geography)
     if active_only:
         terminal = list(config.PROCESS_STATUS_CONTRACT_EXISTS | config.PROCESS_STATUS_NO_CONTRACT)
         where.append("(u_request_process_status IS NULL OR NOT (u_request_process_status = ANY(%s)))")

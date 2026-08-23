@@ -35,6 +35,10 @@ def _process_status_tag(status: str) -> str:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=200)
+    parser.add_argument("--request-type", default=None,
+                         help="Only scan requests with this u_RequestType (e.g. 'Real Estate')")
+    parser.add_argument("--geography", default=None,
+                         help="Only scan requests with this u_MarmonBusinessUnitGeography (e.g. 'U.S.')")
     parser.add_argument("--snapshot", default=None,
                          help="Path to a pipeline snapshot (see fetch_snapshot.py) to reuse "
                               "instead of reading from Postgres — for one-off testing against a "
@@ -50,8 +54,10 @@ def main():
         requests_ = snapshot["requests"][:args.limit] if args.limit else snapshot["requests"]
         files_by_request = snapshot["files_by_request"]
     else:
-        print(f"Loading up to {args.limit} requests from Postgres...")
-        requests_ = db.get_requests(conn, limit=args.limit)
+        print(f"Loading up to {args.limit} requests from Postgres "
+              f"(request_type={args.request_type!r}, geography={args.geography!r})...")
+        requests_ = db.get_requests(conn, limit=args.limit, request_type=args.request_type,
+                                     geography=args.geography)
         files_by_request = None
     print(f"Requests scanned: {len(requests_)}")
 
