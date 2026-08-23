@@ -25,6 +25,20 @@ type RequestRow = {
 
 const PAGE_SIZE = 25;
 
+// The six dropdown filters, in render order. Driven off this table rather than
+// six near-identical blocks so the cascading-options logic below has exactly
+// one place to look up "which row field does this filter constrain".
+const SELECT_FILTERS = [
+  { key: "contractType", field: "contract_type", id: "filter-contract-type", label: "Contract Type" },
+  { key: "businessSector", field: "business_sector", id: "filter-sector", label: "Business Sector" },
+  { key: "location", field: "location", id: "filter-location", label: "Location" },
+  { key: "lawFirm", field: "law_firm", id: "filter-law-firm", label: "Law Firm" },
+  { key: "attorney", field: "attorney_email", id: "filter-attorney", label: "Attorney (email)" },
+  { key: "partyA", field: "party_a", id: "filter-party-a", label: "Party A" },
+] as const;
+
+type FilterKey = (typeof SELECT_FILTERS)[number]["key"];
+
 function isRequestRows(data: unknown): data is RequestRow[] {
   return Array.isArray(data);
 }
@@ -57,29 +71,36 @@ export default function Requests({ search }: { search: string }) {
   const [requestorQuery, setRequestorQuery] = useState("");
   const [page, setPage] = useState(0);
 
-  const options = useMemo(
-    () => ({
-      contractType: distinctSorted(rows, "contract_type"),
-      businessSector: distinctSorted(rows, "business_sector"),
-      location: distinctSorted(rows, "location"),
-      lawFirm: distinctSorted(rows, "law_firm"),
-      attorney: distinctSorted(rows, "attorney_email"),
-      partyA: distinctSorted(rows, "party_a"),
-    }),
-    [rows]
-  );
+  const selected: Record<FilterKey, string> = {
+    contractType,
+    businessSector,
+    location,
+    lawFirm,
+    attorney,
+    partyA,
+  };
+  const setters: Record<FilterKey, (v: string) => void> = {
+    contractType: setContractType,
+    businessSector: setBusinessSector,
+    location: setLocation,
+    lawFirm: setLawFirm,
+    attorney: setAttorney,
+    partyA: setPartyA,
+  };
 
-  const filtered = useMemo(() => {
+  // One predicate for everything. `except` skips a single dropdown's own
+  // constraint, which is what makes each dropdown's option list reflect the
+  // OTHER active filters while still letting you change your own selection.
+  const matches = useMemo(() => {
     const term = search.trim().toLowerCase();
     const partyBTerm = partyBQuery.trim().toLowerCase();
     const requestorTerm = requestorQuery.trim().toLowerCase();
-    return rows.filter((r) => {
-      if (contractType && r.contract_type !== contractType) return false;
-      if (businessSector && r.business_sector !== businessSector) return false;
-      if (location && r.location !== location) return false;
-      if (lawFirm && r.law_firm !== lawFirm) return false;
-      if (attorney && r.attorney_email !== attorney) return false;
-      if (partyA && r.party_a !== partyA) return false;
+    return (r: RequestRow, except?: FilterKey) => {
+      for (const { key, field } of SELECT_FILTERS) {
+        if (key === except) continue;
+        const value = selected[key];
+        if (value && r[field] !== value) return false;
+      }
       if (partyBTerm && !(r.party_b || "").toLowerCase().includes(partyBTerm)) return false;
       if (requestorTerm && !(r.requestor || "").toLowerCase().includes(requestorTerm)) return false;
       if (
@@ -93,8 +114,34 @@ export default function Requests({ search }: { search: string }) {
       )
         return false;
       return true;
-    });
-  }, [rows, contractType, businessSector, location, lawFirm, attorney, partyA, partyBQuery, requestorQuery, search]);
+    };
+  }, [contractType, businessSector, location, lawFirm, attorney, partyA, partyBQuery, requestorQuery, search]);
+
+  // Cascading options: "Location" only lists locations that actually exist for
+  // the selected sector, and vice versa — a combination that would return zero
+  // rows is never offered in the first place.
+  const options = useMemo(() => {
+    const out = {} as Record<FilterKey, string[]>;
+    for (const { key, field } of SELECT_FILTERS) {
+      out[key] = distinctSorted(
+        rows.filter((r) => matches(r, key)),
+        field
+      );
+    }
+    return out;
+  }, [rows, matches]);
+
+  const filtered = useMemo(() => rows.filter((r) => matches(r)), [rows, matches]);
+
+  // A selection can go stale when a *different* filter narrows past it (pick a
+  // location, then pick a sector that location doesn't appear in). Clear it
+  // instead of leaving the table stuck on an empty result with no visible cause.
+  useEffect(() => {
+    for (const { key } of SELECT_FILTERS) {
+      const value = selected[key];
+      if (value && !options[key].includes(value)) setters[key]("");
+    }
+  }, [options]);
 
   useEffect(() => {
     setPage(0);
