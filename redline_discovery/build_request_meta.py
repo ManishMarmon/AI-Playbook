@@ -45,6 +45,11 @@ def main():
             "request_title": r.get("RequestTitle"),
             "party_a": r.get("u_BusinessUnit"),
             "party_b": r.get("u_VendorCounterpartyName"),
+            # "vendor" is the field name clause_tagging_workflow.js's stamp()
+            # (and azure_clause_tagging.py's port of it) actually reads onto
+            # every finding — same underlying value as party_b, kept as an
+            # explicit alias so this script's output works with both.
+            "vendor": r.get("u_VendorCounterpartyName"),
         }
 
     if missing:

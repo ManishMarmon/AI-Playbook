@@ -131,6 +131,51 @@ def get_requests(conn: psycopg.Connection, limit: int | None = None,
     return [row[0] for row in conn.execute(sql, params).fetchall()]
 
 
+def get_requests_ranked_by_file_count(conn: psycopg.Connection, limit: int,
+                                       request_type: str | None = None,
+                                       geography: str | None = None,
+                                       min_files: int = 2) -> list:
+    """
+    Same filters as get_requests(), but orders by (non-deleted) file count
+    descending instead of request_id ascending, and only considers requests
+    with at least `min_files` files.
+
+    A draft-vs-signed pair can only come from a request with 2+ files —
+    plain get_requests()'s default "oldest request_id first" ordering picks
+    up whatever single-file requests happen to be old, wasting most of a
+    capped --limit on requests pairing.py will just report
+    "insufficient_files" for. Ranking by file count first means a capped
+    sample (e.g. --limit 250 for a first-pass playbook) is made of the
+    requests actually likely to yield a real redline, not just the oldest.
+    """
+    where, params = [], []
+    if request_type:
+        where.append("r.u_request_type = %s")
+        params.append(request_type)
+    if geography:
+        where.append("r.u_marmon_business_unit_geography = %s")
+        params.append(geography)
+
+    sql = """
+        SELECT r.raw, f.file_count
+        FROM requests r
+        JOIN (
+            SELECT request_id, count(*) AS file_count
+            FROM files
+            WHERE is_deleted IS NOT TRUE
+            GROUP BY request_id
+            HAVING count(*) >= %s
+        ) f ON f.request_id = r.request_id
+    """
+    params_full = [min_files] + params
+    if where:
+        sql += " WHERE " + " AND ".join(where)
+    sql += " ORDER BY f.file_count DESC, r.request_id LIMIT %s"
+    params_full.append(limit)
+    rows = conn.execute(sql, params_full).fetchall()
+    return [row[0] for row in rows]
+
+
 def get_files_for_request(conn: psycopg.Connection, request_id: int) -> list:
     cur = conn.execute("SELECT raw FROM files WHERE request_id = %s ORDER BY id", (request_id,))
     return [row[0] for row in cur.fetchall()]

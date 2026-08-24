@@ -43,6 +43,11 @@ def main():
                          help="Path to a pipeline snapshot (see fetch_snapshot.py) to reuse "
                               "instead of reading from Postgres — for one-off testing against a "
                               "fixed export")
+    parser.add_argument("--best", action="store_true",
+                         help="Rank candidates by (non-deleted) file count descending instead of "
+                              "oldest-request-id-first, so a capped --limit picks requests actually "
+                              "likely to have a real draft-vs-signed pair rather than whichever old "
+                              "single-file requests come first.")
     args = parser.parse_args()
 
     config.OUTPUT_DIR.mkdir(exist_ok=True)
@@ -53,6 +58,12 @@ def main():
         snapshot = load_pipeline_snapshot(args.snapshot)
         requests_ = snapshot["requests"][:args.limit] if args.limit else snapshot["requests"]
         files_by_request = snapshot["files_by_request"]
+    elif args.best:
+        print(f"Loading up to {args.limit} requests from Postgres, ranked by file count "
+              f"(request_type={args.request_type!r}, geography={args.geography!r})...")
+        requests_ = db.get_requests_ranked_by_file_count(
+            conn, limit=args.limit, request_type=args.request_type, geography=args.geography)
+        files_by_request = None
     else:
         print(f"Loading up to {args.limit} requests from Postgres "
               f"(request_type={args.request_type!r}, geography={args.geography!r})...")

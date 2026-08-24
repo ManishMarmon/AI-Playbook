@@ -24,5 +24,16 @@
     ],
     "businessSectors": [],
     "file": "real-estate-usa.json"
+  },
+  {
+    "id": "nda-usa",
+    "label": "US NDA",
+    "jurisdiction": "United States",
+    "status": "ai_draft",
+    "contractTypes": [
+      "NDA"
+    ],
+    "businessSectors": [],
+    "file": "nda-usa.json"
   }
 ]

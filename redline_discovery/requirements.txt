@@ -5,3 +5,4 @@ truststore
 pypdf
 python-dotenv
 psycopg[binary]
+openai

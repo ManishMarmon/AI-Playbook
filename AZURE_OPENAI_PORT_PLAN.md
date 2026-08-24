@@ -63,12 +63,84 @@ contract text into prompts — moving them moves the sensitive traffic inside th
 
 ## Open questions (answer before starting the port)
 
-1. **Which model deployment?** "5.6 terra" needs confirming in AI Foundry — the deployment
-   name (gpt-4.1 / gpt-4o / o3 / gpt-5-class...) matters a lot for legal-reasoning quality.
+1. ~~**Which model deployment?**~~ **Answered — see sanity test below.** Two deployments are
+   live on the shared `AOAI-dev-endpoint` resource: `gpt-5.6-terra` and `gpt-5.6-luna`.
 2. **Quota shape:** tokens-per-minute or monthly allocation? Drives how aggressive the batch
-   loop can be.
+   loop can be. Still open.
 3. Should the ported stages write results to Postgres directly (new tables) instead of the
-   current output/*.json files? (Leaning yes, but decide with the orchestrator design.)
+   current output/*.json files? (Leaning yes, but decide with the orchestrator design.) Still open.
+
+## Connection details (verified working, 2026-08-24)
+
+No new Key Vault secrets needed — `gpt-5.6-terra` and `gpt-5.6-luna` are both deployed on the
+**same Azure OpenAI resource** already backing `gpt-5.2`/`gpt-5.4-mini`, confirmed by comparing
+the endpoint shown in the AI Foundry portal against what's already in Key Vault:
+
+- Endpoint secret: `AOAI-dev-endpoint` → `https://proj-general-eastus2-resource-dev.openai.azure.com/openai/v1`
+- Key secret: `gpt-5-4-mini-dev-api-key` (a resource-level key — authorizes every deployment
+  on that resource, confirmed by a live test call to both `gpt-5.6-terra` and `gpt-5.6-luna`)
+- Client pattern (matches `contractAbstraction`'s proven approach): plain `openai` Python SDK,
+  `OpenAI(base_url=<endpoint>, api_key=<key>)`, then `client.responses.create(model="gpt-5.6-luna", ...)`.
+- **Improvement over `contractAbstraction`'s existing pattern:** use the Responses API's native
+  `text={"format": {"type": "json_schema", "name": ..., "schema": ..., "strict": True}}` instead
+  of `contractAbstraction`'s manual regex-based JSON-fence stripping. Verified working on both
+  deployments — guarantees schema-valid output the same way the Claude Workflow tool's schema
+  enforcement does, with no parse-failure retry logic needed.
+- `max_output_tokens` needs real headroom for `luna` specifically — it is markedly more verbose
+  (see sanity test). 16,000 truncated a real response mid-JSON; 30,000 was sufficient. Use a
+  generous budget (30k+) and check `resp.status`/`incomplete_details` rather than assuming
+  a shorter cap is safe just because it worked once.
+
+## Sanity test: terra vs. luna on real clause tagging (2026-08-24)
+
+Ran the *exact* tagging prompt/schema from `clause_tagging_workflow.js`'s `tagPrompt()` against
+both models for request #320 (Equipment Leasing: Watco, 40 raw diff edits) — a case Claude had
+already tagged in the interrupted Equipment Leasing run (31 findings), giving a real three-way
+comparison instead of a toy prompt.
+
+| | Claude | terra | luna |
+|---|---|---|---|
+| Findings | 31 | 19 | 38 |
+| Distinct raw edits covered | 32 | 34 | 33 |
+| Raw edits Claude covered that this model missed | — | **0** | **0** |
+| Time / reasoning tokens | — | 86.5s / 4,277 | ~similar wall-time / 8,831 |
+
+**Both models achieved full coverage of every edit Claude flagged as a real change — zero
+misses — plus each caught 1-2 extra genuine (low-significance) items Claude skipped entirely.**
+Every quote spot-checked from both models was grounded in the actual source text; no
+hallucination found in either.
+
+**The real difference is granularity, and it matters for playbook quality.** One raw diff edit
+in this contract was a single giant multi-clause replace block (a `diffing.py` limitation, not
+a model issue — flagged separately for the audit) covering five real, distinct clauses at once
+(Lease Term, Purchase Option, Rent, Rent Adjustments, Inspection/Maintenance). How each model
+split it:
+- Claude: 5 findings, one per real clause.
+- **terra: only 2** — merged Lease Term + Purchase Option + Rent + Escalation + Invoicing into
+  one mega-finding. Real information loss: those need to be separate playbook rules.
+- **luna: 8 findings** — matched the document's own numbered section boundaries more precisely
+  than Claude did (e.g. separated "Purchase Option Price/Documentation" from "Purchase Option"
+  itself).
+
+**Decision: `gpt-5.6-luna` is the default model for all ported stages.** The owner's explicit
+priority is accuracy over cost/speed; luna matched-or-beat Claude everywhere checked, while
+terra's tendency to over-merge is exactly the "something gets missed" failure mode to avoid.
+The cost is real (~2x luna's tokens/time vs. terra) and accepted as the tradeoff.
+
+**Byproduct finding (not model-related):** `diffing.py` can produce a single edit spanning
+several real clauses when the underlying documents were heavily restructured, forcing every
+downstream tagger (Claude included) to do the clause-splitting work the diff itself should have
+done. Worth fixing in `diffing.py` independent of which LLM tags the output — folded into the
+paused end-to-end audit's findings.
+
+## First production use: US NDA playbook (started 2026-08-24)
+
+The NDA playbook (requested directly, ahead of the audit's own remediation-plan ordering) is
+the first real pipeline run intended to prove out this decision, not just a sanity test. Scope:
+`run_pairing.py --limit 250 --request-type "NDA" --geography "U.S." --best` — the new `--best`
+flag (see `db.get_requests_ranked_by_file_count`) ranks candidates by real (non-deleted) file
+count instead of oldest-request-id-first, so the capped 250 is the 250 *most likely to actually
+contain a redline pair*, not just whichever old single-file requests sort first.
 
 ## Relationship to the end-to-end audit
 
