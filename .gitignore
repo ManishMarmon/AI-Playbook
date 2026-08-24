@@ -28,6 +28,7 @@ _extract/
 *.docx
 *.zip
 downloadAPI.txt
+marmon_logo.png
 
 # OS junk
 .DS_Store

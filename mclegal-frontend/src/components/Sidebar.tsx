@@ -18,7 +18,7 @@ export default function Sidebar({ search, onSearchChange }: { search: string; on
     <aside className="sidebar">
       <div className="brand">
         <div className="brand-mark">
-          <span style={{ fontWeight: 700, color: "var(--ink)" }}>M</span>
+          <img src="/marmon-mark.png" alt="Marmon" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
         </div>
         <div className="brand-name">
           McLegal
