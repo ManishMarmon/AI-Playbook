@@ -17,9 +17,12 @@ export default function Sidebar({ search, onSearchChange }: { search: string; on
   return (
     <aside className="sidebar">
       <div className="brand">
-        <div className="brand-mark">
-          <img src="/marmon-mark.png" alt="Marmon" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-        </div>
+        <img
+          src="/marmon-mark-white.svg"
+          alt="Marmon"
+          className="brand-mark"
+          style={{ objectFit: "contain", background: "transparent", width: 50, height: 50 }}
+        />
         <div className="brand-name">
           McLegal
           <small>Redline Intelligence</small>
