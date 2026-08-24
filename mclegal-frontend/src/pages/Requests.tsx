@@ -23,7 +23,12 @@ type RequestRow = {
   attachment_count: number;
 };
 
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 50;
+
+// Topbar (56px) + .page's own top/bottom padding (32px each) — the fixed
+// chrome above/below this page's content, so the page fits the viewport
+// instead of pushing pagination below the fold once the table gets tall.
+const PAGE_CHROME_HEIGHT = 56 + 32 + 32;
 
 // The six dropdown filters, in render order. Driven off this table rather than
 // six near-identical blocks so the cascading-options logic below has exactly
@@ -171,7 +176,7 @@ export default function Requests({ search }: { search: string }) {
   }
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", height: `calc(100vh - ${PAGE_CHROME_HEIGHT}px)` }}>
       <div className="eyebrow">McLegal · Phase 1 PoC</div>
       <h1>All Requests</h1>
       <p className="muted" style={{ marginTop: 6 }}>
@@ -190,15 +195,15 @@ export default function Requests({ search }: { search: string }) {
       )}
 
       {resource.status === "ready" && (
-        <>
-          <div className="grid-4" style={{ marginTop: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+          <div className="grid-4" style={{ marginTop: 24, flex: "none" }}>
             <StatTile label="Total Requests" value={stats.total} />
             <StatTile label="Business Sectors" value={stats.sectors} />
             <StatTile label="Law Firms" value={stats.lawFirms} />
             <StatTile label="Matching Filters" value={stats.filtered} />
           </div>
 
-          <div className="card" style={{ padding: 20, marginTop: 20 }}>
+          <div className="card" style={{ padding: 20, marginTop: 20, flex: "none" }}>
             <div className="between" style={{ marginBottom: 12 }}>
               <span className="text-body-xs muted">Filters</span>
               <button className="btn sm" disabled={!hasActiveFilters} onClick={resetFilters}>
@@ -332,8 +337,11 @@ export default function Requests({ search }: { search: string }) {
             </div>
           </div>
 
-          <div className="card" style={{ overflow: "hidden", marginTop: 20 }}>
-            <div style={{ overflowX: "auto" }}>
+          <div
+            className="card"
+            style={{ overflow: "hidden", marginTop: 20, flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}
+          >
+            <div style={{ overflow: "auto", flex: 1, minHeight: 0 }}>
               <table className="data-table">
                 <thead>
                   <tr>
@@ -385,22 +393,28 @@ export default function Requests({ search }: { search: string }) {
             )}
           </div>
 
-          {filtered.length > PAGE_SIZE && (
-            <div className="between" style={{ marginTop: 12 }}>
+          {filtered.length > 0 && (
+            <div className="between" style={{ marginTop: 12, flex: "none" }}>
               <div className="text-body-xs muted">
                 Page {page + 1} of {pageCount} ({filtered.length.toLocaleString()} requests)
               </div>
               <div className="row">
+                <button className="btn sm" disabled={page === 0} onClick={() => setPage(0)}>
+                  First
+                </button>
                 <button className="btn sm" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
                   Previous
                 </button>
                 <button className="btn sm" disabled={page >= pageCount - 1} onClick={() => setPage((p) => p + 1)}>
                   Next
                 </button>
+                <button className="btn sm" disabled={page >= pageCount - 1} onClick={() => setPage(pageCount - 1)}>
+                  Last
+                </button>
               </div>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

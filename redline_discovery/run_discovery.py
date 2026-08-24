@@ -55,14 +55,21 @@ def main():
                          help="Path to a pipeline snapshot (see fetch_snapshot.py) to reuse "
                               "instead of reading from Postgres — for one-off testing against a "
                               "fixed export")
+    parser.add_argument("--skip-structure-check", action="store_true",
+                         help="Skip the real file-download + track-changes/PDF-annotation check "
+                              "(technique 2 of 3 in B1). Classification falls back to the filename/"
+                              "text/Keywords heuristic alone — lower confidence on Unclassified rows, "
+                              "but no live per-file API call, so a run over the full population stays "
+                              "fast instead of taking hours. requests_catalog.json (business metadata, "
+                              "no file content) is unaffected either way.")
     args = parser.parse_args()
 
     config.OUTPUT_DIR.mkdir(exist_ok=True)
 
-    # Structure-check still needs a live token regardless of where request/file
-    # metadata comes from (download_file() below hits the real API for file
-    # bytes — those aren't persisted to Postgres, only TextExtract is).
-    token = get_bearer_token()
+    # Structure-check needs a live token to download file bytes (not persisted
+    # to Postgres, only TextExtract is) — skip fetching one entirely when the
+    # check itself is skipped.
+    token = None if args.skip_structure_check else get_bearer_token()
     conn = db.get_connection()
 
     if args.snapshot:
@@ -123,7 +130,8 @@ def main():
             # Skipped for Likely Executed/Signed: a signed final copy isn't
             # expected to carry markup, and finding a stray comment shouldn't
             # reclassify it.
-            if (result["category"] != "Likely Executed/Signed"
+            if (not args.skip_structure_check
+                    and result["category"] != "Likely Executed/Signed"
                     and file_type in STRUCTURE_CHECKABLE_TYPES
                     and 0 < file_size <= MAX_DOWNLOAD_BYTES):
                 file_bytes = download_file(f.get("ID"), token)
