@@ -178,6 +178,10 @@ cd redline_discovery
 **Redline discovery (Phases 1-5):**
 ```bash
 python run_discovery.py --limit 200                            # Phases 1-3: discover + classify
+python run_discovery.py --limit 20000 --skip-structure-check   # full population, metadata-only —
+                                                                 # skips the per-file download+check
+                                                                 # (technique 2/3), Postgres-only so
+                                                                 # it stays fast (minutes, not hours)
 python run_pairing.py --limit 200                               # Phase 4: pair + diff
 # Phase 5 (clause_tagging_workflow.js) is invoked through Claude Code's Workflow tool:
 #   args: { chunkDir: "output/diff_chunks", requestIds: [...] }
