@@ -52,8 +52,7 @@ export default function DraftContract() {
   }, [entries, jurisdiction, contractType]);
   const selectedEntry = matches.length === 1 ? matches[0] : undefined;
 
-  const rulesUrl = selectedEntry ? `/playbooks/${selectedEntry.file}` : "";
-  const rules = useJsonResource<Rule[]>(rulesUrl || "/playbooks/__none__.json", isRules);
+  const rules = useJsonResource<Rule[]>(selectedEntry ? `/playbooks/${selectedEntry.file}` : null, isRules);
 
   const preview = useMemo(() => {
     if (!selectedEntry || rules.status !== "ready" || !contractType) return null;

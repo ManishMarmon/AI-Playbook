@@ -12,7 +12,10 @@ export type JsonResource<T> =
  * before it's trusted as T — schema drift then surfaces as a visible error
  * instead of a blank crash deep in render.
  */
-export function useJsonResource<T>(url: string, isValid?: (data: unknown) => data is T): JsonResource<T> {
+export function useJsonResource<T>(
+  url: string | null,
+  isValid?: (data: unknown) => data is T
+): JsonResource<T> {
   const [attempt, setAttempt] = useState(0);
   const [state, setState] = useState<{ status: "loading" | "error" | "ready"; data: T | null; error: string | null }>({
     status: "loading",
@@ -23,6 +26,14 @@ export function useJsonResource<T>(url: string, isValid?: (data: unknown) => dat
   const refetch = useCallback(() => setAttempt((n) => n + 1), []);
 
   useEffect(() => {
+    if (url === null) {
+      // Nothing selected yet — stay in "loading" (nothing renders a spinner
+      // off this alone) rather than fetching a fake path that would 404/HTML
+      // fallback and surface as a spurious error before the user picks anything.
+      setState({ status: "loading", data: null, error: null });
+      return;
+    }
+
     let cancelled = false;
     setState({ status: "loading", data: null, error: null });
 
