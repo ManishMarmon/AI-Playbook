@@ -52,10 +52,7 @@ export default function Sidebar({ search, onSearchChange }: { search: string; on
 
       <div className="nav-foot">
         <div className="avatar">MN</div>
-        <div className="who">
-          Marmon Legal
-          <small>McLegal PoC</small>
-        </div>
+        <div className="who">Marmon Legal</div>
       </div>
     </aside>
   );
