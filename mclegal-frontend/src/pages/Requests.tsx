@@ -160,6 +160,16 @@ export default function Requests({ search }: { search: string }) {
     [rows, filtered]
   );
 
+  const hasActiveFilters = Boolean(
+    contractType || businessSector || location || lawFirm || attorney || partyA || partyBQuery || requestorQuery
+  );
+
+  function resetFilters() {
+    for (const { key } of SELECT_FILTERS) setters[key]("");
+    setPartyBQuery("");
+    setRequestorQuery("");
+  }
+
   return (
     <div>
       <div className="eyebrow">McLegal · Phase 1 PoC</div>
@@ -189,6 +199,12 @@ export default function Requests({ search }: { search: string }) {
           </div>
 
           <div className="card" style={{ padding: 20, marginTop: 20 }}>
+            <div className="between" style={{ marginBottom: 12 }}>
+              <span className="text-body-xs muted">Filters</span>
+              <button className="btn sm" disabled={!hasActiveFilters} onClick={resetFilters}>
+                Reset filters
+              </button>
+            </div>
             <div className="grid-4" style={{ gap: 12 }}>
               <div className="field" style={{ marginBottom: 0 }}>
                 <label htmlFor="filter-contract-type">Contract Type</label>
