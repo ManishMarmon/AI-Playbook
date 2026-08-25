@@ -9,7 +9,7 @@ import DraftContract from "./pages/DraftContract";
 import Requests from "./pages/Requests";
 import GoldenRules from "./pages/GoldenRules";
 import Playbooks from "./pages/Playbooks";
-import Placeholder from "./pages/Placeholder";
+import SuggestedRules from "./pages/SuggestedRules";
 
 const CRUMB_BY_PATH: Record<string, string> = {
   "/": "Redline Discovery",
@@ -45,10 +45,7 @@ export default function App() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/golden-rules" element={<GoldenRules search={search} />} />
             <Route path="/playbooks" element={<Playbooks />} />
-            <Route
-              path="/suggested-rules"
-              element={<Placeholder title="Suggested Rules" note="AI-suggested rules mined from redline history — future work." />}
-            />
+            <Route path="/suggested-rules" element={<SuggestedRules />} />
             <Route path="/draft-contract" element={<DraftContract />} />
             <Route path="/requests" element={<Requests search={search} />} />
           </Routes>

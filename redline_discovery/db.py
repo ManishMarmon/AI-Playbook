@@ -181,6 +181,14 @@ def get_files_for_request(conn: psycopg.Connection, request_id: int) -> list:
     return [row[0] for row in cur.fetchall()]
 
 
+def get_request(conn: psycopg.Connection, request_id: int) -> dict | None:
+    """Single-request lookup by id — for scripts working off an already-known
+    request id list (e.g. a saved request_meta.json) rather than a fresh
+    get_requests()-style scan."""
+    row = conn.execute("SELECT raw FROM requests WHERE request_id = %s", (request_id,)).fetchone()
+    return row[0] if row else None
+
+
 def max_request_id(conn: psycopg.Connection) -> int:
     return conn.execute("SELECT COALESCE(MAX(request_id), 0) FROM requests").fetchone()[0]
 

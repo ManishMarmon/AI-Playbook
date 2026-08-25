@@ -12,3 +12,6 @@ estimated or guessed here.
 | 2026-08-25 02:21 | playbook_synthesis | gpt-5.6-luna | 32 | 34 | 656,762 | 132,564 | 92,236 | 10.3 min | unknown (rate not confirmed) |
 | 2026-08-25 02:45 | clause_tagging | gpt-5.6-luna | 50 | 280 | 2,865,516 | 959,257 | 879,184 | 24.6 min | unknown (rate not confirmed) |
 | 2026-08-25 02:51 | playbook_synthesis | gpt-5.6-luna | 26 | 27 | 125,907 | 83,552 | 73,146 | 6.0 min | unknown (rate not confirmed) |
+| 2026-08-25 22:57 | nda_classification | gpt-5.6-luna | 3 | 3 | 9,977 | 259 | 61 | 0.4 min | unknown (rate not confirmed) |
+| 2026-08-25 23:01 | nda_classification | gpt-5.6-luna | 121 | 121 | 401,995 | 16,515 | 7,700 | 3.4 min | unknown (rate not confirmed) |
+| 2026-08-25 23:04 | playbook_synthesis | gpt-5.6-luna | 28 | 29 | 500,203 | 84,857 | 71,064 | 5.4 min | unknown (rate not confirmed) |

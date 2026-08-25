@@ -151,6 +151,18 @@ def main():
                          help="Path to a confirmed-findings JSON array (see extract_confirmed_findings.py "
                               "or azure_clause_tagging.py's output's result.confirmed)")
     parser.add_argument("--out", required=True, help="Path to write the raw synthesis result to")
+    parser.add_argument("--sample-size", required=True, type=int,
+                         help="Total requests processed by the tagging stage this findings file came from "
+                              "(tagging raw output's result.requestsProcessed) — the denominator for each "
+                              "topic's evidence_pct, i.e. 'this issue showed up in N%% of the contracts we "
+                              "actually looked at', not just N%% of the ones that had ANY finding.")
+    parser.add_argument("--min-evidence-pct", type=float, default=15.0,
+                         help="A topic needs findings from at least this %% of --sample-size distinct "
+                              "requests to become a rule in the main playbook; below that (but still "
+                              "meeting the cluster stage's own 2+ finding floor) it's still drafted, but "
+                              "routed to result.suggested_rules instead of result.rules — see "
+                              "finalize_playbook.py, which writes that to a '<id>-suggested.json' sidecar "
+                              "rather than discarding it.")
     args = parser.parse_args()
 
     findings = json.loads(Path(args.findings).read_text(encoding="utf-8"))
@@ -179,10 +191,17 @@ def main():
 
     def draft_one(topic):
         matching = [f for name in topic["matching_clause_names"] for f in by_clause_name.get(name, [])]
+        evidence_count = len(matching)
+        evidence_requests = len({f["request_id"] for f in matching if f.get("request_id") is not None})
+        evidence_pct = round(evidence_requests / args.sample_size * 100, 1) if args.sample_size else 0.0
         try:
             draft = call_structured(draft_prompt(topic, matching), DRAFT_SCHEMA, "draft_rule",
                                      call_label=f"draft:{topic['topic_id']}")
-            return {"topic": topic, "draft": draft}
+            return {
+                "topic": topic, "draft": draft,
+                "evidence_count": evidence_count, "evidence_requests": evidence_requests,
+                "evidence_pct": evidence_pct,
+            }
         except StructuredCallFailed as e:
             print(f"  Topic {topic['topic_id']} ({topic['title']}): draft call failed ({e}) — excluded")
             return None
@@ -208,36 +227,47 @@ def main():
 
     avg_body = round(sum(body_chars(e["draft"]) for e in drafted) / len(drafted)) if drafted else 0
 
+    confirmed_tier = [e for e in drafted if e["evidence_pct"] >= args.min_evidence_pct]
+    suggested_tier = [e for e in drafted if e["evidence_pct"] < args.min_evidence_pct]
+
     print(f"\nDone: {len(drafted)}/{len(topics)} topics drafted into rules")
+    print(f"  {len(confirmed_tier)} meet the {args.min_evidence_pct}% evidence bar -> main playbook")
+    print(f"  {len(suggested_tier)} below the bar (but 2+ findings) -> suggested rules")
     print(f"Avg rule body: {avg_body} chars (Freo reference ~1057; Claude Real Estate v2 ~1653)")
     if over_ceiling:
         print(f"{len(over_ceiling)} field(s) over ceiling: {', '.join(over_ceiling)}")
+
+    def rule_dict(e):
+        return {
+            "title": e["draft"]["title"],
+            "category": e["topic"]["category"],
+            "category_prefix": e["topic"]["category_prefix"],
+            "priority": e["draft"]["priority"],
+            "applies_to": e["draft"]["applies_to"],
+            "where_to_look": e["draft"]["where_to_look"],
+            "required": e["draft"]["required"],
+            "fallback": e["draft"]["fallback"],
+            "escalate_if": e["draft"]["escalate_if"],
+            "flag_if": e["draft"]["flag_if"],
+            "preferred_language": e["draft"]["preferred_language"],
+            "source_tag": "Unvetted draft - counsel review needed",
+            "confidence_note": e["draft"]["confidence_note"],
+            "matching_clause_names": e["topic"]["matching_clause_names"],
+            "evidence_count": e["evidence_count"],
+            "evidence_requests": e["evidence_requests"],
+            "evidence_pct": e["evidence_pct"],
+        }
 
     output = {
         "result": {
             "topicsTotal": len(topics),
             "rulesDrafted": len(drafted),
+            "sampleSize": args.sample_size,
+            "minEvidencePct": args.min_evidence_pct,
             "avgRuleBodyChars": avg_body,
             "fieldsOverCeiling": over_ceiling,
-            "rules": [
-                {
-                    "title": e["draft"]["title"],
-                    "category": e["topic"]["category"],
-                    "category_prefix": e["topic"]["category_prefix"],
-                    "priority": e["draft"]["priority"],
-                    "applies_to": e["draft"]["applies_to"],
-                    "where_to_look": e["draft"]["where_to_look"],
-                    "required": e["draft"]["required"],
-                    "fallback": e["draft"]["fallback"],
-                    "escalate_if": e["draft"]["escalate_if"],
-                    "flag_if": e["draft"]["flag_if"],
-                    "preferred_language": e["draft"]["preferred_language"],
-                    "source_tag": "Unvetted draft - counsel review needed",
-                    "confidence_note": e["draft"]["confidence_note"],
-                    "matching_clause_names": e["topic"]["matching_clause_names"],
-                }
-                for e in drafted
-            ],
+            "rules": [rule_dict(e) for e in confirmed_tier],
+            "suggested_rules": [rule_dict(e) for e in suggested_tier],
         }
     }
     Path(args.out).write_text(json.dumps(output, indent=2), encoding="utf-8")

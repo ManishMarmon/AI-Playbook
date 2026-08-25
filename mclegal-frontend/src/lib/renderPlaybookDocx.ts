@@ -40,6 +40,13 @@ export type PlaybookRule = {
   preferred_language?: string | null;
   source_tag?: string | null;
   confidence_note?: string | null;
+  // Present on rules synthesized with evidence tiering (see
+  // azure_playbook_synthesis.py) — how many confirmed findings/distinct
+  // requests support this rule, and what % of the sample that is. Absent on
+  // older/attorney-authored playbooks that predate this field.
+  evidence_count?: number;
+  evidence_requests?: number;
+  evidence_pct?: number;
 };
 
 // Exact hex values pulled from the reference document's own run/shading XML.

@@ -26,17 +26,6 @@
     "file": "real-estate-usa.json"
   },
   {
-    "id": "nda-usa",
-    "label": "US NDA",
-    "jurisdiction": "United States",
-    "status": "ai_draft",
-    "contractTypes": [
-      "NDA"
-    ],
-    "businessSectors": [],
-    "file": "nda-usa.json"
-  },
-  {
     "id": "real-estate-usa-gpt",
     "label": "US Real Estate (GPT comparison, unreviewed)",
     "jurisdiction": "United States",
@@ -46,5 +35,17 @@
     ],
     "businessSectors": [],
     "file": "real-estate-usa-gpt.json"
+  },
+  {
+    "id": "nda-usa",
+    "label": "US NDA",
+    "jurisdiction": "United States",
+    "status": "ai_draft",
+    "contractTypes": [
+      "NDA"
+    ],
+    "businessSectors": [],
+    "file": "nda-usa.json",
+    "suggestedRulesFile": "nda-usa-suggested.json"
   }
 ]

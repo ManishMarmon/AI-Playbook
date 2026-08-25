@@ -101,11 +101,14 @@ def main():
 
     contract_types = [c.strip() for c in args.contract_types.split(",") if c.strip()]
 
+    # One shared counter per prefix across BOTH tiers (confirmed + suggested)
+    # so rule ids stay stable if a suggested rule is later promoted into the
+    # main playbook — it already has its final id, no renumbering needed.
     counters: dict[str, int] = {}
-    final_rules = []
     applies_to_warnings = []
     applies_to_vocab_mismatches = []
-    for r in result["rules"]:
+
+    def build_rule(r: dict) -> dict:
         prefix = prefix_for(r)
         counters[prefix] = counters.get(prefix, 0) + 1
         rule_id = f"{prefix}-{counters[prefix]:02d}"
@@ -116,7 +119,7 @@ def main():
         if applies_to != "All contract types" and applies_to not in contract_types:
             applies_to_vocab_mismatches.append((rule_id, applies_to))
 
-        final_rules.append({
+        rule = {
             "rule_id": rule_id,
             "title": r["title"],
             "priority": r["priority"],
@@ -131,7 +134,18 @@ def main():
             "source_tag": r["source_tag"],
             "confidence_note": r["confidence_note"],
             "matching_clause_names": r["matching_clause_names"],
-        })
+        }
+        # Structured evidence fields (evidence_count/evidence_requests/evidence_pct)
+        # only exist on results from a synthesis run that computed them (see
+        # azure_playbook_synthesis.py) — carried through when present rather than
+        # required, so this script still works against an older raw result.
+        for field in ("evidence_count", "evidence_requests", "evidence_pct"):
+            if field in r:
+                rule[field] = r[field]
+        return rule
+
+    final_rules = [build_rule(r) for r in result["rules"]]
+    final_suggested_rules = [build_rule(r) for r in result.get("suggested_rules", [])]
 
     if applies_to_warnings:
         print("\nWARNING: these rules have a long/descriptive applies_to that selectRules() will "
@@ -155,7 +169,8 @@ def main():
             print(f"  {rule_id}: applies_to={val!r}")
 
     existing_ids = _load_existing_rule_ids(exclude_playbook_id=args.id)
-    collisions = existing_ids & {r["rule_id"] for r in final_rules}
+    all_new_ids = {r["rule_id"] for r in final_rules} | {r["rule_id"] for r in final_suggested_rules}
+    collisions = existing_ids & all_new_ids
     if collisions:
         raise SystemExit(f"Rule id collision with another playbook: {collisions} — "
                           f"pick different category prefixes for {args.id}.")
@@ -165,10 +180,17 @@ def main():
     rules_path.write_text(json.dumps(final_rules, indent=2), encoding="utf-8")
     print(f"\nWrote {len(final_rules)} rules to {rules_path}")
 
+    suggested_file = None
+    if final_suggested_rules:
+        suggested_file = f"{args.id}-suggested.json"
+        suggested_path = PLAYBOOKS_DIR / suggested_file
+        suggested_path.write_text(json.dumps(final_suggested_rules, indent=2), encoding="utf-8")
+        print(f"Wrote {len(final_suggested_rules)} below-threshold candidate rules to {suggested_path}")
+
     manifest_path = PLAYBOOKS_DIR / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else []
     manifest = [m for m in manifest if m["id"] != args.id]
-    manifest.append({
+    entry = {
         "id": args.id,
         "label": args.label,
         "jurisdiction": args.jurisdiction,
@@ -176,7 +198,10 @@ def main():
         "contractTypes": contract_types,
         "businessSectors": [s.strip() for s in args.business_sectors.split(",") if s.strip()],
         "file": f"{args.id}.json",
-    })
+    }
+    if suggested_file:
+        entry["suggestedRulesFile"] = suggested_file
+    manifest.append(entry)
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     print(f"Wrote {manifest_path}")
 
