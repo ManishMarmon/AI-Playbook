@@ -45,6 +45,8 @@ export type AssembledContract = {
   generatedAt: string;
   sections: AssembledSection[];
   needsManualDraft: NeedsManualDraftItem[];
+  rulesTotal: number;
+  rulesSelected: number;
 };
 
 // Conventional contract drafting order — deliberately NOT the playbook's own
@@ -77,17 +79,33 @@ function flagBracketPlaceholders(text: string): string {
   return text.replace(BRACKET_RE, (match) => `[[NEEDS REVIEW: ${match}]]`);
 }
 
-export function selectRules(rules: Rule[], contractType: string): Rule[] {
+// playbookContractTypes is the manifest entry's full declared contractTypes
+// list for the playbook `rules` came from — NOT just the one the user picked.
+// A playbook declared for exactly one contract type (e.g. US Real Estate) has
+// nothing to disambiguate against: every rule in that file belongs to it,
+// whatever instrument-level wording its own applies_to happens to use
+// ("Lease" vs "Commercial lease" vs "Services agreement" are all still Real
+// Estate). Only a playbook that bundles multiple contract types in one file
+// (e.g. Freo's Equipment hire / Mining master supply agreement / Wind
+// subcontract) needs applies_to to pick out which of ITS rules apply to the
+// one the user selected — that exact-match behavior is preserved below.
+// Skipping the filter entirely for single-type playbooks is also what fixes
+// the shipped bug where applies_to values ("Lease" etc.) never equaled the
+// manifest's own contract-type label ("Real Estate"), silently dropping 18
+// of 29 rules from every drafted contract.
+export function selectRules(rules: Rule[], contractType: string, playbookContractTypes: string[]): Rule[] {
+  if (playbookContractTypes.length <= 1) return rules;
   return rules.filter((r) => r.applies_to === "All contract types" || r.applies_to === contractType);
 }
 
 export function assembleContract(
   rules: Rule[],
   contractType: string,
+  playbookContractTypes: string[],
   partyA: string,
   partyB: string
 ): AssembledContract {
-  const selected = selectRules(rules, contractType);
+  const selected = selectRules(rules, contractType, playbookContractTypes);
   const insertable = selected.filter((r) => r.preferred_language);
   const needsManualDraft: NeedsManualDraftItem[] = selected
     .filter((r) => !r.preferred_language)
@@ -135,5 +153,7 @@ export function assembleContract(
     generatedAt: new Date().toISOString(),
     sections,
     needsManualDraft,
+    rulesTotal: rules.length,
+    rulesSelected: selected.length,
   };
 }

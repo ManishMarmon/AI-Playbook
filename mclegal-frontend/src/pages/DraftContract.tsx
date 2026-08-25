@@ -57,7 +57,13 @@ export default function DraftContract() {
   const preview = useMemo(() => {
     if (!selectedEntry || rules.status !== "ready" || !contractType) return null;
     try {
-      return assembleContract(rules.data, contractType, partyA.trim() || "[Party A]", partyB.trim() || "[Party B]");
+      return assembleContract(
+        rules.data,
+        contractType,
+        selectedEntry.contractTypes,
+        partyA.trim() || "[Party A]",
+        partyB.trim() || "[Party B]"
+      );
     } catch {
       return null;
     }
@@ -69,11 +75,17 @@ export default function DraftContract() {
   );
 
   function handleGenerate() {
-    if (rules.status !== "ready" || !contractType) return;
+    if (rules.status !== "ready" || !contractType || !selectedEntry) return;
     setGenerating(true);
     setGenerateError(null);
     try {
-      const contract = assembleContract(rules.data, contractType, partyA.trim(), partyB.trim());
+      const contract = assembleContract(
+        rules.data,
+        contractType,
+        selectedEntry.contractTypes,
+        partyA.trim(),
+        partyB.trim()
+      );
       const filename = `${contractType.replace(/[^\w]+/g, "-")}-draft.pdf`;
       downloadContractPdf(contract, filename);
     } catch (err) {
@@ -194,6 +206,12 @@ export default function DraftContract() {
 
           {rules.status === "error" && (
             <p className="field-error">Couldn't load this playbook's rules: {rules.error}</p>
+          )}
+          {preview && (
+            <p className="text-body-xs muted" style={{ marginTop: -4, marginBottom: 8 }}>
+              {preview.rulesSelected} of {preview.rulesTotal} playbook rules included for this contract
+              type.
+            </p>
           )}
           {generateError && <p className="field-error">{generateError}</p>}
 

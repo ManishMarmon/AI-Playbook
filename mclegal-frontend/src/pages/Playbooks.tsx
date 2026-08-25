@@ -2,9 +2,22 @@ import { useMemo, useState } from "react";
 import { Download, Eye, EyeOff, AlertTriangle, ShieldCheck } from "lucide-react";
 import { useJsonResource } from "../hooks/useJsonResource";
 import { ResourceStatus } from "../components/ResourceStatus";
-import { Chip } from "../components/Chip";
+import { Chip, type ChipTone } from "../components/Chip";
 import { isPlaybookManifest, type PlaybookMeta } from "../lib/playbooks";
-import { renderPlaybookDocx, downloadBlob, type PlaybookRule } from "../lib/renderPlaybookDocx";
+import {
+  renderPlaybookDocx,
+  downloadBlob,
+  isUnvetted,
+  NO_LANGUAGE_TEXT,
+  type PlaybookRule,
+} from "../lib/renderPlaybookDocx";
+
+const PRIORITY_TONE: Record<string, ChipTone | undefined> = {
+  "MUST PRESS": "bad",
+  PRESS: "warn",
+  MANAGE: "info",
+  "ACCEPT+NOTE": undefined,
+};
 
 const ALL = "All";
 
@@ -242,10 +255,18 @@ function PlaybookPreview({ file }: { file: string }) {
   }
 
   const categories = Array.from(new Set(resource.data.map((r) => r.category)));
+  const unvettedCount = resource.data.filter((r) => isUnvetted(r.source_tag)).length;
 
   return (
     <div className="divider-parent" style={{ marginTop: 12 }}>
       <div className="divider" />
+      {unvettedCount > 0 && (
+        <div className="text-body-xs" style={{ marginTop: 10, color: "var(--bad)" }}>
+          <AlertTriangle size={12} style={{ verticalAlign: "-2px", marginRight: 4 }} />
+          {unvettedCount} of {resource.data.length} rules carry unvetted model language — do not
+          generate redlines from these unsupervised until counsel signs off.
+        </div>
+      )}
       {categories.map((category) => (
         <div key={category} style={{ marginTop: 14 }}>
           <div className="text-label muted">{category}</div>
@@ -262,12 +283,23 @@ function PlaybookPreview({ file }: { file: string }) {
   );
 }
 
+// Mirrors renderPlaybookDocx.ts's ruleTable() field-for-field (WHERE TO LOOK /
+// REQUIRED / FALLBACK / ESCALATE IF / FLAG IF / PREFERRED LANGUAGE) so what an
+// attorney previews here matches what the Word download actually contains —
+// the preview used to show only 5 of 13 fields, silently hiding fallback,
+// escalate_if, flag_if, preferred_language, and source_tag.
 function PreviewRuleRow({ rule }: { rule: PlaybookRule }) {
+  const unvetted = isUnvetted(rule.source_tag);
   return (
     <div style={{ paddingLeft: 12, borderLeft: "2px solid var(--border)" }}>
       <div className="row" style={{ gap: 8 }}>
         <Chip tone="info">{rule.rule_id}</Chip>
-        <span className="text-body-xs muted">{rule.priority}</span>
+        {rule.priority && <Chip tone={PRIORITY_TONE[rule.priority]}>{rule.priority}</Chip>}
+        {unvetted && (
+          <span className="row text-body-xs" style={{ color: "var(--bad)" }}>
+            <AlertTriangle size={12} /> Unvetted draft
+          </span>
+        )}
       </div>
       <div className="text-body-sm" style={{ fontWeight: 600, marginTop: 4 }}>
         {rule.title}
@@ -275,8 +307,30 @@ function PreviewRuleRow({ rule }: { rule: PlaybookRule }) {
       <div className="text-body-xs muted" style={{ marginTop: 2 }}>
         Applies to: {rule.applies_to}
       </div>
+      <div className="text-body-sm" style={{ marginTop: 6 }}>
+        <strong>Where to look:</strong> {rule.where_to_look}
+      </div>
       <div className="text-body-sm" style={{ marginTop: 4 }}>
         <strong>Required:</strong> {rule.required}
+      </div>
+      <div className="text-body-sm" style={{ marginTop: 4 }}>
+        <strong>Fallback:</strong> {rule.fallback}
+      </div>
+      <div className="text-body-sm" style={{ marginTop: 4 }}>
+        <strong>Escalate if:</strong> {rule.escalate_if}
+      </div>
+      {rule.flag_if?.length > 0 && (
+        <div className="text-body-sm" style={{ marginTop: 4 }}>
+          <strong>Flag if:</strong>
+          <ul style={{ margin: "2px 0 0 18px", padding: 0 }}>
+            {rule.flag_if.map((f, i) => (
+              <li key={i}>{f}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <div className="text-body-sm" style={{ marginTop: 4 }}>
+        <strong>Preferred language:</strong> {rule.preferred_language || NO_LANGUAGE_TEXT}
       </div>
       {rule.confidence_note && (
         <div className="text-body-xs muted" style={{ marginTop: 4, fontStyle: "italic" }}>

@@ -26,9 +26,17 @@ from pathlib import Path
 
 PLAYBOOKS_DIR = Path(__file__).parent.parent / "mclegal-frontend" / "public" / "playbooks"
 
-# applies_to is matched EXACTLY by contractAssembly.ts's selectRules() — a
-# rule with a long descriptive applies_to silently never gets selected into a
-# drafted contract (this exact bug happened on the first Real Estate run).
+# applies_to is matched EXACTLY by contractAssembly.ts's selectRules() when a
+# playbook declares more than one contract type — a rule with a long
+# descriptive applies_to, or one that doesn't match any declared
+# --contract-types value, silently never gets selected into a drafted
+# contract for that population (this exact bug shipped on the first Real
+# Estate run: applies_to values like "Lease"/"Commercial lease" never equaled
+# the declared contract type "Real Estate", dropping 18 of 29 rules from
+# every drafted contract with no warning). For a playbook declared with
+# exactly one contract type, selectRules() no longer filters on applies_to at
+# all — but the mismatch is still worth flagging here, since a later
+# --contract-types split would make it load-bearing again.
 # Anything longer than this is almost certainly prose, not a real value.
 _MAX_APPLIES_TO_LEN = 40
 
@@ -91,9 +99,12 @@ def main():
             )
         return f"{args.prefix_namespace}-{base}" if args.prefix_namespace else base
 
+    contract_types = [c.strip() for c in args.contract_types.split(",") if c.strip()]
+
     counters: dict[str, int] = {}
     final_rules = []
     applies_to_warnings = []
+    applies_to_vocab_mismatches = []
     for r in result["rules"]:
         prefix = prefix_for(r)
         counters[prefix] = counters.get(prefix, 0) + 1
@@ -102,6 +113,8 @@ def main():
         applies_to = r["applies_to"]
         if applies_to != "All contract types" and len(applies_to) > _MAX_APPLIES_TO_LEN:
             applies_to_warnings.append((rule_id, applies_to))
+        if applies_to != "All contract types" and applies_to not in contract_types:
+            applies_to_vocab_mismatches.append((rule_id, applies_to))
 
         final_rules.append({
             "rule_id": rule_id,
@@ -126,6 +139,21 @@ def main():
         for rule_id, val in applies_to_warnings:
             print(f"  {rule_id}: {val[:80]!r}")
 
+    if applies_to_vocab_mismatches:
+        singular_note = (
+            " — harmless today since this playbook declares a single contract type "
+            "(selectRules() skips the applies_to filter entirely for those), but will "
+            "silently drop these rules if --contract-types is ever split into more than one value"
+            if len(contract_types) <= 1 else
+            " — these rules will NEVER be selected for any of this playbook's declared "
+            "contract types and are effectively dead weight in every drafted contract"
+        )
+        print(f"\nWARNING: {len(applies_to_vocab_mismatches)} rule(s) have an applies_to value that "
+              f"is not 'All contract types' and not a member of --contract-types {contract_types}"
+              f"{singular_note}:")
+        for rule_id, val in applies_to_vocab_mismatches:
+            print(f"  {rule_id}: applies_to={val!r}")
+
     existing_ids = _load_existing_rule_ids(exclude_playbook_id=args.id)
     collisions = existing_ids & {r["rule_id"] for r in final_rules}
     if collisions:
@@ -145,7 +173,7 @@ def main():
         "label": args.label,
         "jurisdiction": args.jurisdiction,
         "status": args.status,
-        "contractTypes": [c.strip() for c in args.contract_types.split(",") if c.strip()],
+        "contractTypes": contract_types,
         "businessSectors": [s.strip() for s in args.business_sectors.split(",") if s.strip()],
         "file": f"{args.id}.json",
     })

@@ -51,7 +51,7 @@ const GREY_LABEL = "767171";
 const SEPARATOR = "C8C8C8";
 const LABEL_SHADE = "F7F9FC";
 
-const NO_LANGUAGE_TEXT = "None — amend or delete as described above. Do not generate substitute drafting.";
+export const NO_LANGUAGE_TEXT = "None — amend or delete as described above. Do not generate substitute drafting.";
 
 const SOURCE_TAG_MEANINGS: Record<string, string> = {
   "Executed contract":
@@ -64,7 +64,7 @@ const SOURCE_TAG_MEANINGS: Record<string, string> = {
 };
 const DEFAULT_SOURCE_TAG_MEANING = "See the playbook's own notes for how this wording was sourced.";
 
-function isUnvetted(tag?: string | null) {
+export function isUnvetted(tag?: string | null) {
   return !!tag && tag.toLowerCase().includes("unvetted");
 }
 
@@ -141,26 +141,10 @@ function ruleSection(rule: PlaybookRule): (Paragraph | Table)[] {
     ruleTable(rule),
   ];
 
-  if (rule.preferred_language && isUnvetted(rule.source_tag)) {
-    out.push(
-      new Paragraph({
-        spacing: { before: 80, after: 100 },
-        children: [
-          new TextRun({
-            text: "Unvetted draft — do not send to a counterparty without counsel review.",
-            bold: true,
-            color: RED,
-            size: 17,
-          }),
-        ],
-      })
-    );
-  }
-
   if (rule.confidence_note) {
     out.push(
       new Paragraph({
-        spacing: { before: rule.preferred_language && isUnvetted(rule.source_tag) ? 0 : 80, after: 100 },
+        spacing: { before: 80, after: 100 },
         children: [
           new TextRun({ text: "Evidence basis: ", bold: true, italics: true, color: GREY_LABEL, size: 16 }),
           new TextRun({ text: rule.confidence_note, italics: true, color: GREY_LABEL, size: 16 }),

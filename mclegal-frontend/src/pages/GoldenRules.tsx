@@ -4,6 +4,7 @@ import { useJsonResource } from "../hooks/useJsonResource";
 import { ResourceStatus } from "../components/ResourceStatus";
 import { StatTile } from "../components/StatTile";
 import { Chip, type ChipTone } from "../components/Chip";
+import { isUnvetted } from "../lib/renderPlaybookDocx";
 
 type Verification = { accurate: boolean; issue: string; corrected_status?: string };
 
@@ -82,13 +83,6 @@ function isGoldenRulesData(data: unknown): data is GoldenRulesData {
 function priorityRank(p?: string | null) {
   const i = PRIORITY_ORDER.indexOf(p ?? "");
   return i === -1 ? PRIORITY_ORDER.length : i;
-}
-
-// The playbook explicitly marks some model clause wording as an unvetted draft
-// ("do not auto-generate redlines from unsupervised"). That caveat has to be
-// visible in the UI, not just present in the data.
-function isUnvetted(tag?: string | null) {
-  return !!tag && tag.toLowerCase().includes("unvetted");
 }
 
 type Tab = "violations" | "flagged" | "satisfied" | "notApplicable";
