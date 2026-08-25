@@ -7,13 +7,16 @@ operational metrics and business insights the playbook calls for. Pure
 aggregation over already-generated data — no CobbleStone API calls.
 
 Usage:
-    python run_analytics.py
+    python run_analytics.py                                          # population "all"
+    python run_analytics.py --request-type "Real Estate" --geography "U.S."
 """
 
+import argparse
 import json
 from collections import Counter, defaultdict
 
 import config
+from run_pairing import _population_tag
 
 FRONTEND_DATA_DIR = config.OUTPUT_DIR.parent.parent / "mclegal-frontend" / "public" / "data"
 
@@ -27,9 +30,19 @@ def _load(path, default=None):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--request-type", default=None,
+                         help="Match the --request-type run_pairing.py was run with, so this reads "
+                              "that population's pairing_summary/redline_diffs (see _population_tag).")
+    parser.add_argument("--geography", default=None,
+                         help="Match the --geography run_pairing.py was run with.")
+    args = parser.parse_args()
+    tag = _population_tag(args.request_type, args.geography)
+    print(f"Reading pairing/diff data for population tag '{tag}'")
+
     discovery_summary = _load(config.OUTPUT_DIR / "discovery_summary.json", {})
-    pairing_summary = _load(config.OUTPUT_DIR / "pairing_summary.json", {})
-    diffs = _load(config.OUTPUT_DIR / "redline_diffs.json", [])
+    pairing_summary = _load(config.OUTPUT_DIR / f"pairing_summary__{tag}.json", {})
+    diffs = _load(config.OUTPUT_DIR / f"redline_diffs__{tag}.json", [])
     clause_findings = _load(FRONTEND_DATA_DIR / "clause_findings.json", {"confirmed": [], "requestsProcessed": 0})
 
     confirmed = clause_findings.get("confirmed", [])

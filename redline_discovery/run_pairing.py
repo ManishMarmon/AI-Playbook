@@ -14,6 +14,7 @@ Usage:
 
 import argparse
 import json
+import re
 import shutil
 from collections import Counter
 
@@ -21,7 +22,7 @@ import config
 import db
 from request_api import load_pipeline_snapshot
 from pairing import pair_files
-from diffing import diff_documents
+from diffing import diff_documents, MAX_EDITS
 
 
 def _process_status_tag(status: str) -> str:
@@ -30,6 +31,22 @@ def _process_status_tag(status: str) -> str:
     if status in config.PROCESS_STATUS_NO_CONTRACT:
         return "no_contract_expected"
     return "in_progress"
+
+
+def _population_tag(request_type: str | None, geography: str | None) -> str:
+    """Filesystem-safe tag identifying this run's population, so two runs for
+    different contract types/jurisdictions never share (and therefore never
+    clobber) the same diff_chunks/redline_diffs/pairing_summary output. This
+    is the exact fix for the Equipment Leasing near-miss: an NDA pairing run
+    would have unconditionally rmtree'd Equipment Leasing's still-in-flight
+    diff_chunks/ if it hadn't been caught and manually backed up first.
+    Falls back to "all" when no filter is given, matching a full-population
+    run — there's nothing else at that path to collide with."""
+    parts = [p for p in (request_type, geography) if p]
+    if not parts:
+        return "all"
+    slug = re.sub(r"[^a-z0-9]+", "-", "_".join(parts).lower()).strip("-")
+    return slug or "all"
 
 
 def main():
@@ -51,6 +68,8 @@ def main():
     args = parser.parse_args()
 
     config.OUTPUT_DIR.mkdir(exist_ok=True)
+    tag = _population_tag(args.request_type, args.geography)
+    print(f"Population tag for this run's outputs: '{tag}'")
     conn = db.get_connection()
 
     if args.snapshot:
@@ -98,17 +117,21 @@ def main():
             "redline_file": pairing["redline"].get("FileName") if pairing["redline"] else None,
             "final_executed_file": pairing["final_executed_file"],
             "edits": [],
+            "edits_truncated": False,
+            "total_edit_opcodes": 0,
         }
 
         if pairing["original"] and pairing["redline"]:
-            edits = diff_documents(
+            diff_result = diff_documents(
                 pairing["original"].get("TextExtract") or "",
                 pairing["redline"].get("TextExtract") or "",
             )
-            record["edits"] = edits
-            if edits:
+            record["edits"] = diff_result["edits"]
+            record["edits_truncated"] = diff_result["truncated"]
+            record["total_edit_opcodes"] = diff_result["total_edit_opcodes"]
+            if record["edits"]:
                 paired_count += 1
-                edit_count += len(edits)
+                edit_count += len(record["edits"])
 
         results.append(record)
 
@@ -118,15 +141,17 @@ def main():
 
     conn.close()
 
-    out_path = config.OUTPUT_DIR / "redline_diffs.json"
+    out_path = config.OUTPUT_DIR / f"redline_diffs__{tag}.json"
     out_path.write_text(json.dumps(results, indent=2, default=str), encoding="utf-8")
 
     # Per-request chunk files for the Phase 5 clause-tagging workflow (one JSON
     # file per request with a non-empty diff, named "<request_id>.json") — this
     # is the "chunkDir" the workflow's README usage note already documents.
     # Rebuilt from scratch each run so a request that no longer pairs doesn't
-    # leave a stale chunk behind.
-    chunk_dir = config.OUTPUT_DIR / "diff_chunks"
+    # leave a stale chunk behind — but namespaced by population tag, so
+    # rebuilding THIS population's chunks can never touch another
+    # population's still-in-flight chunk_dir (see _population_tag).
+    chunk_dir = config.OUTPUT_DIR / f"diff_chunks__{tag}"
     if chunk_dir.exists():
         shutil.rmtree(chunk_dir)
     chunk_dir.mkdir(parents=True)
@@ -138,25 +163,28 @@ def main():
 
     tag_counts = dict(Counter(r["process_status_tag"] for r in results))
     method_counts = dict(Counter(r["pairing_method"] for r in results))
+    truncated_count = sum(1 for r in results if r["edits_truncated"])
 
     summary = {
         "requests_scanned": len(requests_),
         "confirmed_redlines": paired_count,
         "extraction_failures": method_counts.get("insufficient_files", 0),
         "total_edits_found": edit_count,
+        "pairs_truncated_at_max_edits": truncated_count,
         "process_status_breakdown": tag_counts,
         "pairing_method_breakdown": method_counts,
     }
-    summary_path = config.OUTPUT_DIR / "pairing_summary.json"
+    summary_path = config.OUTPUT_DIR / f"pairing_summary__{tag}.json"
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
     print("\n" + "=" * 50)
     print(f"Requests Scanned:          {len(requests_)}")
     print(f"Requests with a pair diffed: {paired_count}")
     print(f"Total edits found:         {edit_count}")
+    print(f"Pairs truncated at MAX_EDITS ({MAX_EDITS}): {truncated_count}")
     print("Process status breakdown:")
-    for tag, n in tag_counts.items():
-        print(f"  {tag}: {n}")
+    for status_tag, n in tag_counts.items():
+        print(f"  {status_tag}: {n}")
     print("=" * 50)
     print(f"Wrote {out_path}")
     print(f"Wrote {summary_path}")

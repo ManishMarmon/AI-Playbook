@@ -9,7 +9,7 @@ jurisdiction playbook goes through the same reproducible pipeline end to end,
 not a one-off command typed by hand.
 
 Usage:
-    python build_request_meta.py --chunk-dir output/diff_chunks \
+    python build_request_meta.py --chunk-dir output/diff_chunks__equipment-leasing-u-s \
         --out output/equipment_leasing_request_meta.json
 """
 

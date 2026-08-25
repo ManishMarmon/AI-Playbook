@@ -22,7 +22,8 @@ import re
 
 FILENAME_HIGH = ["redline", "redlined", "markup", "mark-up", "mark up",
                  "track change", "tracked change"]
-FILENAME_MEDIUM = ["draft", "revised", "comment", "review", "negotiat"]
+FILENAME_MEDIUM = ["draft", "revised", "comment", "review",
+                    "negotiated", "negotiation", "negotiating"]
 FILENAME_EXECUTED = ["executed", "fully executed", "countersigned",
                       "final signed", "signed copy"]
 
@@ -57,10 +58,13 @@ def _filename_has_keyword(name: str, keyword: str) -> bool:
     # Same normalization as pairing.py's _is_final_executed: underscores/hyphens
     # become spaces so a keyword joined by them (e.g. "SIGNED_Repsol") still gets
     # a real word boundary, and plain substring matches (e.g. "draft" inside
-    # "draftsman") no longer false-positive.
+    # "draftsman") no longer false-positive. The trailing "s?" matches plural
+    # filenames ("redlines", "track changes", "comments", "markups") without
+    # reopening that false-positive: "draftsman" still can't match "drafts?"
+    # because there's no boundary between the "s" and "man".
     normalized_name = re.sub(r"[_\-]+", " ", name)
     normalized_kw = re.sub(r"[_\-]+", " ", keyword)
-    return re.search(rf"\b{re.escape(normalized_kw)}\b", normalized_name) is not None
+    return re.search(rf"\b{re.escape(normalized_kw)}s?\b", normalized_name) is not None
 
 
 def _matched_signals(text: str, keyword_list: list) -> list:

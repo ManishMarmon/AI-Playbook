@@ -10,7 +10,6 @@ import difflib
 import re
 
 CONTEXT_WORDS = 12       # words of surrounding context kept on each side
-MIN_CHANGED_WORDS = 2    # skip single-word/whitespace-only noise
 MAX_EDITS = 40           # cap per pair — avoids drowning in trivial reflow diffs
 
 
@@ -18,31 +17,41 @@ def _tokenize(text: str) -> list[str]:
     return re.findall(r"\S+|\s+", text or "")
 
 
-def diff_documents(original_text: str, redline_text: str) -> list[dict]:
+def diff_documents(original_text: str, redline_text: str) -> dict:
     orig_tokens = _tokenize(original_text)
     new_tokens = _tokenize(redline_text)
     matcher = difflib.SequenceMatcher(None, orig_tokens, new_tokens, autojunk=False)
 
     edits = []
+    total_real_opcodes = 0
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
         if tag == "equal":
             continue
         before = "".join(orig_tokens[i1:i2]).strip()
         after = "".join(new_tokens[j1:j2]).strip()
-        if len(before.split()) < MIN_CHANGED_WORDS and len(after.split()) < MIN_CHANGED_WORDS:
+        # Only skip a genuinely no-op change (e.g. whitespace/line-wrap reflow
+        # where both sides strip to nothing) — a single real word (a negation,
+        # a number, a jurisdiction name) is exactly the kind of high-signal
+        # negotiated edit this pipeline exists to catch, so it must not be
+        # dropped just for being short.
+        if not before and not after:
             continue
+        total_real_opcodes += 1
 
         context_before = "".join(orig_tokens[max(0, i1 - CONTEXT_WORDS * 2):i1]).strip()
         context_after = "".join(orig_tokens[i2:i2 + CONTEXT_WORDS * 2]).strip()
 
-        edits.append({
-            "type": tag,  # 'replace', 'delete', or 'insert'
-            "before": before,
-            "after": after,
-            "context_before": context_before[-300:],
-            "context_after": context_after[:300],
-        })
-        if len(edits) >= MAX_EDITS:
-            break
+        if len(edits) < MAX_EDITS:
+            edits.append({
+                "type": tag,  # 'replace', 'delete', or 'insert'
+                "before": before,
+                "after": after,
+                "context_before": context_before[-300:],
+                "context_after": context_after[:300],
+            })
 
-    return edits
+    return {
+        "edits": edits,
+        "truncated": total_real_opcodes > len(edits),
+        "total_edit_opcodes": total_real_opcodes,
+    }

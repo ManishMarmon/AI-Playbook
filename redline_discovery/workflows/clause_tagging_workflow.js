@@ -2,9 +2,13 @@
 // runs via Claude Code's Workflow tool, which supplies agent()/pipeline()/
 // parallel()/phase()/log()/args at execution time.
 //
-// Invoke with args: { chunkDir: "<repo>/redline_discovery/output/diff_chunks",
+// Invoke with args: { chunkDir: "<repo>/redline_discovery/output/diff_chunks__<population-tag>",
 // requestIds: [...], requestMeta: { [requestId]: { vendor, request_title } } }
 // — chunkDir has one JSON file per request id, produced by run_pairing.py.
+// It's namespaced per population (contract type/jurisdiction) so different
+// runs' chunk directories never collide or clobber each other — see
+// run_pairing.py's _population_tag and its "Population tag for this run's
+// outputs" printout for the exact directory name a given run produced.
 // requestMeta is looked-up (not LLM-echoed) data used to stamp vendor/
 // request_title onto every finding deterministically (see M13 in the audit).
 

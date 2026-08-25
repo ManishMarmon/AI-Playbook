@@ -14,11 +14,13 @@ Output shape matches what a saved clause_tagging_workflow.js task result
 looks like ({"result": {confirmed, flagged, lowOrNoiseCount, ...}}), so
 extract_confirmed_findings.py works against this script's output unchanged.
 
-Usage:
-    python azure_clause_tagging.py --chunk-dir output/diff_chunks \
+Usage (--chunk-dir is namespaced per population by run_pairing.py — see its
+own _population_tag/"Population tag for this run's outputs" printout for the
+exact directory name a given run produced):
+    python azure_clause_tagging.py --chunk-dir output/diff_chunks__nda-u-s \
         --request-meta output/nda_request_meta.json \
         --out output/nda_tagging_raw.json
-    python azure_clause_tagging.py --chunk-dir output/diff_chunks --request-ids 4657,4875 \
+    python azure_clause_tagging.py --chunk-dir output/diff_chunks__nda-u-s --request-ids 4657,4875 \
         --request-meta output/nda_request_meta.json --out output/smoke_test.json
 """
 
