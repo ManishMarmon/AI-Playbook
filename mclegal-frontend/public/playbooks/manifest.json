@@ -35,5 +35,16 @@
     ],
     "businessSectors": [],
     "file": "nda-usa.json"
+  },
+  {
+    "id": "real-estate-usa-gpt",
+    "label": "US Real Estate (GPT comparison, unreviewed)",
+    "jurisdiction": "United States",
+    "status": "ai_draft",
+    "contractTypes": [
+      "Real Estate"
+    ],
+    "businessSectors": [],
+    "file": "real-estate-usa-gpt.json"
   }
 ]
