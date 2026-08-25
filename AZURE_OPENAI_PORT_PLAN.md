@@ -64,7 +64,7 @@ contract text into prompts — moving them moves the sensitive traffic inside th
 ## Open questions (answer before starting the port)
 
 1. ~~**Which model deployment?**~~ **Answered — see sanity test below.** Two deployments are
-   live on the shared `AOAI-dev-endpoint` resource: `gpt-5.6-terra` and `gpt-5.6-luna`.
+   live on the same shared Azure OpenAI resource: `gpt-5.6-terra` and `gpt-5.6-luna`.
 2. **Quota shape:** tokens-per-minute or monthly allocation? Drives how aggressive the batch
    loop can be. Still open.
 3. Should the ported stages write results to Postgres directly (new tables) instead of the
@@ -76,9 +76,10 @@ No new Key Vault secrets needed — `gpt-5.6-terra` and `gpt-5.6-luna` are both 
 **same Azure OpenAI resource** already backing `gpt-5.2`/`gpt-5.4-mini`, confirmed by comparing
 the endpoint shown in the AI Foundry portal against what's already in Key Vault:
 
-- Endpoint secret: `AOAI-dev-endpoint` → `https://proj-general-eastus2-resource-dev.openai.azure.com/openai/v1`
-- Key secret: `gpt-5-4-mini-dev-api-key` (a resource-level key — authorizes every deployment
-  on that resource, confirmed by a live test call to both `gpt-5.6-terra` and `gpt-5.6-luna`)
+- Endpoint + API key: read from Key Vault via the secret names in the local `.env`
+  (`AOAI_ENDPOINT_SECRET_NAME`/`AOAI_API_KEY_SECRET_NAME` — see `.env.example`; real names/values
+  are local-only, never committed). The key is resource-level — it authorizes every deployment on
+  that resource, confirmed by a live test call to both `gpt-5.6-terra` and `gpt-5.6-luna`.
 - Client pattern (matches `contractAbstraction`'s proven approach): plain `openai` Python SDK,
   `OpenAI(base_url=<endpoint>, api_key=<key>)`, then `client.responses.create(model="gpt-5.6-luna", ...)`.
 - **Improvement over `contractAbstraction`'s existing pattern:** use the Responses API's native

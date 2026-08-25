@@ -4,10 +4,12 @@ see AZURE_OPENAI_PORT_PLAN.md for why these stages moved off Claude Code
 Workflow scripts.
 
 Credentials come from the same Key Vault this project already uses for
-Mpact/CobbleStone creds (config.py's pattern) — no new secrets needed.
-gpt-5.6-terra/luna are deployed on the same resource as gpt-5.2/gpt-5.4-mini,
-so the existing "gpt-5-4-mini-dev-api-key" secret authorizes them too
-(verified live 2026-08-24 — see the port plan's sanity-test section).
+Mpact/CobbleStone creds (config.py's pattern) — secret names come from the
+local .env (AOAI_ENDPOINT_SECRET_NAME/AOAI_API_KEY_SECRET_NAME, see
+.env.example), never hardcoded here. gpt-5.6-terra/luna are deployed on the
+same resource as gpt-5.2/gpt-5.4-mini, so the existing API key secret
+authorizes them too (verified live 2026-08-24 — see the port plan's
+sanity-test section).
 
 DEFAULT_MODEL is gpt-5.6-luna, not terra: a real side-by-side test showed
 terra silently merges distinct clauses together (information loss) while
@@ -24,9 +26,7 @@ from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from openai import OpenAI
 
-# Same lookup config.py uses for _KV_URL — duplicated as a plain constant
-# here rather than importing a private module attribute.
-_KV_URL = os.getenv("AZURE_KEY_VAULT_URL", "https://legaldataproducts-kvault.vault.azure.net/")
+import config
 
 DEFAULT_MODEL = "gpt-5.6-luna"
 # luna is markedly more verbose than terra — 16k truncated a real response
@@ -41,10 +41,18 @@ def get_client() -> OpenAI:
     global _client
     if _client is not None:
         return _client
+    vault_url = config.AZURE_KEY_VAULT_URL  # side effect: loads the repo-root .env if not already loaded
+    endpoint_secret = os.getenv("AOAI_ENDPOINT_SECRET_NAME")
+    key_secret = os.getenv("AOAI_API_KEY_SECRET_NAME")
+    if not endpoint_secret or not key_secret:
+        raise RuntimeError(
+            "AOAI_ENDPOINT_SECRET_NAME / AOAI_API_KEY_SECRET_NAME not set — copy .env.example to "
+            ".env and fill in the Key Vault secret names for the Azure OpenAI endpoint/API key."
+        )
     cred = DefaultAzureCredential()
-    kv = SecretClient(vault_url=_KV_URL, credential=cred)
-    endpoint = kv.get_secret("AOAI-dev-endpoint").value
-    key = kv.get_secret("gpt-5-4-mini-dev-api-key").value
+    kv = SecretClient(vault_url=vault_url, credential=cred)
+    endpoint = kv.get_secret(endpoint_secret).value
+    key = kv.get_secret(key_secret).value
     _client = OpenAI(base_url=endpoint, api_key=key)
     return _client
 
