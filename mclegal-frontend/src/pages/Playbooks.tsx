@@ -52,6 +52,14 @@ export default function Playbooks() {
     [playbooks, contractType, jurisdiction, sector]
   );
 
+  const hasActiveFilters = contractType !== ALL || jurisdiction !== ALL || sector !== ALL;
+
+  function resetFilters() {
+    setContractType(ALL);
+    setJurisdiction(ALL);
+    setSector(ALL);
+  }
+
   async function handleDownload(p: PlaybookMeta) {
     setDownloadError(null);
     setDownloading(p.id);
@@ -88,10 +96,18 @@ export default function Playbooks() {
 
       {resource.status === "ready" && (
         <>
-          <div className="row" style={{ gap: 10, marginTop: 20, flexWrap: "wrap" }}>
-            <FilterSelect label="Contract type" value={contractType} options={contractTypes} onChange={setContractType} />
-            <FilterSelect label="Jurisdiction" value={jurisdiction} options={jurisdictions} onChange={setJurisdiction} />
-            <FilterSelect label="Business sector" value={sector} options={sectors} onChange={setSector} />
+          <div className="card" style={{ padding: 20, marginTop: 20 }}>
+            <div className="between" style={{ marginBottom: 12 }}>
+              <span className="text-body-xs muted">Filters</span>
+              <button className="btn sm" disabled={!hasActiveFilters} onClick={resetFilters}>
+                Reset filters
+              </button>
+            </div>
+            <div className="grid-4" style={{ gap: 12 }}>
+              <FilterSelect label="Contract type" value={contractType} options={contractTypes} onChange={setContractType} />
+              <FilterSelect label="Jurisdiction" value={jurisdiction} options={jurisdictions} onChange={setJurisdiction} />
+              <FilterSelect label="Business sector" value={sector} options={sectors} onChange={setSector} />
+            </div>
           </div>
 
           {downloadError && (
@@ -134,10 +150,11 @@ function FilterSelect({
   options: string[];
   onChange: (v: string) => void;
 }) {
+  const id = `playbook-filter-${label.toLowerCase().replace(/\s+/g, "-")}`;
   return (
-    <label className="text-body-xs muted" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      {label}
-      <select value={value} onChange={(e) => onChange(e.target.value)}>
+    <div className="field" style={{ marginBottom: 0 }}>
+      <label htmlFor={id}>{label}</label>
+      <select id={id} className="select" value={value} onChange={(e) => onChange(e.target.value)}>
         <option value={ALL}>All</option>
         {options.map((o) => (
           <option key={o} value={o}>
@@ -145,7 +162,7 @@ function FilterSelect({
           </option>
         ))}
       </select>
-    </label>
+    </div>
   );
 }
 
@@ -183,9 +200,13 @@ function PlaybookCard({
             )}
           </div>
           <div className="text-body-xs muted" style={{ marginTop: 4 }}>
-            {playbook.jurisdiction ? `${playbook.jurisdiction} · ` : ""}
-            {(playbook.businessSectors ?? []).join(", ")}
-            {playbook.contractTypes.length ? ` · ${playbook.contractTypes.join(", ")}` : ""}
+            {[
+              playbook.jurisdiction,
+              (playbook.businessSectors ?? []).join(", ") || null,
+              playbook.contractTypes.length ? playbook.contractTypes.join(", ") : null,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
           </div>
         </div>
         <div className="row" style={{ gap: 8 }}>
