@@ -3,8 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/marmon-mark-navy.svg" />
+    <link rel="icon" type="image/png" href="/marmon-mark-blue.png" />
     <title>McLegal</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("mclegal-theme");
+          if (stored === "light" || stored === "dark") {
+            document.documentElement.setAttribute("data-theme", stored);
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

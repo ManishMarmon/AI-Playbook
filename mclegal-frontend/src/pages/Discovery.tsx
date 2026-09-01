@@ -3,6 +3,9 @@ import { useJsonResource } from "../hooks/useJsonResource";
 import { ResourceStatus } from "../components/ResourceStatus";
 import { StatTile } from "../components/StatTile";
 import { Chip, type ChipTone } from "../components/Chip";
+import { SortableTh } from "../components/SortableTh";
+import { nextSort, sortRows, type SortState, type SortValue } from "../lib/tableSort";
+import { PAGE_BODY_HEIGHT } from "../lib/layout";
 
 type CatalogRow = {
   request_id: number;
@@ -26,6 +29,9 @@ type CatalogRow = {
   requestor?: string | null;
 };
 
+// Everything CobbleStone knows about the request that isn't worth its own
+// column. Party A/B used to be columns; they were mostly "—" and cost more
+// width than they returned, so they live here now.
 function requestTooltip(r: CatalogRow): string {
   return [
     r.contract_type && `Contract type: ${r.contract_type}`,
@@ -62,6 +68,33 @@ function detectionMethodLabel(method: string): string {
   return DETECTION_METHOD_LABELS[method] ?? method;
 }
 
+function detectionMethods(r: CatalogRow): string[] {
+  return (r.detection_methods || "").split(";").filter(Boolean);
+}
+
+type SortKey = "request" | "file" | "sector" | "category" | "confidence" | "detected";
+
+// Category sorts by review relevance, not alphabetically: whoever sorts this
+// column wants the redlines gathered at the top, and "Redline" alphabetises
+// below both "Draft/Negotiation Copy" and "Likely Executed/Signed".
+const CATEGORY_RANK: Record<CatalogRow["category"], number> = {
+  Redline: 0,
+  "Draft/Negotiation Copy": 1,
+  "Likely Executed/Signed": 2,
+  "Unclassified/Supporting": 3,
+};
+
+const SORT_VALUES: Record<SortKey, (r: CatalogRow) => SortValue> = {
+  request: (r) => r.request_title || `Request ${r.request_id}`,
+  file: (r) => r.file_name,
+  sector: (r) => r.business_sector,
+  category: (r) => CATEGORY_RANK[r.category] ?? 9,
+  confidence: (r) => r.confidence,
+  // The joined labels, so sorting groups files that were detected the same way
+  // — the reason to sort this column at all.
+  detected: (r) => detectionMethods(r).map(detectionMethodLabel).join(", "),
+};
+
 const PAGE_SIZE = 25;
 
 function isCatalogRows(data: unknown): data is CatalogRow[] {
@@ -72,6 +105,7 @@ export default function Discovery({ search }: { search: string }) {
   const resource = useJsonResource<CatalogRow[]>("/data/redline_catalog.json", isCatalogRows);
   const [showAll, setShowAll] = useState(false);
   const [page, setPage] = useState(0);
+  const [sort, setSort] = useState<SortState<SortKey>>(null);
 
   const rows = resource.status === "ready" ? resource.data : [];
 
@@ -94,18 +128,23 @@ export default function Discovery({ search }: { search: string }) {
     );
   }, [rows, showAll, search]);
 
+  const ordered = useMemo(
+    () => sortRows(filtered, sort, SORT_VALUES, (r) => r.request_id),
+    [filtered, sort]
+  );
+
   useEffect(() => {
     setPage(0);
-  }, [showAll, search]);
+  }, [showAll, search, sort]);
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const visible = filtered.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const pageCount = Math.max(1, Math.ceil(ordered.length / PAGE_SIZE));
+  const visible = ordered.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const onSort = (key: SortKey) => setSort((s) => nextSort(s, key));
 
   return (
-    <div>
-      <div className="eyebrow">McLegal · Phase 1-3 PoC</div>
+    <div style={{ display: "flex", flexDirection: "column", height: PAGE_BODY_HEIGHT }}>
       <h1>Redline Discovery</h1>
-      <p className="muted" style={{ marginTop: 6 }}>
+      <p className="muted page-subtitle" style={{ marginTop: 6 }}>
         Filename + text-signal classification over CobbleStone requests, escalating to a real
         Word track-changes / PDF-annotation check on the downloaded file when the heuristic can't decide.
       </p>
@@ -121,15 +160,15 @@ export default function Discovery({ search }: { search: string }) {
       )}
 
       {resource.status === "ready" && (
-        <>
-          <div className="grid-4" style={{ marginTop: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+          <div className="grid-4" style={{ marginTop: 16, flex: "none" }}>
             <StatTile label="Requests Scanned" value={stats.requests} />
             <StatTile label="Attachments Found" value={stats.attachments} />
             <StatTile label="Potential Redlines" value={stats.redlines} />
             <StatTile label="High Confidence (≥50)" value={stats.highConfidence} />
           </div>
 
-          <div className="between" style={{ marginTop: 28, marginBottom: 12 }}>
+          <div className="between" style={{ marginTop: 16, marginBottom: 10, flex: "none" }}>
             <h3>Files</h3>
             <div className="toggle-group" role="tablist" aria-label="File filter">
               <button
@@ -151,19 +190,32 @@ export default function Discovery({ search }: { search: string }) {
             </div>
           </div>
 
-          <div className="card" style={{ overflow: "hidden" }}>
-            <div style={{ overflowX: "auto" }}>
-              <table className="data-table">
+          <div
+            className="card"
+            style={{ overflow: "hidden", flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}
+          >
+            <div style={{ overflow: "auto", flex: 1, minHeight: 0 }}>
+              {/* Explicit widths, required by `table-layout: fixed` — see the
+                  .data-table.fixed note in index.css. Percentages so the table
+                  fills a wide window, plus a min-width so a narrow one scrolls
+                  sideways rather than squeezing six columns into nothing. */}
+              <table className="data-table fixed" style={{ minWidth: 1120 }}>
+                <colgroup>
+                  <col style={{ width: "22%" }} />
+                  <col style={{ width: "24%" }} />
+                  <col style={{ width: "12%" }} />
+                  <col style={{ width: "14%" }} />
+                  <col style={{ width: "7%" }} />
+                  <col style={{ width: "21%" }} />
+                </colgroup>
                 <thead>
                   <tr>
-                    <th>Request</th>
-                    <th>File</th>
-                    <th>Business Sector</th>
-                    <th>Party B</th>
-                    <th>Category</th>
-                    <th>Confidence</th>
-                    <th>Detected Via</th>
-                    <th>Signals</th>
+                    <SortableTh label="Request" sortKey="request" sort={sort} onSort={onSort} />
+                    <SortableTh label="File" sortKey="file" sort={sort} onSort={onSort} />
+                    <SortableTh label="Sector" sortKey="sector" sort={sort} onSort={onSort} />
+                    <SortableTh label="Category" sortKey="category" sort={sort} onSort={onSort} />
+                    <SortableTh label="Conf." sortKey="confidence" sort={sort} onSort={onSort} />
+                    <SortableTh label="Detected Via" sortKey="detected" sort={sort} onSort={onSort} />
                   </tr>
                 </thead>
                 <tbody>
@@ -173,38 +225,28 @@ export default function Discovery({ search }: { search: string }) {
                         <div className="text-body">{r.request_title || `Request ${r.request_id}`}</div>
                         <div className="text-body-xs muted">#{r.request_id}</div>
                       </td>
-                      <td className="text-body-sm" style={{ maxWidth: 280, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={r.file_name}>
+                      <td className="text-body-sm" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={r.file_name}>
                         {r.file_name}
                       </td>
                       <td className="text-body-sm">{r.business_sector || "—"}</td>
-                      <td
-                        className="text-body-sm"
-                        style={{ maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                        title={r.party_b || ""}
-                      >
-                        {r.party_b || "—"}
-                      </td>
                       <td>
                         <Chip tone={CHIP_TONE[r.category]}>{r.category}</Chip>
                       </td>
                       <td className="text-body-sm">{r.confidence}</td>
-                      <td className="text-body-xs" style={{ maxWidth: 200 }}>
+                      {/* The raw `signals` string used to be its own column: a
+                          truncated semicolon-delimited dump of the same
+                          detection run these chips label. It's kept as the
+                          tooltip here so nothing is lost. */}
+                      <td className="text-body-xs" title={r.signals || undefined}>
                         {r.detection_methods ? (
                           <div className="row" style={{ gap: 4, flexWrap: "wrap" }}>
-                            {r.detection_methods.split(";").filter(Boolean).map((m) => (
+                            {detectionMethods(r).map((m) => (
                               <Chip key={m}>{detectionMethodLabel(m)}</Chip>
                             ))}
                           </div>
                         ) : (
                           <span className="muted">—</span>
                         )}
-                      </td>
-                      <td
-                        className="text-body-xs muted"
-                        style={{ maxWidth: 320, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                        title={r.signals}
-                      >
-                        {r.signals}
                       </td>
                     </tr>
                   ))}
@@ -218,10 +260,10 @@ export default function Discovery({ search }: { search: string }) {
             )}
           </div>
 
-          {filtered.length > PAGE_SIZE && (
-            <div className="between" style={{ marginTop: 12 }}>
+          {ordered.length > PAGE_SIZE && (
+            <div className="between" style={{ marginTop: 8, flex: "none" }}>
               <div className="text-body-xs muted">
-                Page {page + 1} of {pageCount} ({filtered.length.toLocaleString()} files)
+                Page {page + 1} of {pageCount} ({ordered.length.toLocaleString()} files)
               </div>
               <div className="row">
                 <button className="btn sm" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
@@ -233,7 +275,7 @@ export default function Discovery({ search }: { search: string }) {
               </div>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

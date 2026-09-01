@@ -4,6 +4,7 @@ import { useJsonResource } from "../hooks/useJsonResource";
 import { ResourceStatus } from "../components/ResourceStatus";
 import { StatTile } from "../components/StatTile";
 import { Chip, type ChipTone } from "../components/Chip";
+import { buildMpactUrl } from "../lib/mpact";
 
 type Verification = { accurate: boolean; issue: string; corrected_clause_name?: string };
 
@@ -21,6 +22,16 @@ type Finding = {
   negotiation_intent: string;
   significance: "high" | "medium" | "low" | "noise";
   verification?: Verification;
+  // Provenance (see redline_discovery/provenance.py): which two document
+  // versions this finding was derived from, and whose edits they were. Absent
+  // on findings produced before provenance tracking existed.
+  comparison_basis?: string | null;
+  comparison_basis_label?: string | null;
+  position_side?: string | null;
+  position_label?: string | null;
+  edit_authors?: string[];
+  author_side_summary?: string | null;
+  sequence_confidence?: string | null;
 };
 
 type ClauseFindingsData = {
@@ -31,6 +42,19 @@ type ClauseFindingsData = {
   requestsTotal: number;
   generatedAt?: string;
 };
+
+// Green only for a position attributable to Marmon; red for the
+// counterparty's ask, so a reader is never misled about whose position a
+// finding represents.
+function basisTone(f: Finding): ChipTone | undefined {
+  if (f.position_side === "marmon") return "good";
+  if (f.position_side === "counterparty") return "bad";
+  return undefined;
+}
+
+function basisText(f: Finding): string | null {
+  return f.position_label || f.comparison_basis_label || null;
+}
 
 const SIG_TONE: Record<Finding["significance"], ChipTone | undefined> = {
   high: "bad",
@@ -53,12 +77,22 @@ export default function ClauseFindings({ search }: { search: string }) {
   const resource = useJsonResource<ClauseFindingsData>("/data/clause_findings.json", isClauseFindingsData);
   const [tab, setTab] = useState<Tab>("confirmed");
   const [page, setPage] = useState(0);
+  // Whose position a finding represents — Jeff (2026-08-31) wants a reader to
+  // be able to separate Marmon's pre-compromise asks from the counterparty's.
+  const [side, setSide] = useState("");
 
   const data = resource.status === "ready" ? resource.data : null;
+  // Older findings files carry no provenance; hiding the filter then avoids
+  // offering a control that would silently match nothing.
+  const hasProvenance = useMemo(
+    () => !!data && [...data.confirmed, ...data.flagged].some((f) => f.position_side || f.comparison_basis),
+    [data]
+  );
 
   const visible = useMemo(() => {
     if (!data) return [];
-    const base = tab === "confirmed" ? data.confirmed : data.flagged;
+    let base = tab === "confirmed" ? data.confirmed : data.flagged;
+    if (side) base = base.filter((f) => (f.position_side || "unknown") === side);
     const term = search.trim().toLowerCase();
     if (!term) return base;
     return base.filter(
@@ -67,20 +101,19 @@ export default function ClauseFindings({ search }: { search: string }) {
         f.vendor?.toLowerCase().includes(term) ||
         f.request_title?.toLowerCase().includes(term)
     );
-  }, [data, tab, search]);
+  }, [data, tab, side, search]);
 
   useEffect(() => {
     setPage(0);
-  }, [tab, search]);
+  }, [tab, side, search]);
 
   const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
   const pageItems = visible.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
 
   return (
     <div>
-      <div className="eyebrow">McLegal · Phase 4-5</div>
       <h1>Clause Findings</h1>
-      <p className="muted" style={{ marginTop: 6 }}>
+      <p className="muted page-subtitle" style={{ marginTop: 6 }}>
         Raw diff fragments merged into clause-level edits by an AI pass, then adversarially
         checked by a second, independent AI pass against the original source text.
         <strong> Flagged findings are not discarded</strong> — the checker caught real
@@ -108,23 +141,39 @@ export default function ClauseFindings({ search }: { search: string }) {
 
           <div className="between" style={{ marginTop: 28, marginBottom: 12 }}>
             <h3>Findings</h3>
-            <div className="toggle-group" role="tablist" aria-label="Finding filter">
-              <button
-                role="tab"
-                aria-selected={tab === "confirmed"}
-                className={tab === "confirmed" ? "active" : ""}
-                onClick={() => setTab("confirmed")}
-              >
-                Confirmed ({data.confirmed.length})
-              </button>
-              <button
-                role="tab"
-                aria-selected={tab === "flagged"}
-                className={tab === "flagged" ? "active" : ""}
-                onClick={() => setTab("flagged")}
-              >
-                Flagged ({data.flagged.length})
-              </button>
+            <div className="row" style={{ gap: 10 }}>
+              {hasProvenance && (
+                <select
+                  className="select"
+                  style={{ width: "auto" }}
+                  value={side}
+                  onChange={(e) => setSide(e.target.value)}
+                  aria-label="Filter by whose position the finding represents"
+                >
+                  <option value="">All positions</option>
+                  <option value="marmon">Marmon preferred position</option>
+                  <option value="counterparty">Counterparty position</option>
+                  <option value="unknown">Side unconfirmed</option>
+                </select>
+              )}
+              <div className="toggle-group" role="tablist" aria-label="Finding filter">
+                <button
+                  role="tab"
+                  aria-selected={tab === "confirmed"}
+                  className={tab === "confirmed" ? "active" : ""}
+                  onClick={() => setTab("confirmed")}
+                >
+                  Confirmed ({data.confirmed.length})
+                </button>
+                <button
+                  role="tab"
+                  aria-selected={tab === "flagged"}
+                  className={tab === "flagged" ? "active" : ""}
+                  onClick={() => setTab("flagged")}
+                >
+                  Flagged ({data.flagged.length})
+                </button>
+              </div>
             </div>
           </div>
 
@@ -168,6 +217,7 @@ function FindingCard({ f }: { f: Finding }) {
         <div className="row">
           <Chip tone={SIG_TONE[f.significance]}>{f.significance}</Chip>
           <Chip tone="info">{f.clause_name}</Chip>
+          {basisText(f) && <Chip tone={basisTone(f)}>{basisText(f)}</Chip>}
         </div>
         <div className="row">
           {isFlagged ? (
@@ -183,9 +233,29 @@ function FindingCard({ f }: { f: Finding }) {
       </div>
 
       <div className="text-body-xs muted" style={{ marginTop: 8 }}>
-        Request #{f.request_id} {f.request_title ? `· ${f.request_title}` : ""}
+        {(() => {
+          const mpactUrl = buildMpactUrl(f.request_id);
+          return mpactUrl ? (
+            <a href={mpactUrl} target="_blank" rel="noopener noreferrer" title="Open this request in mpact">
+              Request #{f.request_id} ↗
+            </a>
+          ) : (
+            <>Request #{f.request_id}</>
+          );
+        })()}
+        {f.request_title ? ` · ${f.request_title}` : ""}
         {f.location ? ` · ${f.location}` : ""}
       </div>
+
+      {/* Who actually made these edits — the per-finding authorship the
+          tracked-change markup recorded, which is what makes the position
+          attributable to one side rather than assumed. */}
+      {f.edit_authors && f.edit_authors.some((a) => a !== "unattributed") && (
+        <div className="text-body-xs muted" style={{ marginTop: 2 }}>
+          Edited by {f.edit_authors.filter((a) => a !== "unattributed").join(", ")}
+          {f.author_side_summary ? ` — ${f.author_side_summary}` : ""}
+        </div>
+      )}
 
       <div className="divider" />
 

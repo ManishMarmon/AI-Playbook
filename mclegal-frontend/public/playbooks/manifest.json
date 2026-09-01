@@ -38,7 +38,7 @@
   },
   {
     "id": "nda-usa",
-    "label": "US NDA",
+    "label": "US NDA (superseded by US Mutual NDA \u2014 kept for comparison)",
     "jurisdiction": "United States",
     "status": "ai_draft",
     "contractTypes": [
@@ -46,6 +46,240 @@
     ],
     "businessSectors": [],
     "file": "nda-usa.json",
-    "suggestedRulesFile": "nda-usa-suggested.json"
+    "suggestedRulesFile": "nda-usa-suggested.json",
+    "variant": "Any / undifferentiated (superseded)"
+  },
+  {
+    "id": "nda-usa-mutual",
+    "label": "US Mutual NDA",
+    "jurisdiction": "United States",
+    "status": "ai_draft",
+    "contractTypes": [
+      "NDA"
+    ],
+    "businessSectors": [],
+    "file": "nda-usa-mutual.json",
+    "variant": "Mutual",
+    "suggestedRulesFile": "nda-usa-mutual-suggested.json",
+    "methodology": {
+      "sample": {
+        "scope": {
+          "request_type": "NDA",
+          "geography": "U.S.",
+          "selection": "all classified mutual",
+          "top": null
+        },
+        "funnel": [
+          {
+            "label": "requests of this type and jurisdiction in CobbleStone",
+            "count": 3026
+          },
+          {
+            "label": "with at least one Word (.docx) document",
+            "count": 2462
+          },
+          {
+            "label": "scanned for Word tracked changes",
+            "count": 2462
+          },
+          {
+            "label": "with at least one tracked-changes redline",
+            "count": 2219
+          },
+          {
+            "label": "classified as mutual by the directionality classifier",
+            "count": 1816
+          },
+          {
+            "label": "analysed in this playbook",
+            "count": 1816
+          }
+        ],
+        "subsetSize": 1816,
+        "dateRange": "23 Nov 2020 - 28 Aug 2026",
+        "editYears": [
+          {
+            "label": "2025",
+            "count": 455
+          },
+          {
+            "label": "2024",
+            "count": 339
+          },
+          {
+            "label": "2026",
+            "count": 301
+          },
+          {
+            "label": "2023",
+            "count": 279
+          },
+          {
+            "label": "2022",
+            "count": 231
+          },
+          {
+            "label": "2021",
+            "count": 159
+          },
+          {
+            "label": "2020",
+            "count": 8
+          }
+        ],
+        "byYear": {
+          "2020": 6,
+          "2021": 163,
+          "2022": 236,
+          "2023": 294,
+          "2024": 344,
+          "2025": 466,
+          "2026": 307
+        }
+      },
+      "comparisonBasis": [
+        {
+          "label": "Preferred position",
+          "count": 1811
+        },
+        {
+          "label": "Accepted baseline",
+          "count": 4
+        },
+        {
+          "label": "Agreed outcome",
+          "count": 1
+        }
+      ],
+      "positionSides": [
+        {
+          "label": "Marmon preferred position",
+          "count": 18073
+        },
+        {
+          "label": "Redline position (side unconfirmed)",
+          "count": 2905
+        },
+        {
+          "label": "Counterparty position",
+          "count": 214
+        }
+      ],
+      "verification": {
+        "requestsTagged": 1812,
+        "requestsTotal": 1812,
+        "confirmed": 18396,
+        "flagged": 2796,
+        "verifyFailed": 0
+      },
+      "evidenceThresholdPct": 15.0,
+      "models": {},
+      "caveats": [
+        "Every one of the 2,219 requests carrying a Word redline has been classified as mutual or one-way, and all 1,816 mutual ones are included here. This is the complete population of US mutual NDAs with a negotiated redline, not a sample of it.",
+        "1 of 1816 contracts had no usable redline markup, so their rules were derived by comparing the initial draft with the final executed version. Those blend both parties' edits and are labelled an agreed outcome, not a Marmon preferred position.",
+        "For 24 contract(s) the first redline contained only formatting changes, so a later round was used. Those edits show that party's position at that round of negotiation, which may already reflect some compromise, rather than its opening ask.",
+        "2905 finding(s) could not be attributed to one side \u2014 either both parties edited the same passage, or Word's privacy settings stripped the author name. Those are labelled \"side unconfirmed\" rather than assumed to be ours.",
+        "10 of the 1812 contracts analysed produced no finding of high or medium significance \u2014 their tracked changes were minor or administrative \u2014 so the rules rest on 1802 contracts' evidence rather than all 1812."
+      ]
+    }
+  },
+  {
+    "id": "nda-usa-mutual-100",
+    "label": "US Mutual NDA (100-contract sample, superseded)",
+    "jurisdiction": "United States",
+    "status": "ai_draft",
+    "contractTypes": [
+      "NDA"
+    ],
+    "businessSectors": [],
+    "file": "nda-usa-mutual-100.json",
+    "variant": "Mutual (100-contract sample, superseded)",
+    "suggestedRulesFile": "nda-usa-mutual-100-suggested.json",
+    "methodology": {
+      "sample": {
+        "scope": {
+          "request_type": "NDA",
+          "geography": "U.S.",
+          "top": 100
+        },
+        "funnel": [
+          {
+            "label": "requests of this type and jurisdiction in CobbleStone",
+            "count": 3026
+          },
+          {
+            "label": "with at least one Word (.docx) document",
+            "count": 2462
+          },
+          {
+            "label": "scanned for Word tracked changes",
+            "count": 2462
+          },
+          {
+            "label": "with at least one tracked-changes redline",
+            "count": 2219
+          },
+          {
+            "label": "classified as mutual by the directionality classifier",
+            "count": 200
+          },
+          {
+            "label": "analysed in this playbook",
+            "count": 100
+          }
+        ],
+        "subsetSize": 100,
+        "dateRange": "27 Mar 2025 - 28 Aug 2026",
+        "editYears": [
+          {
+            "label": "2026",
+            "count": 98
+          },
+          {
+            "label": "2025",
+            "count": 1
+          }
+        ],
+        "byYear": {
+          "2026": 100
+        }
+      },
+      "comparisonBasis": [
+        {
+          "label": "Preferred position",
+          "count": 100
+        }
+      ],
+      "positionSides": [
+        {
+          "label": "Marmon preferred position",
+          "count": 1081
+        },
+        {
+          "label": "Redline position (side unconfirmed)",
+          "count": 157
+        },
+        {
+          "label": "Counterparty position",
+          "count": 20
+        }
+      ],
+      "verification": {
+        "requestsTagged": 100,
+        "requestsTotal": 100,
+        "confirmed": 1043,
+        "flagged": 215,
+        "verifyFailed": 0
+      },
+      "evidenceThresholdPct": 15.0,
+      "models": {},
+      "caveats": [
+        "Directionality (mutual vs one-way) has been classified for 230 of the 2,219 requests that carry a Word redline; 1,989 are not yet classified. The sample is therefore the most recent contracts among the 200 confirmed mutual ones, not the most recent of all mutual NDAs that exist. Classification is ongoing and the sample can be widened without redoing any of this analysis.",
+        "Every one of the 100 contracts analysed had usable tracked-change markup, so no rule here rests on an initial-versus-final comparison. Each rule's edits are attributable to one party's markup in one round of negotiation.",
+        "For 3 contract(s) the first redline contained only formatting changes, so a later round was used. Those edits show that party's position at that round of negotiation, which may already reflect some compromise, rather than its opening ask.",
+        "157 finding(s) could not be attributed to one side \u2014 either both parties edited the same passage, or Word's privacy settings stripped the author name. Those are labelled \"side unconfirmed\" rather than assumed to be ours.",
+        "2 of the 100 contracts analysed produced no finding of high or medium significance \u2014 their tracked changes were minor or administrative \u2014 so the rules rest on 98 contracts' evidence rather than all 100 (requests 20176, 20178)."
+      ]
+    }
   }
 ]

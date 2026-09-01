@@ -57,6 +57,23 @@ def validate() -> list[str]:
             if rule["priority"] not in VALID_PRIORITIES:
                 errors.append(f"{playbook_id}/{rule_id} ({source_label}): priority {rule['priority']!r} not in {VALID_PRIORITIES}")
 
+            # A rule with a comparison basis but no position side has lost its
+            # attribution somewhere between synthesis and here. This is a real
+            # regression that shipped: finalize_playbook.py's carry-through list
+            # omitted the position_* fields, so a playbook whose synthesis found
+            # 14 of 19 rules Marmon-attributable was written with none, the Word
+            # document showed no side, and the reviewer hand-off asked counsel to
+            # confirm all 19 as "side could not be confirmed". Nothing else
+            # errored — the document just quietly said less than the data knew.
+            # Rules that predate provenance carry neither field and are ignored.
+            if rule.get("comparison_basis") and not rule.get("position_side"):
+                errors.append(
+                    f"{playbook_id}/{rule_id} ({source_label}): has comparison_basis "
+                    f"{rule['comparison_basis']!r} but no position_side — the side attribution was "
+                    f"dropped between synthesis and the playbook file. Check "
+                    f"finalize_playbook.py's carry-through field list."
+                )
+
             # The exact regression this validator exists to catch: a playbook
             # declaring more than one contract type needs contractAssembly.ts's
             # selectRules() to exact-match applies_to against one of them —

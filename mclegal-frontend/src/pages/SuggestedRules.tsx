@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { AlertTriangle, Lightbulb } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 import { useJsonResource } from "../hooks/useJsonResource";
 import { ResourceStatus } from "../components/ResourceStatus";
 import { Chip, type ChipTone } from "../components/Chip";
 import { isPlaybookManifest, type PlaybookMeta } from "../lib/playbooks";
-import { isUnvetted, NO_LANGUAGE_TEXT, type PlaybookRule } from "../lib/renderPlaybookDocx";
+import { NO_LANGUAGE_TEXT, type PlaybookRule } from "../lib/renderPlaybookDocx";
 
 const PRIORITY_TONE: Record<string, ChipTone | undefined> = {
   "MUST PRESS": "bad",
@@ -20,9 +20,8 @@ export default function SuggestedRules() {
 
   return (
     <div>
-      <div className="eyebrow">McLegal · Golden Rules Playbooks</div>
       <h1>Suggested Rules</h1>
-      <p className="muted" style={{ marginTop: 6 }}>
+      <p className="muted page-subtitle" style={{ marginTop: 6 }}>
         Rule candidates synthesis found real support for — 2 or more confirmed negotiation
         findings — but that fell short of the evidence bar required to join a playbook's main
         rule set (currently 15% of the sample the playbook was synthesized from). Nothing here has
@@ -103,7 +102,6 @@ function SuggestedRulesCard({ entry }: { entry: PlaybookMeta }) {
 }
 
 function SuggestedRuleRow({ rule }: { rule: PlaybookRule }) {
-  const unvetted = isUnvetted(rule.source_tag);
   return (
     <div style={{ paddingLeft: 12, borderLeft: "2px solid var(--border)" }}>
       <div className="row" style={{ gap: 8 }}>
@@ -116,11 +114,6 @@ function SuggestedRuleRow({ rule }: { rule: PlaybookRule }) {
             {" · "}
             {rule.evidence_pct}% of sample
           </Chip>
-        )}
-        {unvetted && (
-          <span className="row text-body-xs" style={{ color: "var(--bad)" }}>
-            <AlertTriangle size={12} /> Unvetted draft
-          </span>
         )}
       </div>
       <div className="text-body-sm" style={{ fontWeight: 600, marginTop: 4 }}>

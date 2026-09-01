@@ -24,14 +24,51 @@ import time
 
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-from openai import OpenAI
+from openai import (
+    OpenAI,
+    APIConnectionError,
+    APIStatusError,
+    APITimeoutError,
+    InternalServerError,
+    RateLimitError,
+)
 
 import config
 
 DEFAULT_MODEL = "gpt-5.6-luna"
+
+# Retried on: these are all "try again", never "the request was wrong".
+# Matched on TYPE, not on the message text. A substring check missed
+# APIConnectionError entirely — its str() is just "Connection error.", which
+# contains none of the words a text match looks for — so a momentary DNS or VPN
+# blip raised straight out of the retry loop and killed a 95-request tagging run
+# outright (2026-08-31). APITimeoutError subclasses APIConnectionError.
+_TRANSIENT_EXCEPTIONS = (APIConnectionError, APITimeoutError, RateLimitError, InternalServerError)
+# Retryable HTTP statuses for anything the SDK surfaces as a generic
+# APIStatusError rather than one of the classes above.
+_TRANSIENT_STATUS_CODES = frozenset({408, 409, 429, 500, 502, 503, 504})
+
+
+def _is_transient(exc: Exception) -> bool:
+    if isinstance(exc, _TRANSIENT_EXCEPTIONS):
+        return True
+    if isinstance(exc, APIStatusError):
+        return getattr(exc, "status_code", None) in _TRANSIENT_STATUS_CODES
+    # Last-resort text match, kept for error types the SDK may wrap opaquely.
+    return any(s in str(exc).lower() for s in
+               ("rate limit", "429", "timeout", "temporarily", "503", "502", "500"))
 # luna is markedly more verbose than terra — 16k truncated a real response
 # mid-JSON in testing, 30k was sufficient. Generous on purpose.
-DEFAULT_MAX_OUTPUT_TOKENS = 30000
+#
+# Raised 30k -> 45k on 2026-09-01. Measured over the 100-request US mutual NDA
+# run, tag calls output a median 11,093 tokens and a maximum of 19,422 against
+# the 30k cap — comfortable there, but that run capped diff chunks at 250 edits
+# and the whole-population run allows 500 (provenance_diff.MAX_REDLINE_EDITS).
+# A chunk with twice the edits yields proportionally more findings, so the
+# largest requests would have crept up on the ceiling, and a response truncated
+# mid-JSON raises StructuredCallFailed and costs that request its whole result.
+# An unused cap costs nothing, so the headroom is free insurance.
+DEFAULT_MAX_OUTPUT_TOKENS = 45000
 DEFAULT_REASONING_EFFORT = "high"
 
 _client = None
@@ -64,6 +101,12 @@ class StructuredCallFailed(Exception):
     clause_tagging_workflow.js)."""
 
 
+class NonRetryableCallFailed(StructuredCallFailed):
+    """A failure that the same prompt will reproduce exactly — retrying it can
+    only burn the same tokens again. Subclasses StructuredCallFailed so every
+    existing `except StructuredCallFailed` handler still catches it."""
+
+
 _usage_lock = threading.Lock()
 _usage_lock_totals = {"calls": 0, "input_tokens": 0, "output_tokens": 0, "reasoning_tokens": 0,
                        "cached_tokens": 0, "wall_seconds": 0.0}
@@ -86,7 +129,7 @@ def call_structured(prompt: str, schema: dict, schema_name: str, *,
                      model: str = DEFAULT_MODEL,
                      max_output_tokens: int = DEFAULT_MAX_OUTPUT_TOKENS,
                      reasoning_effort: str = DEFAULT_REASONING_EFFORT,
-                     max_retries: int = 4,
+                     max_retries: int = 6,
                      call_label: str = "") -> dict:
     """
     One schema-enforced call. Retries with exponential backoff on rate-limit/
@@ -113,20 +156,45 @@ def call_structured(prompt: str, schema: dict, schema_name: str, *,
             )
             elapsed = time.time() - t0
             _record_usage(resp, model, call_label, attempt, elapsed, "ok" if not getattr(resp, "incomplete_details", None) else "incomplete")
-            if getattr(resp, "incomplete_details", None):
-                raise StructuredCallFailed(f"Response incomplete: {resp.incomplete_details}")
+            incomplete = getattr(resp, "incomplete_details", None)
+            if incomplete:
+                usage = getattr(resp, "usage", None)
+                got_in = getattr(usage, "input_tokens", None) if usage else None
+                got_out = getattr(usage, "output_tokens", None) if usage else None
+                detail = (f"Response incomplete: {incomplete} "
+                          f"(input={got_in}, output={got_out}, cap={max_output_tokens})")
+                # An output-cap overflow is DETERMINISTIC: the same prompt truncates
+                # at the same place every time, so retrying it is pure waste. The
+                # 2026-09-01 population cluster call proved the cost — 6 identical
+                # attempts at 915,933 input tokens each, 5.5M tokens spent to learn
+                # nothing, and the log gave no hint why because the reported output
+                # (5,927) sat far below the 45,000 cap. It sat there because the
+                # service clamps the output allowance to the context left over after
+                # the input; the real problem was always an oversized prompt. Fail
+                # fast and say so, so the next person reads the cause off the error.
+                if getattr(incomplete, "reason", None) == "max_output_tokens":
+                    if got_in and got_out and got_out < max_output_tokens * 0.9:
+                        detail += ("\n  The output stopped well short of the cap, which means the "
+                                   "INPUT is what left no room — shrink the prompt rather than "
+                                   "raising max_output_tokens.")
+                    raise NonRetryableCallFailed(detail)
+                raise StructuredCallFailed(detail)
             return json.loads(resp.output_text)
+        except NonRetryableCallFailed:
+            raise
         except (StructuredCallFailed, json.JSONDecodeError) as e:
             last_error = e
         except Exception as e:  # noqa: BLE001 - SDK raises various transient error types
             elapsed = time.time() - t0
             _record_usage(None, model, call_label, attempt, elapsed, f"error:{type(e).__name__}")
             last_error = e
-            transient = any(s in str(e).lower() for s in ("rate limit", "429", "timeout", "503", "502", "500"))
-            if not transient:
+            if not _is_transient(e):
                 raise
         if attempt < max_retries - 1:
-            sleep_s = min(2 ** attempt * 2, 30)
+            # Capped at 60s rather than 30s: a network/DNS outage lasts longer
+            # than a rate-limit burst, and with 6 attempts this rides out about
+            # three minutes of downtime instead of fourteen seconds.
+            sleep_s = min(2 ** attempt * 2, 60)
             time.sleep(sleep_s)
     raise StructuredCallFailed(f"Exhausted {max_retries} attempts: {last_error}")
 

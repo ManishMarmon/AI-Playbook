@@ -28,6 +28,23 @@ def main():
     result = data["result"]
     confirmed = result["confirmed"]
 
+    # Order check: annotate_finding_sides.py must run BEFORE this step, because
+    # this array is what synthesis clusters and rolls up. Extract first and every
+    # rule silently loses its position side — the playbook would still generate,
+    # and every rule would read "side unconfirmed" instead of naming Marmon as
+    # the author. Findings carrying a comparison_basis but no position_side are
+    # the exact signature of that mistake, so it is reported loudly rather than
+    # quietly degrading the output.
+    with_basis = [f for f in confirmed if f.get("comparison_basis")]
+    missing_side = [f for f in with_basis if not f.get("position_side")]
+    if with_basis and missing_side:
+        print(f"  WARNING: {len(missing_side)} of {len(with_basis)} findings have a "
+              f"comparison_basis but no position_side — annotate_finding_sides.py has "
+              f"probably not been run on this payload yet. Synthesis would label every "
+              f"affected rule 'side unconfirmed' instead of attributing it. Run:\n"
+              f"    python annotate_finding_sides.py --findings {args.raw}\n"
+              f"  then re-run this step.")
+
     Path(args.out).write_text(json.dumps(confirmed, indent=2), encoding="utf-8")
 
     print(f"Requests processed: {result['requestsProcessed']}/{result['requestsTotal']}"

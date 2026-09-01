@@ -14,6 +14,13 @@ Output shape matches what a saved clause_tagging_workflow.js task result
 looks like ({"result": {confirmed, flagged, lowOrNoiseCount, ...}}), so
 extract_confirmed_findings.py works against this script's output unchanged.
 
+Every request's result is committed to Postgres (clause_tagging_results) the
+moment that request finishes, and a re-run reuses what is already stored. This
+is not an optimisation: the previous version held all results in memory and
+wrote one file at the end, so a DNS blip 95 requests into a 97-request run
+destroyed the entire run's LLM work. A crash now costs only the requests
+in flight. Re-running the same command resumes; --retag forces fresh work.
+
 Usage (--chunk-dir is namespaced per population by run_pairing.py — see its
 own _population_tag/"Population tag for this run's outputs" printout for the
 exact directory name a given run produced):
@@ -25,19 +32,36 @@ exact directory name a given run produced):
 """
 
 import argparse
+import hashlib
 import json
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+import db
 import llm_azure
+import provenance
 from llm_azure import call_structured, StructuredCallFailed
 from cost_log import append_cost_log_entry
 
-# Max concurrent Azure calls — balances throughput against the deployment's
-# per-minute rate limit. Not yet tuned against a confirmed quota number (see
-# port plan's open question #2) — conservative until that's known.
-MAX_WORKERS = 6
+# Concurrency, as TWO separate dials because they multiply. The outer pool is
+# how many requests are in flight; each of those opens its own inner pool for
+# that request's verify calls, so peak concurrent Azure calls is roughly
+# REQUEST_WORKERS x VERIFY_WORKERS. Both were one shared constant of 6, which
+# meant raising throughput also multiplied the burst — the two were impossible
+# to tune independently.
+#
+# Measured 2026-09-01 on the 100-request US mutual NDA run: 1,358 calls at
+# 6 x 6 completed with **zero** 429s or errors of any kind, so the deployment
+# has real headroom. Request throughput is what matters for a ~1,900-request
+# population, so the outer dial is the one raised; the inner stays put to keep
+# per-request bursts the same shape that was proven clean.
+REQUEST_WORKERS = 12
+VERIFY_WORKERS = 6
+# Kept as an alias so nothing that referenced the old name silently changes
+# meaning; the verify pool is the one it always actually bounded.
+MAX_WORKERS = VERIFY_WORKERS
 
 TAG_SCHEMA = {
     "type": "object",
@@ -81,9 +105,35 @@ VERIFY_SCHEMA = {
 }
 
 
-def tag_prompt(chunk_json_text: str) -> str:
-    return f"""Below is one CobbleStone contract negotiation request's diff data, as JSON, with fields: request_title, requestor, vendor, original_file, redline_file, and an "edits" array — raw word-level diff opcodes (type: insert/delete/replace, before, after, context_before, context_after) comparing the ORIGINAL submitted contract file's text against the REDLINED/reviewed copy's text.
+_BASIS_GUIDANCE = {
+    provenance.REDLINE_INTERNAL: (
+        "COMPARISON BASIS: these edits come from the tracked changes inside a single "
+        "redlined Word document — 'before' is the document as it arrived, 'after' is the "
+        "same document with that round's tracked changes applied. The edits are therefore "
+        "ONE SIDE's proposed changes (usually the Marmon-side attorney's), i.e. a "
+        "pre-compromise negotiating position rather than an agreed outcome. Phrase "
+        "negotiation_intent accordingly — 'the redlining party sought to...' — and do NOT "
+        "describe these changes as something both parties agreed to."),
+    provenance.INITIAL_VS_FIRST_REDLINE: (
+        "COMPARISON BASIS: the original submitted document compared against the FIRST "
+        "redline round, so the edits are one side's proposed changes before any "
+        "compromise. Phrase negotiation_intent as a position sought, not an agreement "
+        "reached."),
+    provenance.INITIAL_VS_FINAL: (
+        "COMPARISON BASIS: the original submitted document compared against the FINAL "
+        "EXECUTED version. The edits therefore blend BOTH parties' changes and represent "
+        "the negotiated compromise that was actually signed — not either side's opening "
+        "position. Phrase negotiation_intent accordingly ('the parties settled on...', "
+        "'the executed version reflects...'), and do not attribute a change to one party "
+        "unless the text itself makes that clear."),
+}
 
+
+def tag_prompt(chunk_json_text: str, basis: str | None = None) -> str:
+    basis_note = _BASIS_GUIDANCE.get(basis, "")
+    basis_block = f"\n{basis_note}\n" if basis_note else ""
+    return f"""Below is one CobbleStone contract negotiation request's diff data, as JSON, with fields: request_title, requestor, vendor, original_file, redline_file, and an "edits" array — raw word-level diff opcodes (type: insert/delete/replace, before, after, context_before, context_after) comparing an earlier state of the contract text against a later one.
+{basis_block}
 <<<DIFF_DATA_JSON>>>
 {chunk_json_text}
 <<<END_DIFF_DATA_JSON>>>
@@ -139,8 +189,19 @@ def tag_one_request(rid: int, chunk_dir: Path, meta: dict) -> dict:
     chunk_path = chunk_dir / f"{rid}.json"
     chunk_text = chunk_path.read_text(encoding="utf-8")
 
+    # Provenance travels with the chunk (written by run_provenance_diff.py).
+    # Absent on older run_pairing.py chunks, which stay supported — basis is
+    # simply left unset rather than guessed.
     try:
-        tag_result = call_structured(tag_prompt(chunk_text), TAG_SCHEMA, "tag_findings", call_label=f"tag:{rid}")
+        chunk = json.loads(chunk_text)
+    except json.JSONDecodeError:
+        chunk = {}
+    basis = chunk.get("comparison_basis")
+    chunk_edits = chunk.get("edits") or []
+
+    try:
+        tag_result = call_structured(tag_prompt(chunk_text, basis), TAG_SCHEMA, "tag_findings",
+                                      call_label=f"tag:{rid}")
     except StructuredCallFailed as e:
         print(f"  Request {rid}: tagging call failed after retries ({e}) — marking tagging_failed, "
               f"not silently counting as zero redlines")
@@ -150,12 +211,33 @@ def tag_one_request(rid: int, chunk_dir: Path, meta: dict) -> dict:
     to_verify = [f for f in findings if f["significance"] in ("high", "medium")]
     low_or_noise = [f for f in findings if f["significance"] not in ("high", "medium")]
 
+    def finding_authors(f) -> list:
+        """Authors of the specific edits this finding cites — per-finding
+        attribution, which is stronger than the per-document author list.
+        Indices come from the model, so they're bounds-checked."""
+        names = set()
+        for i in f.get("source_edit_indices") or []:
+            if isinstance(i, int) and 0 <= i < len(chunk_edits):
+                for a in chunk_edits[i].get("authors") or []:
+                    names.add(a)
+        real = sorted(n for n in names if n != "unattributed")
+        return real or ["unattributed"]
+
     def stamp(f):
-        return {**f, "request_id": rid, "vendor": meta.get("vendor"), "request_title": meta.get("request_title")}
+        return {**f, "request_id": rid, "vendor": meta.get("vendor"),
+                "request_title": meta.get("request_title"),
+                # Jeff, 2026-08-31: every generated rule must identify its source
+                # and comparison basis, so an attorney can tell a preferred
+                # starting position from an agreed outcome.
+                "comparison_basis": basis,
+                "comparison_basis_label": provenance.label(basis),
+                "source_files": chunk.get("source_files") or [],
+                "sequence_confidence": chunk.get("sequence_confidence"),
+                "edit_authors": finding_authors(f)}
 
     verified = []
     verification_failed_count = 0
-    with ThreadPoolExecutor(max_workers=min(MAX_WORKERS, max(1, len(to_verify)))) as ex:
+    with ThreadPoolExecutor(max_workers=min(VERIFY_WORKERS, max(1, len(to_verify)))) as ex:
         futures = {ex.submit(call_structured, verify_prompt(chunk_text, f), VERIFY_SCHEMA, "verify_finding",
                               call_label=f"verify:{rid}"): f
                    for f in to_verify}
@@ -180,6 +262,71 @@ def tag_one_request(rid: int, chunk_dir: Path, meta: dict) -> dict:
     }
 
 
+def _chunk_signature(chunk_dir: Path, rid: int) -> str | None:
+    """Hash of the exact diff-chunk input for a request. A resume reuses a
+    stored result only when this still matches, so rebuilding the upstream diff
+    (e.g. after a provenance-basis fix) re-tags the affected requests instead of
+    serving an answer derived from input that no longer exists."""
+    path = chunk_dir / f"{rid}.json"
+    if not path.exists():
+        return None
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _population_tag(chunk_dir: Path) -> str:
+    """`output/diff_chunks__nda-usa-mutual` -> `nda-usa-mutual`, matching the
+    tag run_pairing.py/run_provenance_diff.py namespaced the directory with."""
+    name = chunk_dir.name
+    prefix = "diff_chunks__"
+    return name[len(prefix):] if name.startswith(prefix) else name
+
+
+def plan_run(request_ids: list, stored: dict, signatures: dict, retag: bool = False) -> dict:
+    """Decides, per request, whether a stored result can be reused.
+
+    A stored result is reused ONLY when it succeeded and its input signature
+    still matches. The exclusions are deliberate:
+      - a `tagging_failed` row is a record of a failure, never a cached answer,
+        so it is always retried;
+      - a signature mismatch means the upstream diff was rebuilt and the stored
+        findings describe input that no longer exists, so serving them would be
+        silently wrong.
+
+    A request with no chunk file (signature None) has nothing to tag and is
+    never queued: sending it to the tagger would fail and that failure would
+    overwrite a perfectly good stored result. It is reported instead.
+    """
+    reused, stale, retry_failed, missing_chunk, to_process = [], [], [], [], []
+    for rid in request_ids:
+        prior = None if retag else stored.get(rid)
+        has_chunk = signatures.get(rid) is not None
+
+        if not has_chunk:
+            missing_chunk.append(rid)
+            if prior is not None and not prior.get("tagging_failed"):
+                reused.append(rid)   # the stored result is the only record we have
+            continue
+
+        if prior is None:
+            to_process.append(rid)
+        elif prior.get("tagging_failed"):
+            retry_failed.append(rid)
+            to_process.append(rid)
+        elif prior.get("chunk_signature") != signatures[rid]:
+            stale.append(rid)
+            to_process.append(rid)
+        else:
+            reused.append(rid)
+
+    return {
+        "reused": reused,
+        "stale": stale,
+        "retry_failed": retry_failed,
+        "missing_chunk": missing_chunk,
+        "to_process": to_process,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--chunk-dir", required=True, help="Directory of diff chunk JSON files from run_pairing.py")
@@ -189,35 +336,118 @@ def main():
     parser.add_argument("--request-ids", default=None,
                          help="Comma-separated request ids to process (default: every *.json in --chunk-dir)")
     parser.add_argument("--out", required=True, help="Path to write the raw tagging result to")
+    parser.add_argument("--population-tag", default=None,
+                         help="Namespace for stored results in Postgres (default: derived from --chunk-dir)")
+    parser.add_argument("--retag", action="store_true",
+                         help="Re-tag requests that already have a stored result instead of reusing it")
+    parser.add_argument("--request-workers", type=int, default=REQUEST_WORKERS,
+                         help=f"How many requests to tag concurrently (default {REQUEST_WORKERS}). "
+                              f"Peak concurrent Azure calls is roughly this x {VERIFY_WORKERS} "
+                              f"verify workers, so raise it in steps and watch the usage log for "
+                              f"429s before going further.")
     args = parser.parse_args()
+    request_workers = max(1, args.request_workers)
 
     chunk_dir = Path(args.chunk_dir)
     request_meta = json.loads(Path(args.request_meta).read_text(encoding="utf-8"))
+    population_tag = args.population_tag or _population_tag(chunk_dir)
 
     if args.request_ids:
         request_ids = [int(x) for x in args.request_ids.split(",")]
     else:
         request_ids = sorted(int(p.stem) for p in chunk_dir.glob("*.json"))
 
+    # ── Resume: reuse what Postgres already holds for this population ──
+    # Tagging is the most expensive stage in the pipeline, so a re-run must
+    # never repeat a request it has already answered. A stored result is
+    # reused only when it succeeded AND its input signature still matches.
+    conn = db.get_connection()
+    stored = db.get_clause_tagging(conn, population_tag)
+    signatures = {rid: _chunk_signature(chunk_dir, rid) for rid in request_ids}
+    plan = plan_run(request_ids, stored, signatures, retag=args.retag)
+    reused, stale, retry_failed = plan["reused"], plan["stale"], plan["retry_failed"]
+    to_process = plan["to_process"]
+    results = [stored[rid] for rid in reused]
+
     usage_dir = Path(__file__).parent / "output" / "usage"
     usage_dir.mkdir(parents=True, exist_ok=True)
     usage_log_path = usage_dir / f"clause_tagging_{int(time.time())}.jsonl"
     llm_azure.set_usage_log_path(usage_log_path)
 
-    print(f"Tagging {len(request_ids)} requests via Azure OpenAI (model={llm_azure.DEFAULT_MODEL})...")
+    print(f"Population '{population_tag}': {len(request_ids)} requests in scope")
+    if reused:
+        print(f"  reusing {len(reused)} stored result(s) — no LLM calls, no repeated work")
+    if stale:
+        print(f"  re-tagging {len(stale)} request(s) whose diff input changed: {stale}")
+    if retry_failed:
+        print(f"  retrying {len(retry_failed)} previously-failed request(s): {retry_failed}")
+    if plan["missing_chunk"]:
+        print(f"  {len(plan['missing_chunk'])} request(s) in scope have no diff chunk to tag "
+              f"(nothing to compare): {plan['missing_chunk']}")
+    if not to_process:
+        print("  nothing left to tag — assembling output from stored results")
+    else:
+        print(f"Tagging {len(to_process)} requests via Azure OpenAI "
+              f"(model={llm_azure.DEFAULT_MODEL}, {request_workers} requests x "
+              f"{VERIFY_WORKERS} verify workers)...")
     run_start = time.time()
 
-    results = []
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
+    # One lock around the shared connection: psycopg connections are not
+    # thread-safe, and results arrive from a worker pool.
+    db_lock = threading.Lock()
+
+    persist_failures = []
+
+    def persist(result):
+        """Commit one request's result immediately. A DB problem must not
+        discard LLM work that already succeeded, so this warns and continues —
+        the in-memory result still reaches the output file.
+
+        The rollback is the important line. Postgres puts a connection into an
+        aborted-transaction state after any failed statement and refuses
+        everything else on it until the transaction ends. Without this, ONE bad
+        row stopped every later request from persisting: a run tagged 110 more
+        requests, warned 110 times, and saved none of them — turning a
+        single-row problem into the loss of the whole rest of the run.
+        """
+        try:
+            with db_lock:
+                db.save_clause_tagging(conn, population_tag, llm_azure.DEFAULT_MODEL,
+                                        result, signatures.get(result["request_id"]))
+                conn.commit()
+        except Exception as e:  # noqa: BLE001 - never lose a finished result to a DB hiccup
+            persist_failures.append(result["request_id"])
+            print(f"  WARNING: could not persist request {result['request_id']} to Postgres: {e}")
+            try:
+                with db_lock:
+                    conn.rollback()
+            except Exception as rollback_error:  # noqa: BLE001
+                print(f"  WARNING: rollback also failed: {rollback_error}")
+
+    with ThreadPoolExecutor(max_workers=request_workers) as ex:
         futures = {
             ex.submit(tag_one_request, rid, chunk_dir,
                       request_meta.get(str(rid), request_meta.get(rid, {}))): rid
-            for rid in request_ids
+            for rid in to_process
         }
         for i, fut in enumerate(as_completed(futures), 1):
-            results.append(fut.result())
-            if i % 10 == 0 or i == len(request_ids):
-                print(f"...{i}/{len(request_ids)} requests processed")
+            rid = futures[fut]
+            try:
+                result = fut.result()
+            except Exception as e:  # noqa: BLE001
+                # One request blowing up must not destroy the whole run's work,
+                # which is exactly what happened when a DNS failure propagated
+                # out of a 95-request run on 2026-08-31.
+                print(f"  Request {rid}: unexpected error ({type(e).__name__}: {e}) — "
+                      f"recorded as tagging_failed, run continues")
+                result = {"request_id": rid, "tagging_failed": True, "verified_findings": [],
+                          "low_or_noise_findings": [], "verification_failed_count": 0}
+            persist(result)
+            results.append(result)
+            if i % 10 == 0 or i == len(to_process):
+                print(f"...{i}/{len(to_process)} requests processed")
+
+    conn.close()
 
     succeeded = [r for r in results if not r["tagging_failed"]]
     failed = [r for r in results if r["tagging_failed"]]
@@ -227,10 +457,20 @@ def main():
     verification_failed_total = sum(r["verification_failed_count"] for r in succeeded)
 
     print(f"\nDone: {len(succeeded)}/{len(request_ids)} requests tagged "
+          f"({len(reused)} reused from Postgres, {len(to_process)} tagged this run) "
           f"({len(failed)} tagging failures: {[r['request_id'] for r in failed]}), "
           f"{len(confirmed)} confirmed findings, {len(flagged)} flagged inaccurate, "
           f"{low_or_noise_count} low/noise (not verified), "
           f"{verification_failed_total} verify calls failed (excluded from confirmed/flagged)")
+
+    # Stated in the summary, not only as warnings scrolling past mid-run. These
+    # requests are in the output file but NOT in Postgres, so a later resume
+    # will re-tag them and pay for them again — that has to be visible at the
+    # end of a run rather than found by reading 1,800 lines of log.
+    if persist_failures:
+        print(f"WARNING: {len(persist_failures)} request(s) could not be saved to Postgres and "
+              f"will be re-tagged on the next run: {sorted(persist_failures)[:20]}"
+              + (" ..." if len(persist_failures) > 20 else ""))
 
     output = {
         "result": {
@@ -242,6 +482,10 @@ def main():
             "requestsFailed": len(failed),
             "failedRequestIds": [r["request_id"] for r in failed],
             "verificationFailedCount": verification_failed_total,
+            # Stated so a reader of the output knows how much of it came from
+            # stored work rather than this run's LLM calls.
+            "requestsReusedFromDb": len(reused),
+            "requestsTaggedThisRun": len(to_process),
         }
     }
     Path(args.out).write_text(json.dumps(output, indent=2), encoding="utf-8")
@@ -250,7 +494,9 @@ def main():
     wall_elapsed = time.time() - run_start
     totals = llm_azure.get_usage_totals()
     totals["wall_seconds"] = wall_elapsed  # actual end-to-end run time, not summed per-call time
-    append_cost_log_entry("clause_tagging", llm_azure.DEFAULT_MODEL, len(request_ids), totals)
+    # Charged against what this run actually tagged, not the whole scope —
+    # reused requests cost nothing and would distort the per-request rate.
+    append_cost_log_entry("clause_tagging", llm_azure.DEFAULT_MODEL, len(to_process), totals)
 
 
 if __name__ == "__main__":

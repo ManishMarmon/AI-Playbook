@@ -36,9 +36,8 @@ export default function Analytics() {
 
   return (
     <div>
-      <div className="eyebrow">McLegal · Phase 6</div>
       <h1>Reporting &amp; Analytics</h1>
-      <p className="muted" style={{ marginTop: 6 }}>
+      <p className="muted page-subtitle" style={{ marginTop: 6 }}>
         Operational metrics and business insights rolled up from the discovery, pairing, and
         clause-tagging phases.
       </p>

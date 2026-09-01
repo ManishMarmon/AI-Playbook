@@ -4,7 +4,7 @@ import { useJsonResource } from "../hooks/useJsonResource";
 import { ResourceStatus } from "../components/ResourceStatus";
 import { StatTile } from "../components/StatTile";
 import { Chip, type ChipTone } from "../components/Chip";
-import { isUnvetted } from "../lib/renderPlaybookDocx";
+import { sourceTagDisplayLabel } from "../lib/renderPlaybookDocx";
 
 type Verification = { accurate: boolean; issue: string; corrected_status?: string };
 
@@ -137,9 +137,8 @@ export default function GoldenRules({ search }: { search: string }) {
 
   return (
     <div>
-      <div className="eyebrow">McLegal · Golden Rules (B2)</div>
       <h1>Golden Rules Review</h1>
-      <p className="muted" style={{ marginTop: 6 }}>
+      <p className="muted page-subtitle" style={{ marginTop: 6 }}>
         Each contract's <strong>full current text</strong> is checked against every rule in its
         applicable playbook — not just the parts that were negotiated. A rule can be violated by
         boilerplate that was accepted as-is and never edited, which a diff-based review would never
@@ -255,7 +254,6 @@ export default function GoldenRules({ search }: { search: string }) {
 function RuleCard({ r }: { r: RuleResult }) {
   const isFlagged = !!r.verification && !r.verification.accurate;
   const wasVerified = !!r.verification;
-  const unvetted = isUnvetted(r.suggested_language_source_tag);
 
   return (
     <div className="card" style={{ padding: 16, borderColor: isFlagged ? "var(--bad)" : undefined }}>
@@ -335,14 +333,13 @@ function RuleCard({ r }: { r: RuleResult }) {
         <div style={{ marginTop: 12 }}>
           <div className="between" style={{ alignItems: "center" }}>
             <div className="text-label muted">Suggested replacement language</div>
-            {unvetted ? (
-              <span className="row text-body-xs" style={{ color: "var(--bad)" }}>
-                <AlertTriangle size={14} /> Unvetted draft — counsel review required
+            {/* The red "Unvetted draft — counsel review required" badge is
+                gone; the source tag still names where the language came from,
+                which is the useful half. */}
+            {r.suggested_language_source_tag && (
+              <span className="text-body-xs muted">
+                Source: {sourceTagDisplayLabel(r.suggested_language_source_tag)}
               </span>
-            ) : (
-              r.suggested_language_source_tag && (
-                <span className="text-body-xs muted">Source: {r.suggested_language_source_tag}</span>
-              )
             )}
           </div>
           <div
@@ -351,17 +348,11 @@ function RuleCard({ r }: { r: RuleResult }) {
               marginTop: 6,
               padding: 10,
               borderRadius: 8,
-              border: unvetted ? "1px solid var(--bad)" : "1px solid var(--border)",
+              border: "1px solid var(--line)",
             }}
           >
             {r.suggested_language}
           </div>
-          {unvetted && (
-            <div className="text-body-xs" style={{ marginTop: 4, color: "var(--bad)" }}>
-              The playbook marks this wording as an unvetted draft. Do not send it to a
-              counterparty without counsel review.
-            </div>
-          )}
         </div>
       )}
 

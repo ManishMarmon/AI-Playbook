@@ -6,3 +6,7 @@ pypdf
 python-dotenv
 psycopg[binary]
 openai
+extract-msg
+openpyxl
+python-docx
+pytest

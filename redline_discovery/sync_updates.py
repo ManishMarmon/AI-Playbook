@@ -20,6 +20,7 @@ from datetime import datetime
 
 import config
 import db
+from data_refresh_lock import DataRefreshLock
 from request_api import (
     get_bearer_token, fetch_all_requests, fetch_requests_updated_since, fetch_request_file_list,
 )
@@ -43,6 +44,14 @@ def _upsert_request_and_files(conn, request: dict) -> int:
 
 
 def main():
+    try:
+        with DataRefreshLock():
+            _run()
+    except RuntimeError as e:
+        print(e)
+
+
+def _run():
     conn = db.get_connection()
     run_started_at = datetime.now()
     errors = []

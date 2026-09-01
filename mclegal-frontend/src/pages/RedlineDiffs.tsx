@@ -73,9 +73,8 @@ export default function RedlineDiffs({ search }: { search: string }) {
 
   return (
     <div>
-      <div className="eyebrow">McLegal · Phase 4 (raw)</div>
       <h1>Redline Diffs</h1>
-      <p className="muted" style={{ marginTop: 6 }}>
+      <p className="muted page-subtitle" style={{ marginTop: 6 }}>
         Word-level diff between each request's original and redlined file text. Raw diff
         fragments shown below — clause-level tagging (which clause, spirit of the change,
         negotiation intent) runs as a separate AI pass and isn't merged in here yet.

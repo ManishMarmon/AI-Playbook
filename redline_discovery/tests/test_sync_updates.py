@@ -9,6 +9,10 @@ the old watermark and report a non-"success" status whenever Pass 2 fails.
 Mocks db/config/request_api via sys.modules so this never touches Postgres
 or the live CobbleStone API — sync_updates.py only ever calls them through
 module-level names, so swapping the modules before import/reload is enough.
+data_refresh_lock is faked for the same reason: the real one is a PID lock
+file shared with every other data-writing script, so without this a unit
+test would silently no-op (and falsely "pass" as a KeyError) whenever a real
+backfill/repair/scan happened to be running on the machine.
 """
 
 import importlib
@@ -47,9 +51,20 @@ def _install_fakes(monkeypatch, tmp_path, pass2_should_fail: bool, old_watermark
         return [{"RequestID": 555}]
     fake_request_api.fetch_requests_updated_since = fake_fetch_requests_updated_since
 
+    class _NoOpLock:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+    fake_lock_module = types.ModuleType("data_refresh_lock")
+    fake_lock_module.DataRefreshLock = _NoOpLock
+
     monkeypatch.setitem(sys.modules, "config", fake_config)
     monkeypatch.setitem(sys.modules, "db", fake_db)
     monkeypatch.setitem(sys.modules, "request_api", fake_request_api)
+    monkeypatch.setitem(sys.modules, "data_refresh_lock", fake_lock_module)
 
     if "sync_updates" in sys.modules:
         importlib.reload(sys.modules["sync_updates"])

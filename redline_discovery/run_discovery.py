@@ -83,6 +83,36 @@ def main():
         files_by_request = None
     print(f"Requests scanned: {len(requests_)}")
 
+    # Two cheap bulk lookups instead of a per-request query: the tracked-changes
+    # redline count and NDA directionality for every request in one round trip
+    # each. Both are absent (empty) on a fresh database that hasn't run
+    # scan_tracked_changes.py / azure_nda_classifier.py yet, which degrades to
+    # has_word_redline=false rather than failing.
+    redline_flags = {
+        rid: n for rid, n in conn.execute(
+            """SELECT request_id, COUNT(*) FROM files
+               WHERE has_tracked_changes AND is_deleted IS NOT TRUE
+               GROUP BY request_id""").fetchall()
+    }
+    nda_types = {
+        rid: t for rid, t in conn.execute(
+            "SELECT request_id, nda_type FROM requests WHERE nda_type IS NOT NULL").fetchall()
+    }
+    # Per-file tracked-changes results already parsed by scan_tracked_changes.py.
+    # Used below INSTEAD of re-downloading each .docx to inspect it again: that
+    # scan downloaded and parsed every one of these files once already and
+    # stored the answer, so repeating it here would be pure duplicated work
+    # (thousands of downloads) for an answer we hold. Only files the scan hasn't
+    # seen still take the download path.
+    scanned_docx = {
+        fid: (has_tc, count or 0) for fid, has_tc, count in conn.execute(
+            """SELECT id, has_tracked_changes, tracked_change_count FROM files
+               WHERE structure_scanned_at IS NOT NULL
+                 AND lower(file_type) IN ('.docx', '.docm', '.dotx')""").fetchall()
+    }
+    print(f"{len(redline_flags)} requests have a tracked-changes Word redline; "
+          f"{len(nda_types)} have an NDA directionality classification")
+
     rows = []
     requests_catalog = []
     ai_candidates = []
@@ -115,6 +145,14 @@ def main():
             "notes": req.get("u_Notes"),
             "vendor_id": req.get("VendorID"),
             "attachment_count": len(files),
+            # Jeff (2026-08-31): the dashboard should flag contracts that have a
+            # first-cut redlined Word document so users can filter (e.g. US NDAs)
+            # and analyse contracts WITH redlines separately from those without.
+            # Both come straight from what scan_tracked_changes.py /
+            # azure_nda_classifier.py already stored — no extra work per request.
+            "has_word_redline": bool(redline_flags.get(request_id)),
+            "word_redline_count": redline_flags.get(request_id, 0),
+            "nda_type": nda_types.get(request_id),
         })
 
         for f in files:
@@ -134,8 +172,17 @@ def main():
                     and result["category"] != "Likely Executed/Signed"
                     and file_type in STRUCTURE_CHECKABLE_TYPES
                     and 0 < file_size <= MAX_DOWNLOAD_BYTES):
-                file_bytes = download_file(f.get("ID"), token)
-                structure_hit = check_file_structure(file_type, file_bytes) if file_bytes else None
+                cached = scanned_docx.get(f.get("ID"))
+                if cached is not None:
+                    # Already downloaded and parsed by scan_tracked_changes.py —
+                    # reuse its verdict instead of fetching the file again.
+                    has_tc, tc_count = cached
+                    structure_hit = ({"detection_method": "track_changes_xml",
+                                      "signal": f"track_changes:{tc_count} tracked edits found"}
+                                     if has_tc else None)
+                else:
+                    file_bytes = download_file(f.get("ID"), token)
+                    structure_hit = check_file_structure(file_type, file_bytes) if file_bytes else None
                 if structure_hit:
                     result = {
                         **result,

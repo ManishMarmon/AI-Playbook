@@ -20,6 +20,7 @@ import time
 
 import config
 import db
+from data_refresh_lock import DataRefreshLock
 from request_api import get_bearer_token, iter_request_pages, fetch_request_file_list
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s %(levelname)s %(message)s")
@@ -42,6 +43,14 @@ def main():
                          help="Stop after this many new requests (default: no limit — full backfill)")
     args = parser.parse_args()
 
+    try:
+        with DataRefreshLock():
+            _run(args)
+    except RuntimeError as e:
+        print(e)
+
+
+def _run(args):
     config.OUTPUT_DIR.mkdir(exist_ok=True)
     errors_path = config.OUTPUT_DIR / "backfill_errors.json"
 

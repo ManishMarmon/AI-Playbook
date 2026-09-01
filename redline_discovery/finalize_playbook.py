@@ -24,6 +24,8 @@ import argparse
 import json
 from pathlib import Path
 
+import methodology as methodology_mod
+
 PLAYBOOKS_DIR = Path(__file__).parent.parent / "mclegal-frontend" / "public" / "playbooks"
 
 # applies_to is matched EXACTLY by contractAssembly.ts's selectRules() when a
@@ -64,6 +66,13 @@ def main():
     parser.add_argument("--jurisdiction", required=True, help="e.g. 'United States'")
     parser.add_argument("--contract-types", required=True,
                          help="Comma-separated u_RequestType values this playbook covers, e.g. 'Real Estate'")
+    parser.add_argument("--variant", default=None,
+                         help="Sub-kind within the contract type, e.g. 'Mutual' or "
+                              "'One-way (Marmon Receiving)' for an NDA. Required in practice "
+                              "whenever more than one playbook shares a (jurisdiction, contract "
+                              "type) pair — the drafting tool resolves on this to avoid guessing "
+                              "between them. Use the classifier's exact label so the UI's variant "
+                              "list and the manifest agree.")
     parser.add_argument("--business-sectors", default="",
                          help="Comma-separated u_MarmonSector values, if this playbook is sector-scoped "
                               "(leave blank for a contract-type-wide playbook like Real Estate)")
@@ -77,6 +86,23 @@ def main():
                               "playbook, so its auto-picked 2-4 letter prefixes (DOC, PAY, TRM...) can and "
                               "will collide with another playbook's prefixes — this namespaces them so "
                               "playbooks never need to coordinate prefix choices with each other.")
+    # Methodology inputs (Jeff, 2026-08-31 / plan item 5.2). The three sources
+    # are needed together: the funnel defines the sample, the diff records
+    # define the comparison bases and dates, and the findings define what was
+    # actually verified. With them the Word document gets a methodology preface
+    # carrying real numbers and data-derived caveats instead of leaving the
+    # sample unstated.
+    parser.add_argument("--funnel", default=None,
+                         help="report_redline_funnel.py output — defines the sample")
+    parser.add_argument("--diffs", default=None,
+                         help="run_provenance_diff.py full records — comparison bases and dates")
+    parser.add_argument("--findings", default=None,
+                         help="azure_clause_tagging.py output — verification counts and sides")
+    parser.add_argument("--min-evidence-pct", type=float, default=None,
+                         help="The evidence threshold this run used, stated in the preface")
+    parser.add_argument("--tag-model", default=None, help="Model used for clause tagging")
+    parser.add_argument("--classifier-model", default=None,
+                         help="Model used for mutual/one-way directionality classification")
     args = parser.parse_args()
 
     raw = json.loads(Path(args.raw).read_text(encoding="utf-8"))
@@ -136,12 +162,40 @@ def main():
             "matching_clause_names": r["matching_clause_names"],
         }
         # Structured evidence fields (evidence_count/evidence_requests/evidence_pct)
-        # only exist on results from a synthesis run that computed them (see
+        # and the provenance fields (comparison_basis and friends) only exist on
+        # results from a synthesis run that computed them (see
         # azure_playbook_synthesis.py) — carried through when present rather than
         # required, so this script still works against an older raw result.
-        for field in ("evidence_count", "evidence_requests", "evidence_pct"):
+        # position_side/position_label/position_side_counts were MISSING from
+        # this list, so every rule reached the playbook with its side stripped:
+        # the synthesis output said 14 of 19 rules were Marmon-attributable, the
+        # generated Word document said none were, and the reviewer hand-off page
+        # asked Monique to confirm all 19 as "side could not be confirmed". The
+        # whole point of the provenance work was lost at the last step.
+        for field in ("evidence_count", "evidence_requests", "evidence_pct",
+                      "comparison_basis", "comparison_basis_label", "basis_summary",
+                      "basis_counts", "preferred_position_count",
+                      "position_side", "position_label", "position_side_counts"):
             if field in r:
                 rule[field] = r[field]
+        # contributing_authors is DELIBERATELY not carried into the published
+        # playbook. It holds the real names Word recorded as the authors of the
+        # tracked changes, and at population scale that is 319 people — Marmon
+        # staff and, because a counterparty's redline carries a counterparty's
+        # author name, employees of other companies. These playbook JSONs are
+        # served by the frontend and committed to a PUBLIC repository, so
+        # publishing them would put third parties' names in public for no
+        # benefit: nothing renders the field (it survives only as a type
+        # declaration in renderPlaybookDocx.ts).
+        #
+        # The provenance is not lost — the raw synthesis output keeps the full
+        # list, and redline_discovery/output/ is gitignored, so the audit trail
+        # stays local where it belongs. A count is kept because "how many
+        # distinct people's edits support this rule" is genuinely useful and
+        # carries no identity.
+        authors = r.get("contributing_authors")
+        if authors is not None:
+            rule["contributing_author_count"] = len([a for a in authors if a and a.strip()])
         return rule
 
     final_rules = [build_rule(r) for r in result["rules"]]
@@ -199,8 +253,41 @@ def main():
         "businessSectors": [s.strip() for s in args.business_sectors.split(",") if s.strip()],
         "file": f"{args.id}.json",
     }
+    if args.variant:
+        entry["variant"] = args.variant
     if suggested_file:
         entry["suggestedRulesFile"] = suggested_file
+
+    # Methodology preface. Attached only when the inputs are supplied, so
+    # regenerating an older playbook without them produces the same manifest
+    # entry it always did rather than a half-filled block that would misstate
+    # the sample.
+    if args.funnel and args.diffs and args.findings:
+        entry["methodology"] = methodology_mod.build_methodology(
+            funnel=json.loads(Path(args.funnel).read_text(encoding="utf-8")),
+            diff_records=json.loads(Path(args.diffs).read_text(encoding="utf-8")),
+            findings=json.loads(Path(args.findings).read_text(encoding="utf-8")),
+            evidence_threshold_pct=args.min_evidence_pct,
+            tag_model=args.tag_model,
+            classifier_model=args.classifier_model,
+        )
+        meth = entry["methodology"]
+        print(f"Methodology: sample {meth['sample']['subsetSize']} contracts"
+              f"{' (' + meth['sample']['dateRange'] + ')' if meth['sample']['dateRange'] else ''}, "
+              f"{len(meth['caveats'])} caveat(s) derived from the data")
+        for c in meth["caveats"]:
+            print(f"  - {c}")
+    elif any([args.funnel, args.diffs, args.findings]):
+        # Partial input is a mistake worth surfacing: silently skipping the
+        # preface would ship Monique a document with no stated sample.
+        raise SystemExit(
+            "--funnel, --diffs and --findings must be given together to build the methodology "
+            "preface (got: "
+            + ", ".join(n for n, v in [("--funnel", args.funnel), ("--diffs", args.diffs),
+                                        ("--findings", args.findings)] if v)
+            + "). Omit all three to skip the preface deliberately."
+        )
+
     manifest.append(entry)
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     print(f"Wrote {manifest_path}")
